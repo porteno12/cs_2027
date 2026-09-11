@@ -9,41 +9,44 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
-    :root { --ink:#102a43; --blue:#1267d6; --teal:#00b8a9; --lime:#d7f205; --coral:#ff6b5e; --paper:#f7fbff; --line:#d4e1ee; --card:#fff; }
+    :root { --ink:#eaf5ff; --midnight:#071727; --blue:#2c82ff; --teal:#18d0bd; --lime:#e5ff55; --coral:#ff7a6d; --line:rgba(184,222,246,.25); --card:rgba(12,39,61,.9); }
     * { box-sizing:border-box; }
-    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(135deg,#e7f7f5 0%,var(--paper) 44%,#e7efff 100%); font-family:Heebo, sans-serif; }
+    body { margin:0; min-height:100vh; color:var(--ink); background-color:var(--midnight); background-image:radial-gradient(circle at 12% 12%,rgba(24,208,189,.22),transparent 26rem),radial-gradient(circle at 89% 7%,rgba(44,130,255,.26),transparent 30rem),linear-gradient(125deg,#071727,#0d2940 52%,#081c2e); font-family:Heebo,sans-serif; }
+    body::before { position:fixed; inset:0; z-index:-1; content:""; opacity:.24; background-image:linear-gradient(rgba(229,255,85,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(229,255,85,.15) 1px,transparent 1px); background-size:34px 34px; mask-image:linear-gradient(to bottom,black,transparent 85%); }
     button, input { font:inherit; }
     .shell { width:min(760px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
-    .brand { display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; color:var(--blue); font-weight:700; direction:ltr; }
-    .brand i { display:block; width:12px; height:12px; background:var(--lime); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink); }
-    .panel { margin-top:26px; padding:clamp(24px,6vw,48px); background:var(--card); border:1px solid var(--line); border-radius:8px; box-shadow:8px 8px 0 rgba(16,42,67,.10); }
+    .brand { display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; color:var(--lime); font-weight:700; direction:ltr; text-shadow:0 0 14px rgba(229,255,85,.7); }
+    .brand i { display:block; width:12px; height:12px; background:var(--lime); border:2px solid var(--ink); box-shadow:0 0 13px var(--lime); }
+    .panel { position:relative; overflow:hidden; margin-top:26px; padding:clamp(24px,6vw,48px); background:var(--card); border:1px solid var(--line); border-radius:8px; box-shadow:0 20px 60px rgba(0,0,0,.34); backdrop-filter:blur(14px); }
+    .panel::after { content:""; position:absolute; inset:0; pointer-events:none; background:linear-gradient(115deg,rgba(255,255,255,.07),transparent 32%); }
     h1,h2,p { margin-top:0; } h1 { font-size:clamp(32px,8vw,56px); line-height:1.04; margin-bottom:14px; } h2 { font-size:clamp(24px,5vw,34px); line-height:1.15; }
     .eyebrow { color:var(--teal); font-weight:800; letter-spacing:0; margin-bottom:10px; }
-    .meta { color:#56718a; font-weight:600; }
-    .name-wrap { margin:32px 0 20px; }
+    .meta { color:#b9d4e8; font-weight:600; }.cover-grid { display:grid; grid-template-columns:1.15fr .85fr; align-items:center; gap:24px; }.cover-art { width:100%; max-width:290px; justify-self:center; filter:drop-shadow(0 15px 22px rgba(0,0,0,.3)); }.chip-row { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 6px; direction:ltr; }.chip { padding:5px 9px; border:1px solid rgba(229,255,85,.4); border-radius:3px; color:var(--lime); background:rgba(229,255,85,.08); font:700 12px 'JetBrains Mono',monospace; }
+    .name-wrap { margin:28px 0 20px; }
     label { display:block; margin-bottom:8px; font-weight:700; }
-    input { width:100%; padding:13px 15px; border:2px solid var(--line); border-radius:4px; color:var(--ink); background:#fff; outline:none; }
+    input { width:100%; padding:13px 15px; border:2px solid var(--line); border-radius:4px; color:var(--ink); background:rgba(3,18,31,.75); outline:none; }
     input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(18,103,214,.15); }
-    .start, .next, .reset { border:0; min-height:48px; padding:10px 21px; border-radius:4px; cursor:pointer; color:var(--ink); background:var(--lime); box-shadow:4px 4px 0 var(--ink); font-weight:800; transition:transform .15s,box-shadow .15s; }
-    .start:hover,.next:hover,.reset:hover { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink); }
+    .start, .next, .reset { position:relative; z-index:1; border:0; min-height:48px; padding:10px 21px; border-radius:4px; cursor:pointer; color:#062033; background:var(--lime); box-shadow:0 0 24px rgba(229,255,85,.25); font-weight:800; transition:transform .15s,box-shadow .15s; }
+    .start:hover,.next:hover,.reset:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(229,255,85,.38); }
     .start:disabled { cursor:not-allowed; opacity:.45; transform:none; box-shadow:4px 4px 0 #788; }
     .hidden { display:none !important; }
     .progress-copy { display:flex; justify-content:space-between; gap:12px; font-weight:700; }
-    .track { height:12px; overflow:hidden; margin:12px 0 32px; border:2px solid var(--ink); border-radius:2px; background:#e6edf5; }
+    .track { height:12px; overflow:hidden; margin:12px 0 32px; border:1px solid var(--line); border-radius:999px; background:#061827; }
     .fill { width:0; height:100%; background:repeating-linear-gradient(45deg,var(--lime),var(--lime) 10px,var(--teal) 10px,var(--teal) 20px); transition:width .45s ease; }
-    .question { animation:enter .35s ease both; } .question p { font-size:clamp(20px,4vw,25px); font-weight:700; line-height:1.42; }
+    .question { animation:enter .35s ease both; }.question-heading { display:flex; align-items:center; gap:13px; }.question-icon { flex:0 0 42px; display:grid; place-items:center; width:42px; height:42px; color:var(--lime); border:1px solid rgba(229,255,85,.45); border-radius:50%; background:rgba(229,255,85,.09); }.question-icon svg { width:23px; height:23px; }.question p { font-size:clamp(20px,4vw,25px); font-weight:700; line-height:1.42; }
     pre { margin:18px 0; padding:16px; overflow:auto; direction:ltr; text-align:left; color:#e9f7ff; background:var(--ink); border-radius:4px; font:500 14px/1.6 'JetBrains Mono',monospace; }
-    .choices { display:grid; gap:10px; } .choice { width:100%; padding:13px 15px; text-align:right; color:var(--ink); background:#fff; border:2px solid var(--line); border-radius:4px; cursor:pointer; font-weight:600; }
-    .choice:hover:not(:disabled),.choice:focus-visible { border-color:var(--blue); background:#eef5ff; outline:0; }
-    .choice:disabled { cursor:default; } .choice.correct { border-color:var(--teal); background:#e2f8f3; } .choice.wrong { border-color:var(--coral); background:#fff0ed; animation:shake .35s; }
-    .feedback { margin-top:20px; padding:16px; border-right:5px solid var(--teal); background:#eefaf7; animation:enter .25s ease; } .feedback.bad { border-color:var(--coral); background:#fff3f0; }
+    .choices { display:grid; gap:10px; } .choice { width:100%; padding:13px 15px; text-align:right; color:var(--ink); background:rgba(6,27,45,.72); border:2px solid var(--line); border-radius:4px; cursor:pointer; font-weight:600; }
+    .choice:hover:not(:disabled),.choice:focus-visible { border-color:var(--blue); background:rgba(44,130,255,.16); outline:0; }
+    .choice:disabled { cursor:default; } .choice.correct { border-color:var(--teal); background:rgba(24,208,189,.16); } .choice.wrong { border-color:var(--coral); background:rgba(255,122,109,.16); animation:shake .35s; }
+    .feedback { margin-top:20px; padding:16px; border-right:5px solid var(--teal); background:rgba(24,208,189,.12); animation:enter .25s ease; } .feedback.bad { border-color:var(--coral); background:rgba(255,122,109,.12); }
     .feedback strong { display:block; margin-bottom:6px; }
     .match-list { display:grid; gap:11px; } .match { display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px; padding:12px; border:2px solid var(--line); border-radius:4px; }
-    select { padding:7px; border:1px solid var(--line); border-radius:3px; color:var(--ink); font:inherit; } .check-match { margin-top:16px; }
-    .result { text-align:center; } .score { margin:24px auto; display:grid; place-items:center; width:150px; height:150px; border:8px solid var(--teal); border-radius:50%; background:#eafff8; font-size:42px; font-weight:800; }
-    .submit-note { margin:26px 0; padding:17px; background:#fff9dc; border:2px dashed #c79e00; border-radius:4px; text-align:right; }
+    select { padding:7px; border:1px solid var(--line); border-radius:3px; color:var(--ink); background:var(--midnight); font:inherit; } .check-match { margin-top:16px; }
+    .result { text-align:center; }.trophy { width:86px; height:86px; margin:0 auto 12px; color:var(--lime); filter:drop-shadow(0 0 12px rgba(229,255,85,.35)); }.score { margin:24px auto; display:grid; place-items:center; width:150px; height:150px; border:8px solid var(--teal); border-radius:50%; background:radial-gradient(circle,#123a55,#071727); box-shadow:0 0 0 8px rgba(24,208,189,.12),0 0 35px rgba(24,208,189,.26); font-size:42px; font-weight:800; }
+    .submit-note { margin:26px 0; padding:17px; color:#fff2b3; background:rgba(209,156,0,.15); border:2px dashed #d7ba47; border-radius:4px; text-align:right; }
     .confetti { position:fixed; inset:0; pointer-events:none; overflow:hidden; } .confetti span { position:absolute; top:-16px; width:11px; height:16px; background:var(--coral); animation:fall 2.8s linear forwards; }
     @keyframes enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } } @keyframes shake { 25%{transform:translateX(7px)} 50%{transform:translateX(-7px)} 75%{transform:translateX(3px)} } @keyframes fall { to { transform:translateY(110vh) rotate(540deg); } }
+    @media (max-width:600px) { .cover-grid { grid-template-columns:1fr; }.cover-art { order:-1; max-width:230px; } }
     @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
   </style>
 </head>
@@ -51,9 +54,7 @@
   <main class="shell">
     <div class="brand"><i></i> CS/START</div>
     <section id="cover" class="panel">
-      <p class="eyebrow">מדעי המחשב</p>
-      <h1>מבוא למדעי המחשב</h1>
-      <p class="meta">רוני רובן · ספטמבר 2026 · תשפ&quot;ז</p>
+      <div class="cover-grid"><div><p class="eyebrow">מדעי המחשב</p><h1>מבוא למדעי המחשב</h1><p class="meta">רוני רובן · ספטמבר 2026 · תשפ&quot;ז</p><div class="chip-row"><span class="chip">CPU</span><span class="chip">RAM</span><span class="chip">JAVA</span></div></div><svg class="cover-art" viewBox="0 0 300 240" aria-label="איור מחשב עם מסך קוד" role="img"><path fill="#0a2339" stroke="#bde6ff" stroke-width="3" d="M39 27h185a12 12 0 0 1 12 12v116a12 12 0 0 1-12 12H39a12 12 0 0 1-12-12V39a12 12 0 0 1 12-12Z"/><rect x="40" y="40" width="183" height="103" rx="5" fill="#061827"/><path stroke="#18d0bd" stroke-width="7" stroke-linecap="round" d="m63 71 15 12-15 12m32 0h42m-74 25h27m10 0h73"/><path fill="#bde6ff" d="M117 167h30l8 22h-46z"/><rect x="87" y="189" width="100" height="10" rx="5" fill="#18d0bd"/><rect x="47" y="208" width="162" height="23" rx="5" fill="#163b58" stroke="#bde6ff" stroke-width="2"/><g fill="#e5ff55"><rect x="58" y="214" width="13" height="5" rx="2"/><rect x="77" y="214" width="13" height="5" rx="2"/><rect x="96" y="214" width="13" height="5" rx="2"/><rect x="115" y="214" width="13" height="5" rx="2"/><rect x="134" y="214" width="13" height="5" rx="2"/><rect x="153" y="214" width="13" height="5" rx="2"/><rect x="172" y="214" width="24" height="5" rx="2"/></g><rect x="224" y="7" width="63" height="45" rx="7" fill="#e5ff55"/><text x="255" y="36" text-anchor="middle" fill="#071727" font-family="monospace" font-size="14" font-weight="700">JAVA</text><circle cx="31" cy="166" r="24" fill="#ff7a6d"/><path fill="none" stroke="#071727" stroke-width="4" stroke-linecap="round" d="M22 166h18m-9-9v18"/></svg></div>
       <div class="name-wrap"><label for="studentName">שם התלמיד/ה</label><input id="studentName" autocomplete="name" placeholder="הקלידו את שמכם"></div>
       <button id="start" class="start" disabled>התחל</button>
     </section>
@@ -96,7 +97,7 @@
     function startQuiz() { state.order = shuffle(questions); state.index = 0; state.score = 0; state.started = Date.now(); cover.classList.add('hidden'); quiz.classList.remove('hidden'); renderQuestion(); }
     function renderQuestion() {
       state.answered = false; const item = state.order[state.index]; document.querySelector('#count').textContent = `שאלה ${state.index + 1} מתוך ${state.order.length}`; document.querySelector('#points').textContent = `${state.score} נכונות`; document.querySelector('#fill').style.width = `${state.index / state.order.length * 100}%`;
-      questionEl.innerHTML = `<article class="question"><p>${item.q}</p>${item.code ? `<pre><code>${escapeHtml(item.code)}</code></pre>` : ''}<div class="choices"></div></article>`;
+      questionEl.innerHTML = `<article class="question"><div class="question-heading"><span class="question-icon">${questionIcon(item.type)}</span><p>${item.q}</p></div>${item.code ? `<pre><code>${escapeHtml(item.code)}</code></pre>` : ''}<div class="choices"></div></article>`;
       if (item.type === 'classify') renderClassify(item); else renderChoices(item);
     }
     function renderChoices(item) { const choices = item.type === 'truefalse' ? [{text:'אמת',correct:item.answer},{text:'שקר',correct:!item.answer}] : shuffle(item.choices.map((text,index) => ({text,correct:index === item.answer}))); const list = questionEl.querySelector('.choices'); choices.forEach(choice => { const button = document.createElement('button'); button.className = 'choice'; button.textContent = choice.text; button.addEventListener('click', () => answerChoice(choice.correct, button, item)); list.append(button); }); }
@@ -104,8 +105,9 @@
     function answerChoice(correct, selected, item) { if (state.answered) return; questionEl.querySelectorAll('.choice').forEach(button => { button.disabled = true; if (button.textContent === item.choices[item.answer] || (item.type === 'truefalse' && button.textContent === (item.answer ? 'אמת' : 'שקר'))) button.classList.add('correct'); }); if (!correct) selected.classList.add('wrong'); showFeedback(correct,item); }
     function showFeedback(correct,item) { state.answered = true; if (correct) state.score++; const feedback = document.createElement('div'); feedback.className = `feedback ${correct ? '' : 'bad'}`; feedback.innerHTML = `<strong>${correct ? 'נכון!' : 'לא בדיוק.'}</strong><span>${item.why}</span>`; const next = document.createElement('button'); next.className = 'next'; next.textContent = state.index === state.order.length - 1 ? 'לסיכום' : 'לשאלה הבאה'; next.addEventListener('click', nextQuestion); feedback.append(document.createElement('br'),next); questionEl.append(feedback); }
     function nextQuestion() { state.index++; if (state.index === state.order.length) showResults(); else renderQuestion(); }
-    function showResults() { quiz.classList.add('hidden'); results.classList.remove('hidden'); const percent = Math.round(state.score / state.order.length * 100); const elapsed = Math.round((Date.now() - state.started) / 1000); results.innerHTML = `<p class="eyebrow">סיימת!</p><h2>${escapeHtml(nameInput.value.trim())}</h2><p>השלמת את שאלון המבוא למדעי המחשב.</p><div class="score">${percent}%</div><p><strong>${state.score}</strong> תשובות נכונות מתוך ${state.order.length} · ${elapsed} שניות</p><div class="submit-note"><strong>להגשה:</strong> צלמו צילום מסך של דף הסיכום הזה והגישו אותו למורה.</div><button class="reset" id="reset">התחל מחדש</button>`; document.querySelector('#fill').style.width = '100%'; document.querySelector('#reset').addEventListener('click', () => location.reload()); if (percent >= 60) launchConfetti(); }
+    function showResults() { quiz.classList.add('hidden'); results.classList.remove('hidden'); const percent = Math.round(state.score / state.order.length * 100); const elapsed = Math.round((Date.now() - state.started) / 1000); results.innerHTML = `<svg class="trophy" viewBox="0 0 64 64" aria-hidden="true"><path fill="currentColor" d="M17 7h30v9h8v8c0 10-7 16-16 17v8h9v8H16v-8h9v-8C16 40 9 34 9 24v-8h8V7Zm-1 15c0 5 3 8 9 10V22h-9Zm23 10c6-2 9-5 9-10h-9v10Z"/></svg><p class="eyebrow">סיימת!</p><h2>${escapeHtml(nameInput.value.trim())}</h2><p>השלמת את שאלון המבוא למדעי המחשב.</p><div class="score">${percent}%</div><p><strong>${state.score}</strong> תשובות נכונות מתוך ${state.order.length} · ${elapsed} שניות</p><div class="submit-note"><strong>להגשה:</strong> צלמו צילום מסך של דף הסיכום הזה והגישו אותו למורה.</div><button class="reset" id="reset">התחל מחדש</button>`; document.querySelector('#fill').style.width = '100%'; document.querySelector('#reset').addEventListener('click', () => location.reload()); if (percent >= 60) launchConfetti(); }
     function launchConfetti() { const box = document.querySelector('#confetti'); box.classList.remove('hidden'); for (let index=0; index<70; index++) { const piece=document.createElement('span'); piece.style.left=`${Math.random()*100}%`; piece.style.animationDelay=`${Math.random()*.7}s`; piece.style.background=['#ff6b5e','#d7f205','#1267d6','#00b8a9'][index%4]; box.append(piece); } }
+    function questionIcon(type) { return type === 'code' ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 8-4 4 4 4M16 8l4 4-4 4M14 4l-4 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' : type === 'classify' ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7v7H4zM13 5h7v7h-7zM4 14h7v5H4zM13 14h7v5h-7z" fill="none" stroke="currentColor" stroke-width="2"/></svg>' : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="m8 12 2.5 2.5L16 9" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'; }
     function escapeHtml(value) { const node = document.createElement('div'); node.textContent = value; return node.innerHTML; }
   </script>
 </body>

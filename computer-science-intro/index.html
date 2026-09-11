@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a43">
+  <title>מבוא למדעי המחשב - שאלון סיכום</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --ink:#102a43; --blue:#1267d6; --teal:#00b8a9; --lime:#d7f205; --coral:#ff6b5e; --paper:#f7fbff; --line:#d4e1ee; --card:#fff; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; color:var(--ink); background:linear-gradient(135deg,#e7f7f5 0%,var(--paper) 44%,#e7efff 100%); font-family:Heebo, sans-serif; }
+    button, input { font:inherit; }
+    .shell { width:min(760px, calc(100% - 32px)); margin:0 auto; padding:32px 0 48px; }
+    .brand { display:flex; align-items:center; gap:10px; font-family:'JetBrains Mono',monospace; color:var(--blue); font-weight:700; direction:ltr; }
+    .brand i { display:block; width:12px; height:12px; background:var(--lime); border:2px solid var(--ink); box-shadow:3px 3px 0 var(--ink); }
+    .panel { margin-top:26px; padding:clamp(24px,6vw,48px); background:var(--card); border:1px solid var(--line); border-radius:8px; box-shadow:8px 8px 0 rgba(16,42,67,.10); }
+    h1,h2,p { margin-top:0; } h1 { font-size:clamp(32px,8vw,56px); line-height:1.04; margin-bottom:14px; } h2 { font-size:clamp(24px,5vw,34px); line-height:1.15; }
+    .eyebrow { color:var(--teal); font-weight:800; letter-spacing:0; margin-bottom:10px; }
+    .meta { color:#56718a; font-weight:600; }
+    .name-wrap { margin:32px 0 20px; }
+    label { display:block; margin-bottom:8px; font-weight:700; }
+    input { width:100%; padding:13px 15px; border:2px solid var(--line); border-radius:4px; color:var(--ink); background:#fff; outline:none; }
+    input:focus { border-color:var(--blue); box-shadow:0 0 0 3px rgba(18,103,214,.15); }
+    .start, .next, .reset { border:0; min-height:48px; padding:10px 21px; border-radius:4px; cursor:pointer; color:var(--ink); background:var(--lime); box-shadow:4px 4px 0 var(--ink); font-weight:800; transition:transform .15s,box-shadow .15s; }
+    .start:hover,.next:hover,.reset:hover { transform:translate(2px,2px); box-shadow:2px 2px 0 var(--ink); }
+    .start:disabled { cursor:not-allowed; opacity:.45; transform:none; box-shadow:4px 4px 0 #788; }
+    .hidden { display:none !important; }
+    .progress-copy { display:flex; justify-content:space-between; gap:12px; font-weight:700; }
+    .track { height:12px; overflow:hidden; margin:12px 0 32px; border:2px solid var(--ink); border-radius:2px; background:#e6edf5; }
+    .fill { width:0; height:100%; background:repeating-linear-gradient(45deg,var(--lime),var(--lime) 10px,var(--teal) 10px,var(--teal) 20px); transition:width .45s ease; }
+    .question { animation:enter .35s ease both; } .question p { font-size:clamp(20px,4vw,25px); font-weight:700; line-height:1.42; }
+    pre { margin:18px 0; padding:16px; overflow:auto; direction:ltr; text-align:left; color:#e9f7ff; background:var(--ink); border-radius:4px; font:500 14px/1.6 'JetBrains Mono',monospace; }
+    .choices { display:grid; gap:10px; } .choice { width:100%; padding:13px 15px; text-align:right; color:var(--ink); background:#fff; border:2px solid var(--line); border-radius:4px; cursor:pointer; font-weight:600; }
+    .choice:hover:not(:disabled),.choice:focus-visible { border-color:var(--blue); background:#eef5ff; outline:0; }
+    .choice:disabled { cursor:default; } .choice.correct { border-color:var(--teal); background:#e2f8f3; } .choice.wrong { border-color:var(--coral); background:#fff0ed; animation:shake .35s; }
+    .feedback { margin-top:20px; padding:16px; border-right:5px solid var(--teal); background:#eefaf7; animation:enter .25s ease; } .feedback.bad { border-color:var(--coral); background:#fff3f0; }
+    .feedback strong { display:block; margin-bottom:6px; }
+    .match-list { display:grid; gap:11px; } .match { display:grid; grid-template-columns:1fr auto; align-items:center; gap:12px; padding:12px; border:2px solid var(--line); border-radius:4px; }
+    select { padding:7px; border:1px solid var(--line); border-radius:3px; color:var(--ink); font:inherit; } .check-match { margin-top:16px; }
+    .result { text-align:center; } .score { margin:24px auto; display:grid; place-items:center; width:150px; height:150px; border:8px solid var(--teal); border-radius:50%; background:#eafff8; font-size:42px; font-weight:800; }
+    .submit-note { margin:26px 0; padding:17px; background:#fff9dc; border:2px dashed #c79e00; border-radius:4px; text-align:right; }
+    .confetti { position:fixed; inset:0; pointer-events:none; overflow:hidden; } .confetti span { position:absolute; top:-16px; width:11px; height:16px; background:var(--coral); animation:fall 2.8s linear forwards; }
+    @keyframes enter { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } } @keyframes shake { 25%{transform:translateX(7px)} 50%{transform:translateX(-7px)} 75%{transform:translateX(3px)} } @keyframes fall { to { transform:translateY(110vh) rotate(540deg); } }
+    @media (prefers-reduced-motion:reduce) { *,*::before,*::after { animation-duration:.001ms !important; transition-duration:.001ms !important; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <div class="brand"><i></i> CS/START</div>
+    <section id="cover" class="panel">
+      <p class="eyebrow">מדעי המחשב</p>
+      <h1>מבוא למדעי המחשב</h1>
+      <p class="meta">רוני רובן · ספטמבר 2026 · תשפ&quot;ז</p>
+      <div class="name-wrap"><label for="studentName">שם התלמיד/ה</label><input id="studentName" autocomplete="name" placeholder="הקלידו את שמכם"></div>
+      <button id="start" class="start" disabled>התחל</button>
+    </section>
+    <section id="quiz" class="panel hidden" aria-live="polite">
+      <div class="progress-copy"><span id="count"></span><span id="points"></span></div><div class="track"><div id="fill" class="fill"></div></div>
+      <div id="question"></div>
+    </section>
+    <section id="results" class="panel result hidden"></section>
+  </main>
+  <div id="confetti" class="confetti hidden"></div>
+  <script>
+    const questions = [
+      {type:'single',q:'מהו רכיב חומרה?',choices:['תוכנה שמפעילה את המחשב','חלק פיזי שאפשר לראות ולגעת בו','קובץ שנשמר בזיכרון','הוראה בשפת Java'],answer:1,why:'חומרה היא המרכיבים הפיזיים של מערכת המחשב. למשל, מקלדת, מסך ומעבד הם חומרה.'},
+      {type:'single',q:'איזו מהאפשרויות היא תוכנה?',choices:['מקלדת','מסך','מערכת הפעלה','מדפסת'],answer:2,why:'תוכנה היא אוסף הוראות ותוכניות הפועלות במחשב. מערכת הפעלה מנהלת את פעולת המחשב ולכן היא תוכנה.'},
+      {type:'single',q:'מה תפקידו של אמצעי קלט?',choices:['להציג מידע למשתמש','להכניס נתונים או פקודות למחשב','לשמור קבצים לאורך זמן','לבצע חישובים בלבד'],answer:1,why:'אמצעי קלט מעבירים מידע אל המחשב. מקלדת, עכבר ומיקרופון הם דוגמאות נפוצות.'},
+      {type:'single',q:'איזה צירוף מתאים?',choices:['מקלדת: פלט; מסך: קלט','עכבר: פלט; מדפסת: קלט','מיקרופון: קלט; רמקולים: פלט','מסך מגע: פלט בלבד; מצלמה: פלט בלבד'],answer:2,why:'המיקרופון מכניס צליל למחשב ולכן הוא קלט. הרמקולים מוציאים צליל מהמחשב ולכן הם פלט.'},
+      {type:'truefalse',q:'שפת מכונה מורכבת מהוראות בינאריות שהמעבד יכול לבצע ישירות.',answer:true,why:'שפת מכונה כתובה בביטים, כלומר 0 ו-1. המעבד מבין הוראות אלה ישירות.'},
+      {type:'single',q:'מהו יתרון מרכזי של שפה עילית, כגון Java, על פני שפת מכונה?',choices:['היא נכתבת רק באמצעות 0 ו-1','היא קלה יותר לקריאה ולכתיבה עבור בני אדם','היא אינה זקוקה לתרגום לפני הרצה','היא יכולה לפעול רק במחשב אחד'],answer:1,why:'שפה עילית קרובה יותר לשפה האנושית ולדרך החשיבה של מתכנתים. לפני הרצה יש לתרגם אותה לשפה שהמחשב מבין.'},
+      {type:'classify',q:'סווגו כל פריט לקטגוריה הנכונה.',categories:['חומרה','תוכנה'],items:[['עכבר','חומרה'],['דפדפן אינטרנט','תוכנה'],['זיכרון RAM','חומרה'],['משחק מחשב','תוכנה']],why:'עכבר ו-RAM הם רכיבים פיזיים ולכן חומרה. דפדפן ומשחק הם תוכניות ולכן תוכנה.'},
+      {type:'single',q:'מהו אלגוריתם?',choices:['רכיב פיזי בתוך המחשב','סדרת הוראות ברורה לפתרון בעיה או לביצוע משימה','תוכנה להגנה מפני וירוסים','שפת מחשב המורכבת רק מ-0 ו-1'],answer:1,why:'אלגוריתם הוא סדר פעולות מסודר. אפשר לכתוב אלגוריתם גם בלי מחשב, למשל כהוראות להכנת כריך.'},
+      {type:'code',q:'מה יודפס כאשר מפעילים את התוכנית?',code:'public class Main {\n    public static void main(String[] args) {\n        System.out.println("שלום");\n    }\n}',choices:['שלום','Main','לא יודפס דבר','שגיאת תחביר'],answer:0,why:'הפעולה println מדפיסה את מה שנמצא בין המרכאות. לכן הפלט יהיה המילה שלום.'},
+      {type:'code',q:'איזו שורה מגדירה את נקודת הכניסה הראשית של תוכנית Java?',choices:['public class Main','public static void main(String[] args)','System.out.println("שלום");','import java.util.*;'],answer:1,why:'הפעולה main היא המקום שממנו מתחילה ריצת התוכנית. היא נמצאת בתוך מחלקה.'},
+      {type:'code',q:'השלימו את הקוד כך שיודפס Hello.',code:'System.out.println(_____);',choices:['"Hello"','Hello',"'Hello'",'print Hello'],answer:0,why:'מחרוזת טקסט ב-Java נכתבת בתוך מרכאות כפולות. לכן יש להדפיס את "Hello".'},
+      {type:'single',q:'איזה סדר נכון מתאר את מבנה התוכנית?',choices:['main מכיל את המחלקה','המחלקה הראשית מכילה את הפעולה main, ו-main מכילה הוראות לביצוע','System.out.println מכיל את main','כל תוכנית Java אינה זקוקה למחלקה'],answer:1,why:'ב-Java ההוראות נמצאות בתוך פעולות, והפעולות בתוך מחלקות. בתוכנית בסיסית, main נמצאת במחלקה הראשית.'},
+      {type:'code',q:'מה השגיאה בקוד?',code:'public class Main {\n    public static void main(String[] args) {\n        System.out.println("שלום")\n    }\n}',choices:['חסר ; בסוף פקודת ההדפסה.','חסרות מרכאות סביב הטקסט.','חסר שם למחלקה.','println אינה פעולה קיימת.'],answer:0,why:'ב-Java רוב הפקודות מסתיימות בנקודה-פסיק. כאן יש להוסיף ; אחרי הסוגריים של println.'},
+      {type:'code',q:'מה השגיאה בקוד?',code:'public class Main (\n    public static void main(String[] args) {\n        System.out.println("שלום");\n    }\n)',choices:['יש להשתמש בסוגריים מסולסלים { } להגדרת המחלקה.','חסר ; אחרי Main.','המילה public מיותרת.','main חייבת להיכתב באות גדולה.'],answer:0,why:'גוף מחלקה מוגדר בין סוגריים מסולסלים. סוגריים עגולים משמשים למשל לרשימת פרמטרים של פעולה.'},
+      {type:'code',q:'מה השגיאה בקוד?',code:'public class Main {\n    public static void main(String[] args) {\n        System.out.println("שלום");\n}',choices:['חסר סוגר מסולסל } לסיום המחלקה.','חסר ; אחרי args.','חסרות מרכאות סביב שלום.','אין שגיאה בקוד.'],answer:0,why:'כל סוגר מסולסל פותח צריך סוגר תואם שסוגר אותו. כאן נסגרה הפעולה main, אבל לא המחלקה.'},
+      {type:'code',q:'מה השגיאה בקוד?',code:'public class Main {\n    public static void main(String[] args) {\n        System.out.println(שלום);\n    }\n}',choices:['הטקסט שלום חייב להופיע בתוך מרכאות.','חסר סוגר מסולסל.','System חייב להיכתב באות קטנה.','אסור להדפיס טקסט ב-Java.'],answer:0,why:'טקסט הוא מחרוזת, וב-Java מחרוזות נכתבות במרכאות כפולות. בלי מרכאות Java תנסה לפרש את שלום כשם של משתנה.'},
+      {type:'code',q:'מה השגיאה בקוד?',code:'public class Main {\n    public static void main(String[] args) {\n        System.out.println("שלום");\n    }',choices:['חסר סוגר מסולסל } בסוף המחלקה.','חסר ; אחרי המחרוזת.','אין פעולה ראשית.','חסר סוגר עגול אחרי println.'],answer:0,why:'סוגר מסולסל אחד פתח את המחלקה ואחד את הפעולה main. יש צורך בשני סוגרים מסולסלים בסוף הקוד.'},
+      {type:'code',q:'מה השגיאה בקוד?',code:'public static void main(String[] args) {\n    System.out.println("שלום");\n}',choices:['חסרה הצהרה על מחלקה, למשל public class Main { ... }.','חסר ; בסוף פקודת ההדפסה.','חסרות מרכאות סביב הטקסט.','main חייבת להיכתב באות גדולה.'],answer:0,why:'ב-Java פעולה אינה עומדת בפני עצמה. עליה להיות בתוך מחלקה.'},
+      {type:'code',q:'מה חסר בקוד?',code:'public class Main {\n    System.out.println("שלום");\n}',choices:['חסרה הפעולה הראשית main.','חסרה הצהרה על מחלקה.','חסרות מרכאות סביב הטקסט.','חסר סוגר מסולסל בסוף המחלקה.'],answer:0,why:'בתוכנית Java בסיסית, ההוראות צריכות להיות בתוך פעולה. הפעולה הראשית main משמשת נקודת ההתחלה של התוכנית.'},
+      {type:'code',q:'מה השגיאה בקוד?',code:'public class Main {\n    public static void main(String[] args) {\n        system.out.println("שלום");\n    }\n}',choices:['יש לכתוב System באות S גדולה.','חסר ; אחרי System.','צריך להחליף println ב-print.','אסור להשתמש במחרוזת בעברית.'],answer:0,why:'Java רגישה לאותיות גדולות וקטנות. System הוא שם מחלקה ולכן האות S חייבת להיות גדולה.'}
+    ];
+    const state = { index:0, score:0, order:[], answered:false, started:0 };
+    const cover = document.querySelector('#cover'), quiz = document.querySelector('#quiz'), results = document.querySelector('#results'), questionEl = document.querySelector('#question');
+    const nameInput = document.querySelector('#studentName'), startButton = document.querySelector('#start');
+    nameInput.addEventListener('input', () => startButton.disabled = !nameInput.value.trim());
+    startButton.addEventListener('click', startQuiz);
+    function shuffle(items) { return [...items].sort(() => Math.random() - .5); }
+    function startQuiz() { state.order = shuffle(questions); state.index = 0; state.score = 0; state.started = Date.now(); cover.classList.add('hidden'); quiz.classList.remove('hidden'); renderQuestion(); }
+    function renderQuestion() {
+      state.answered = false; const item = state.order[state.index]; document.querySelector('#count').textContent = `שאלה ${state.index + 1} מתוך ${state.order.length}`; document.querySelector('#points').textContent = `${state.score} נכונות`; document.querySelector('#fill').style.width = `${state.index / state.order.length * 100}%`;
+      questionEl.innerHTML = `<article class="question"><p>${item.q}</p>${item.code ? `<pre><code>${escapeHtml(item.code)}</code></pre>` : ''}<div class="choices"></div></article>`;
+      if (item.type === 'classify') renderClassify(item); else renderChoices(item);
+    }
+    function renderChoices(item) { const choices = item.type === 'truefalse' ? [{text:'אמת',correct:item.answer},{text:'שקר',correct:!item.answer}] : shuffle(item.choices.map((text,index) => ({text,correct:index === item.answer}))); const list = questionEl.querySelector('.choices'); choices.forEach(choice => { const button = document.createElement('button'); button.className = 'choice'; button.textContent = choice.text; button.addEventListener('click', () => answerChoice(choice.correct, button, item)); list.append(button); }); }
+    function renderClassify(item) { const article = questionEl.querySelector('.question'); article.querySelector('.choices').remove(); const list = document.createElement('div'); list.className = 'match-list'; item.items.forEach(([text,answer],index) => { const row = document.createElement('div'); row.className = 'match'; row.innerHTML = `<span>${text}</span><select data-answer="${answer}" aria-label="סיווג ${text}"><option value="">בחרו</option>${item.categories.map(category => `<option>${category}</option>`).join('')}</select>`; list.append(row); }); const button = document.createElement('button'); button.className = 'start check-match'; button.textContent = 'בדיקה'; button.addEventListener('click', () => { const selects = [...list.querySelectorAll('select')]; if (selects.some(select => !select.value)) return; const correct = selects.every(select => select.value === select.dataset.answer); selects.forEach(select => select.disabled = true); button.remove(); showFeedback(correct,item); }); article.append(list,button); }
+    function answerChoice(correct, selected, item) { if (state.answered) return; questionEl.querySelectorAll('.choice').forEach(button => { button.disabled = true; if (button.textContent === item.choices[item.answer] || (item.type === 'truefalse' && button.textContent === (item.answer ? 'אמת' : 'שקר'))) button.classList.add('correct'); }); if (!correct) selected.classList.add('wrong'); showFeedback(correct,item); }
+    function showFeedback(correct,item) { state.answered = true; if (correct) state.score++; const feedback = document.createElement('div'); feedback.className = `feedback ${correct ? '' : 'bad'}`; feedback.innerHTML = `<strong>${correct ? 'נכון!' : 'לא בדיוק.'}</strong><span>${item.why}</span>`; const next = document.createElement('button'); next.className = 'next'; next.textContent = state.index === state.order.length - 1 ? 'לסיכום' : 'לשאלה הבאה'; next.addEventListener('click', nextQuestion); feedback.append(document.createElement('br'),next); questionEl.append(feedback); }
+    function nextQuestion() { state.index++; if (state.index === state.order.length) showResults(); else renderQuestion(); }
+    function showResults() { quiz.classList.add('hidden'); results.classList.remove('hidden'); const percent = Math.round(state.score / state.order.length * 100); const elapsed = Math.round((Date.now() - state.started) / 1000); results.innerHTML = `<p class="eyebrow">סיימת!</p><h2>${escapeHtml(nameInput.value.trim())}</h2><p>השלמת את שאלון המבוא למדעי המחשב.</p><div class="score">${percent}%</div><p><strong>${state.score}</strong> תשובות נכונות מתוך ${state.order.length} · ${elapsed} שניות</p><div class="submit-note"><strong>להגשה:</strong> צלמו צילום מסך של דף הסיכום הזה והגישו אותו למורה.</div><button class="reset" id="reset">התחל מחדש</button>`; document.querySelector('#fill').style.width = '100%'; document.querySelector('#reset').addEventListener('click', () => location.reload()); if (percent >= 60) launchConfetti(); }
+    function launchConfetti() { const box = document.querySelector('#confetti'); box.classList.remove('hidden'); for (let index=0; index<70; index++) { const piece=document.createElement('span'); piece.style.left=`${Math.random()*100}%`; piece.style.animationDelay=`${Math.random()*.7}s`; piece.style.background=['#ff6b5e','#d7f205','#1267d6','#00b8a9'][index%4]; box.append(piece); } }
+    function escapeHtml(value) { const node = document.createElement('div'); node.textContent = value; return node.innerHTML; }
+  </script>
+</body>
+</html>

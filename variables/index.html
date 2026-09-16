@@ -328,7 +328,7 @@ function finish(){
   el('fill').style.width='100%';
   el('again').addEventListener('click',()=>location.reload());
   if(pct>=PASS)confetti();
-  send({name:nameInput.value.trim(),score:`${state.score}/${n}`,percent:pct,wrong,code:state.code});
+  send({name:nameInput.value.trim(),subject:'cs',lesson:'variables',score:`${state.score}/${n}`,percent:pct,wrong,code:state.code});
 }
 function send(payload){
   const box=el('sent');

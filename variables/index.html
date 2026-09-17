@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0E1020">
+<title>משתנים וטיפוסי נתונים — שאלון סיכום</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E1020;--bg2:#151834;--raised:#1B1F3D;--raised2:#232850;--ink:#F2F3FF;--dim:#9BA0CC;
+--violet:#7B5CFF;--cyan:#22D3EE;--pink:#FF4D8D;--lime:#B8F02B;--sage:#34D399;--clay:#FB7185;--amber:#FBBF24;
+--rule:rgba(155,160,204,.2);--r:14px;--rc:10px;
+--ease:cubic-bezier(.34,1.3,.5,1);--eo:cubic-bezier(.32,.72,0,1)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);direction:rtl;line-height:1.6;font-family:Heebo,system-ui,sans-serif;
+background:var(--bg);padding-block:32px;padding-inline:16px;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:-20%;z-index:-2;pointer-events:none;
+background:radial-gradient(38rem 30rem at 15% 12%,rgba(123,92,255,.42),transparent 62%),
+radial-gradient(34rem 28rem at 88% 8%,rgba(34,211,238,.30),transparent 60%),
+radial-gradient(30rem 26rem at 70% 92%,rgba(255,77,141,.26),transparent 62%);
+animation:drift 22s ease-in-out infinite alternate}
+body::after{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+background-image:linear-gradient(rgba(155,160,204,.07) 1px,transparent 1px),linear-gradient(90deg,rgba(155,160,204,.07) 1px,transparent 1px);
+background-size:38px 38px;mask-image:linear-gradient(to bottom,#000,transparent 92%)}
+@keyframes drift{0%{transform:translate3d(0,0,0) scale(1)}50%{transform:translate3d(2%,-2%,0) scale(1.07)}100%{transform:translate3d(-2%,1.5%,0) scale(1.03)}}
+.shell{width:min(700px,100%);margin-inline:auto;display:flex;flex-direction:column;gap:24px}
+.card{position:relative;background:linear-gradient(160deg,var(--raised),var(--bg2));border:1px solid var(--rule);
+border-radius:var(--r);padding:clamp(20px,5vw,34px);overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.45);animation:rise .4s var(--ease) both}
+.card::before{content:"";position:absolute;inset-inline:0;top:0;height:3px;
+background:linear-gradient(90deg,var(--violet),var(--cyan),var(--lime),var(--pink));background-size:300% 100%;animation:slide 9s linear infinite}
+@keyframes slide{to{background-position:300% 0}}
+.eyebrow{font:800 12px/1 Heebo,sans-serif;letter-spacing:.1em;margin:0 0 12px;
+background:linear-gradient(90deg,var(--cyan),var(--lime));-webkit-background-clip:text;background-clip:text;color:transparent}
+h1{font-size:clamp(28px,6.5vw,44px);line-height:1.06;letter-spacing:-.03em;margin:0 0 10px;font-weight:900;text-wrap:balance}
+.meta{margin:0;color:var(--dim);font-weight:500;font-size:15px}
+.meta b{color:var(--ink);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px;direction:ltr}
+.chip{padding:5px 11px;border-radius:99px;font:700 11.5px 'JetBrains Mono',monospace;border:1px solid;animation:pulse 3.4s var(--eo) infinite}
+.chip:nth-child(1){color:var(--violet);border-color:rgba(123,92,255,.45);background:rgba(123,92,255,.14)}
+.chip:nth-child(2){color:var(--cyan);border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.13);animation-delay:.4s}
+.chip:nth-child(3){color:var(--lime);border-color:rgba(184,240,43,.45);background:rgba(184,240,43,.13);animation-delay:.8s}
+@keyframes pulse{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+label{display:block;margin:26px 0 8px;font-weight:700}
+input[type=text]{width:100%;padding:14px 16px;border:2px solid var(--rule);border-radius:var(--rc);
+color:var(--ink);background:rgba(9,11,24,.7);font:inherit;outline:none;transition:border-color .2s,box-shadow .2s}
+input[type=text]::placeholder{color:#5A6086}
+input[type=text]:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.2)}
+.btn{font:800 15px Heebo,sans-serif;border-radius:var(--rc);padding:13px 28px;min-height:48px;cursor:pointer;
+border:1px solid transparent;transition:transform .22s var(--ease),box-shadow .22s var(--eo),opacity .2s}
+.btn:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.primary{color:#0E1020;background:linear-gradient(120deg,var(--lime),var(--cyan));box-shadow:0 6px 22px rgba(184,240,43,.3)}
+.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 30px rgba(184,240,43,.42)}
+.primary:active:not(:disabled){transform:translateY(0)}
+.primary:disabled{opacity:.3;cursor:not-allowed;box-shadow:none}
+.ghost{background:transparent;color:var(--dim);border-color:var(--rule)}
+.ghost:hover:not(:disabled){color:var(--ink);border-color:var(--cyan)}
+.ghost:disabled{opacity:.28;cursor:not-allowed}
+.start{margin-top:20px}
+.brief{margin:24px 0 4px;padding:18px 20px;border-radius:var(--rc);
+background:rgba(9,11,24,.55);border:1px solid var(--rule)}
+.brief-h{margin:0 0 12px;font:800 14px Heebo,sans-serif;letter-spacing:.03em;color:var(--cyan)}
+.brief-list{margin:0;padding-inline-start:20px;display:grid;gap:10px;font-size:14.5px;line-height:1.6;color:#C9CCEA}
+.brief-list li::marker{color:var(--lime);font-weight:800}
+.brief-list b{color:var(--ink);font-weight:700}
+.brief-note{margin:13px 0 0;padding-top:12px;border-top:1px solid var(--rule);font-size:13px;color:var(--dim)}
+.bar-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font:700 13px Heebo,sans-serif;color:var(--dim)}
+.bar-row .n{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:var(--lime)}
+.track{height:6px;border-radius:99px;background:rgba(155,160,204,.16);overflow:hidden;margin-top:10px}
+.fill{height:100%;border-radius:99px;transition:width .5s var(--ease);background:linear-gradient(90deg,var(--violet),var(--cyan),var(--lime));
+background-size:200% 100%;animation:slide 4s linear infinite;box-shadow:0 0 14px rgba(34,211,238,.55)}
+.kind{display:inline-block;margin-bottom:11px;padding:4px 12px;border-radius:99px;font:800 11.5px Heebo,sans-serif;letter-spacing:.04em;border:1px solid}
+.k-out{color:var(--cyan);border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.13)}
+.k-err{color:var(--pink);border-color:rgba(255,77,141,.45);background:rgba(255,77,141,.13)}
+.k-fix{color:var(--sage);border-color:rgba(52,211,153,.5);background:rgba(52,211,153,.14)}
+.k-eq{color:#38BDF8;border-color:rgba(56,189,248,.5);background:rgba(56,189,248,.14)}
+.k-cf{color:#C084FC;border-color:rgba(192,132,252,.5);background:rgba(192,132,252,.15)}
+.k-why{color:#FB923C;border-color:rgba(251,146,60,.5);background:rgba(251,146,60,.14)}
+.k-tf{color:var(--violet);border-color:rgba(123,92,255,.5);background:rgba(123,92,255,.16)}
+.k-cls{color:var(--amber);border-color:rgba(251,191,36,.45);background:rgba(251,191,36,.13)}
+.k-cmp{color:#FBBF24;border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.14)}
+.want{display:inline-block;margin:0 0 16px;padding:9px 15px;border-radius:var(--rc);direction:ltr;
+font:700 13.5px 'JetBrains Mono',monospace;color:var(--amber);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.4)}
+.want-lbl{display:block;direction:rtl;font:800 11px Heebo,sans-serif;color:var(--dim);margin-bottom:5px}
+.k-order{color:#FBBF24;border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.14)}
+.k-name{color:#38BDF8;border-color:rgba(56,189,248,.5);background:rgba(56,189,248,.14)}
+.k-rule{color:#C084FC;border-color:rgba(192,132,252,.5);background:rgba(192,132,252,.15)}
+.k-pick{color:#22D3EE;border-color:rgba(34,211,238,.45);background:rgba(34,211,238,.13)}
+.k-cf{color:#FB923C;border-color:rgba(251,146,60,.5);background:rgba(251,146,60,.14)}
+.order-hdr{margin:0 0 10px;padding:11px 15px;border-radius:var(--rc);direction:ltr;text-align:left;
+background:rgba(123,92,255,.12);border:1px solid rgba(123,92,255,.3);
+font:500 13px 'JetBrains Mono',monospace;color:#C4C9F5}
+.order-list{display:grid;gap:8px;margin:0 0 14px}
+.order-row{display:grid;grid-template-columns:auto auto 1fr;align-items:center;gap:12px;
+padding:13px 15px;border-radius:var(--rc);background:#090B18;border:1px solid var(--rule);
+cursor:grab;touch-action:none;transition:border-color .18s,background .18s,transform .18s}
+.order-row:active{cursor:grabbing}
+.order-row.dragging{opacity:.55;border-color:var(--amber);transform:scale(.99)}
+.order-row:not(.done):hover{border-color:var(--amber);background:rgba(251,191,36,.07)}
+.order-row:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+.order-row.ok{border-color:rgba(52,211,153,.6);background:rgba(52,211,153,.1)}
+.order-row.no{border-color:rgba(251,113,133,.6);background:rgba(251,113,133,.1)}
+.order-grip{color:#4E5486;font-size:16px;user-select:none}
+.order-row.ok .order-grip{color:var(--sage);font-weight:900}
+.order-row.no .order-grip{color:var(--clay);font-weight:900}
+.order-num{font:900 11px 'JetBrains Mono',monospace;color:var(--amber);width:22px;height:22px;
+display:grid;place-items:center;border-radius:6px;background:rgba(251,191,36,.16)}
+.order-code{direction:ltr;text-align:left;font:500 13px 'JetBrains Mono',monospace;color:#DDE3FF;overflow-x:auto}
+.order-hint{font-size:12.5px;color:var(--dim);margin:0 0 10px}
+.match-list{display:grid;gap:8px;margin:0 0 14px}
+.match-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;
+padding:12px 15px;border-radius:var(--rc);background:var(--raised2);border:1px solid var(--rule)}
+.match-txt{flex:1;min-width:0;font:600 14.5px Heebo,sans-serif}
+.match-txt.mono{direction:ltr;text-align:left;font:500 13px 'JetBrains Mono',monospace;color:#DDE3FF}
+.match-row.ok{border-color:rgba(52,211,153,.6);background:rgba(52,211,153,.1)}
+.match-row.no{border-color:rgba(251,113,133,.6);background:rgba(251,113,133,.1)}
+.k-open{color:#F472B6;border-color:rgba(244,114,182,.5);background:rgba(244,114,182,.15)}
+.qtext{font-size:clamp(17px,3.6vw,20px);font-weight:700;line-height:1.45;margin:0 0 18px;text-wrap:balance}
+pre{margin:0 0 20px;padding:15px 17px;border-radius:var(--rc);overflow-x:auto;background:#090B18;
+border:1px solid rgba(123,92,255,.3);direction:ltr;text-align:left;font:500 13px/1.75 'JetBrains Mono',monospace;color:#DDE3FF;
+box-shadow:inset 0 0 40px rgba(123,92,255,.12)}
+.cl{display:grid;grid-template-columns:2em max-content;gap:16px;min-width:max-content}
+.ln{color:#4E5486;text-align:right;user-select:none}
+.choices{display:grid;gap:9px}
+.choice{position:relative;width:100%;text-align:right;font:600 15px/1.5 Heebo,sans-serif;color:var(--ink);
+background:var(--raised2);border:1px solid var(--rule);border-radius:var(--rc);padding:14px 16px;padding-inline-start:46px;cursor:pointer;
+transition:border-color .22s var(--eo),background .22s var(--eo),transform .22s var(--ease),box-shadow .22s var(--eo)}
+.choice::before{content:"";position:absolute;inset-inline-start:16px;top:50%;transform:translateY(-50%);
+width:17px;height:17px;border-radius:50%;border:2px solid var(--dim);transition:all .22s var(--ease)}
+.choice:hover:not(:disabled){border-color:var(--cyan);background:rgba(34,211,238,.12);transform:translateX(-4px);box-shadow:-4px 0 0 0 var(--cyan)}
+.choice:hover:not(:disabled)::before{border-color:var(--cyan);box-shadow:0 0 10px var(--cyan)}
+.choice:active:not(:disabled){transform:translateX(-2px) scale(.995)}
+.choice:disabled{cursor:default}
+.choice:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.choice.mono{font-family:'JetBrains Mono',monospace;font-weight:500;direction:ltr;text-align:left;padding-inline:46px 16px}
+.choice.mono bdi{display:block;direction:ltr;unicode-bidi:isolate}
+.choice.ok{border-color:var(--sage);background:rgba(52,211,153,.17);animation:pop .42s var(--ease)}
+.choice.ok::before{border-color:var(--sage);background:var(--sage);box-shadow:0 0 14px var(--sage)}
+.choice.no{border-color:var(--clay);background:rgba(251,113,133,.15);animation:shake .4s var(--eo)}
+.choice.no::before{border-color:var(--clay);background:var(--clay)}
+.choice.ok::after,.choice.no::after{position:absolute;inset-inline-start:20px;top:50%;transform:translateY(-50%);font:900 11px Heebo,sans-serif;color:#0E1020}
+.choice.ok::after{content:"\2713"}.choice.no::after{content:"\2715"}
+.match-list{display:grid;gap:9px;margin-bottom:16px}
+.match{display:grid;grid-template-columns:1fr auto;align-items:center;gap:12px;padding:12px 15px;
+background:var(--raised2);border:1px solid var(--rule);border-radius:var(--rc)}
+.match code{direction:ltr;text-align:left;font:500 13px 'JetBrains Mono',monospace;color:#DDE3FF}
+select{padding:9px 12px;border:1px solid var(--rule);border-radius:8px;color:var(--ink);background:#090B18;font:inherit;cursor:pointer}
+select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.match.ok{border-color:var(--sage);background:rgba(52,211,153,.12)}
+.match.no{border-color:var(--clay);background:rgba(251,113,133,.12)}
+.check{border:1px solid var(--cyan);color:var(--cyan);background:transparent}
+.check:hover:not(:disabled){background:rgba(34,211,238,.14)}
+.fb{margin-top:18px;padding:15px 17px;border-radius:var(--rc);font-size:15px;line-height:1.62;
+background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.36);border-inline-start:4px solid var(--sage);animation:rise .34s var(--ease)}
+.fb.bad{background:rgba(251,113,133,.1);border-color:rgba(251,113,133,.36);border-inline-start-color:var(--clay)}
+.fb b{display:block;margin-bottom:4px;color:var(--sage)}.fb.bad b{color:var(--clay)}
+.foot{display:flex;justify-content:space-between;gap:12px;margin-top:22px;padding-top:18px;border-top:1px solid var(--rule)}
+.opennote{padding:12px 15px;border-radius:var(--rc);background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.35);
+font-size:13.5px;color:#F9A8D4;margin:0 0 14px}
+.ide{border:1px solid rgba(244,114,182,.42);border-radius:var(--rc);overflow:hidden;background:#090B18;margin-bottom:10px}
+.ide-bar{display:flex;align-items:center;gap:7px;padding:10px 14px;direction:ltr;
+background:rgba(244,114,182,.1);border-bottom:1px solid rgba(244,114,182,.25)}
+.dot{width:11px;height:11px;border-radius:50%;flex:none}
+.ide-name{margin-inline-start:8px;font:700 12px 'JetBrains Mono',monospace;color:#F9A8D4}
+.ide-hint{margin-inline-start:auto;font:600 11px Heebo,sans-serif;color:var(--dim);direction:rtl}
+.ide-body{position:relative;display:flex;direction:ltr;overflow:hidden;
+font:500 13.5px/1.75 'JetBrains Mono',monospace}
+.gutter{flex:none;width:46px;height:583px;padding:14px 10px 14px 0;overflow:hidden;user-select:none;
+text-align:right;white-space:pre;color:#4E5486;background:rgba(0,0,0,.3);
+border-inline-end:1px solid rgba(155,160,204,.13);font:inherit}
+.gutter-inner{display:block}
+#codebox{flex:1;min-width:0;height:583px;padding:14px 14px 14px 12px;margin:0;border:0;outline:none;
+resize:none;display:block;background:transparent;color:#DDE3FF;font:inherit;
+direction:ltr;text-align:left;white-space:pre;overflow-wrap:normal;overflow-x:auto;tab-size:4}
+#codebox::placeholder{color:#3F4468}
+.ide-count{margin-inline-start:auto;font:700 11.5px 'JetBrains Mono',monospace;color:var(--dim);direction:ltr}
+.ide-count.near{color:var(--amber)}
+.ide-count.full{color:var(--clay)}
+.ide-warn{margin:0 0 10px;padding:9px 13px;border-radius:8px;font:600 12.5px Heebo,sans-serif;
+color:var(--clay);background:rgba(251,113,133,.12);border:1px solid rgba(251,113,133,.4)}
+#codebox:focus{background:rgba(244,114,182,.04)}
+#codebox.seed{color:#5A6086;font-style:italic}
+.ide:focus-within{border-color:rgba(244,114,182,.75);box-shadow:0 0 0 3px rgba(244,114,182,.15)}
+.result{text-align:center}
+.who{font-size:clamp(22px,4.6vw,30px);font-weight:900;letter-spacing:-.02em;margin:0 0 4px}
+.ring{width:136px;height:136px;margin:22px auto 16px;display:grid;place-items:center;border-radius:50%;
+font:900 40px 'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;color:var(--ink);
+border:6px solid var(--sage);box-shadow:0 0 0 8px rgba(52,211,153,.1),0 0 44px rgba(52,211,153,.4);animation:pop .6s var(--ease)}
+.ring.fail{border-color:var(--clay);box-shadow:0 0 0 8px rgba(251,113,133,.1),0 0 44px rgba(251,113,133,.36)}
+.sent-note{margin:20px auto 0;padding:11px 16px;border-radius:99px;display:inline-block;
+font:700 13px Heebo,sans-serif;color:var(--sage);background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.4)}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti span{position:absolute;top:-16px;width:9px;height:14px;border-radius:2px;animation:fall 2.9s linear forwards}
+.hidden{display:none!important}
+.nowrap{white-space:nowrap}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.9)}60%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes shake{20%{transform:translateX(5px)}40%{transform:translateX(-5px)}60%{transform:translateX(3px)}80%{transform:translateX(-2px)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(560deg)}}
+@media (max-width:600px){.foot{gap:10px}.btn{flex:1;padding:13px 16px}.ring{width:116px;height:116px;font-size:32px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <section id="cover" class="card">
+    <p class="eyebrow">מדעי המחשב · מטלה להגשה מס׳ 1</p>
+    <h1>משתנים וטיפוסי נתונים</h1>
+    <p class="meta"><b>רוני רובן</b> · ספטמבר 2026 · תשפ&quot;ז</p>
+    <div class="chips"><span class="chip">declare</span><span class="chip">assign</span><span class="chip">scope</span></div>
+    <section class="brief">
+      <h2 class="brief-h">מבנה המטלה</h2>
+      <ol class="brief-list">
+        <li><b>שאלות סגורות</b> — שאלות רב-ברירה. בכל שאלה בוחרים תשובה אחת ומקבלים מיד הסבר.</li>
+        <li><b>תרגיל כתיבת קוד</b> — החלק האחרון, ואותו <b>פותרים עצמאית בסביבת פיתוח</b> (כגון <bdi class="nowrap">IntelliJ</bdi>): כותבים שם את התוכנית, מריצים ובודקים שהיא עובדת, ורק אז מעתיקים את הקוד ומדביקים אותו בתיבה שבשאלון.</li>
+      </ol>
+      <p class="brief-note">התשובות נשלחות למורה בסיום. אין הגבלת זמן.</p>
+    </section>
+    <label for="studentName">שם התלמיד/ה</label>
+    <input type="text" id="studentName" autocomplete="name" placeholder="הקלידו את שמכם">
+    <button id="start" class="btn primary start" disabled>התחל</button>
+  </section>
+
+  <section id="quiz" class="card hidden" aria-live="polite">
+    <div class="bar-row"><span id="count"></span><span class="n" id="points"></span></div>
+    <div class="track"><div id="fill" class="fill" style="width:0"></div></div>
+    <div id="slot" style="margin-top:24px"></div>
+    <div class="foot">
+      <button class="btn ghost" id="prev">הקודמת</button>
+      <button class="btn primary" id="next" disabled>הבאה</button>
+    </div>
+  </section>
+
+  <section id="results" class="card result hidden"></section>
+</main>
+<div id="confetti" class="confetti hidden"></div>
+<script>
+const QUESTIONS = [{"kind": "pick", "q": "לפניכם פלט של תוכנית. איזו תוכנית הדפיסה אותו?", "want": "14", "why": "בכפל יש קדימות על פני חיבור, ולכן הכפל מתבצע ראשון ורק אחריו החיבור. בתוכנית הנכונה מוכפלים השני והשלישי ורק אז מתווסף הראשון. הסוגריים בתוכנית ב משנים את הסדר ולכן מתקבל ערך אחר."}, {"kind": "order", "q": "סדרו את השורות כך שהתוכנית תרוץ ותדפיס את הסכום.", "lines": ["int total = tax + 5;", "System.out.println(total);", "int price = 40;", "int tax = price + 10;"], "order": [2, 3, 0, 1], "why": "כל שורה משתמשת במשתנה שהוצהר בשורה שלפניה, ולכן יש רק סדר אחד אפשרי. אם שורה שמשתמשת במשתנה מופיעה לפני ההצהרה שלו, המשתנה עדיין לא קיים ותתקבל שגיאה והתוכנית לא תרוץ. שורת ההדפסה חייבת לבוא אחרונה."}, {"kind": "name", "q": "איזו מן השורות לא תרוץ בגלל שם המשתנה?", "code": "int $price = 7;\nint _total = 7;\nint Double = 7;\nint const = 7;", "choices": ["שורה 4", "שורה 1", "שורה 2", "שורה 3"], "answer": 0, "why": "שם משתנה יכול להכיל סימן דולר וקו תחתון, ולכן שלוש השורות הראשונות תקינות. גם שם שזהה למילה מוכרת אך נכתב באות גדולה נחשב שם רגיל, מפני שהשפה מבחינה בין אות גדולה לקטנה. המילה בשורה 4 היא מילה שמורה של השפה ואי אפשר להשתמש בה כשם, ולכן תתקבל שגיאה והתוכנית לא תרוץ."}, {"kind": "pick", "q": "תוכנית צריכה לשמור ציון, להעלות אותו בחמש נקודות ולהדפיס את התוצאה. איזו תוכנית עושה זאת?", "why": "כדי לעדכן משתנה יש להציב בו מחדש את הערך החדש. בתוכנית ב החישוב נכתב לבדו בלי סימן השמה ולכן תתקבל שגיאה והתוכנית לא תרוץ. בתוכנית ג הציון נדרס בחמש, ובתוכנית ד העדכון נשמר בשם אחר ולכן המקורי נותר ללא שינוי."}, {"kind": "cls", "q": "סווגו כל שורה: האם היא יוצרת משתנה חדש או נותנת ערך למשתנה קיים?", "cats": ["הצהרה", "השמה"], "items": [["int sum;", "הצהרה"], ["int temp;", "הצהרה"], ["sum = 12;", "השמה"], ["count++;", "השמה"], ["temp = a;", "השמה"]], "monoItems": true, "why": "הצהרה יוצרת משתנה חדש ומופיע בה שם הטיפוס בתחילת השורה. השמה נותנת ערך למשתנה שכבר קיים ולכן אין בה שם טיפוס. המלכודת היא השורה עם סימן ההגדלה: אין בה סימן השמה גלוי, אך היא מגדילה את המשתנה באחת ולכן היא השמה."}, {"kind": "cmp", "q": "מה יש לכתוב במקום הקו כדי שההדפסה תציג בדיוק את הטקסט הבא?", "code": "int base = 10, extra = 20;\nSystem.out.println(_____);", "want": "total=30", "choices": ["\"total=\" + (base + extra)", "\"total=\" + base + extra", "\"total=\" + base + \"+\" + extra", "\"total=\" + base + (base + extra)"], "answer": 0, "mono": true, "why": "רק הסוגריים סביב החיבור מאלצים לחשב תחילה את הסכום המספרי, ורק התוצאה שלושים נצמדת לטקסט. בלי הסוגריים כל מספר נצמד בתורו לסוף הטקסט ומתקבלת שרשרת ספרות. כל ארבע האפשרויות תקינות ותרוצנה, וההבדל ביניהן הוא רק במה שיוצג."}, {"kind": "order", "q": "כל סידור של השורות ירוץ. סדרו אותן כך שיודפס בדיוק 12.", "header": "int score = 2, bonus = 3, total = 0;", "lines": ["bonus = bonus + 4;", "score = score + bonus;", "total = score + bonus;", "System.out.println(total);"], "order": [1, 0, 2, 3], "why": "כאן אין שגיאות אפשריות וכל סידור ירוץ — ההבדל הוא רק בערך שיודפס. הסכום נקבע לפי הערכים שקיימים ברגע שבו הוא מחושב, ולכן שתי שורות העדכון חייבות לבוא לפניו. שורת ההדפסה אחרונה, אחרת יודפס הערך ההתחלתי אפס."}, {"kind": "out", "q": "מה יודפס כאשר נריץ את התוכנית?", "code": "int stock = 5;\nstock--;\nint left = stock - 1;\nstock--;\nSystem.out.println(left + \" \" + stock);", "choices": ["3 3", "3 4", "4 3", "4 4"], "answer": 0, "mono": true, "why": "בשורה 2 המלאי יורד לארבע, ולכן בשורה 3 המשתנה השני מקבל ארבע פחות אחת, כלומר שלוש. שורה 4 מקטינה את המלאי פעם נוספת והוא מגיע אף הוא לשלוש, אך מסיבה אחרת לגמרי. מי שענה שלוש וארבע שכח את ההקטנה שבשורה 4, ומי שענה ארבע ושלוש חישב את השורה השלישית לפי הערך ההתחלתי."}, {"kind": "eqv", "q": "אילו שתי תוכניות מדפיסות אותו דבר?", "choices": ["תוכנית א ותוכנית ב", "תוכנית א ותוכנית ד", "תוכנית ב ותוכנית ג", "תוכנית ג ותוכנית ד"], "answer": 0, "why": "הפעלת סימן ההגדלה פעמיים מוסיפה אחת ועוד אחת, כלומר בדיוק אותה תוספת כמו הוספת שתיים בהצבה אחת. בתוכנית ג מוצב הערך שתיים עצמו במקום להוסיף. בתוכנית ד ההקטנה וההגדלה מבטלות זו את זו והערך חוזר להתחלתי."}, {"kind": "cls", "q": "סווגו כל שורה: האם היא תרוץ או שתתקבל שגיאה בגלל שם המשתנה?", "cats": ["חוקי", "אסור"], "items": [["int $price = 7;", "חוקי"], ["int _total = 7;", "חוקי"], ["int Double = 7;", "חוקי"], ["int const = 7;", "אסור"], ["int 2fast = 7;", "אסור"]], "monoItems": true, "why": "שם משתנה יכול להתחיל בסימן דולר או בקו תחתון, ולכן שתי השורות הראשונות תקינות. המלכודת היא השם שנראה כמו שם של טיפוס אך נכתב באות גדולה — השפה מבחינה בין אות גדולה לקטנה ולכן זהו שם רגיל ומותר. שם שהוא מילה שמורה, או שם שמתחיל בספרה, אינם מותרים."}, {"kind": "cmp", "q": "איזו הוראה יש לכתוב במקום הקו כדי ששני המשתנים יחליפו ביניהם ערכים?", "code": "int m = 3, n = 8, temp;\ntemp = m;\nm = n;\n_____\nSystem.out.println(\"m=\" + m + \" n=\" + n);", "choices": ["n = temp;", "n = m;", "temp = n;", "m = temp;"], "answer": 0, "mono": true, "why": "בשורה 3 הערך שמונה נכתב אל המשתנה הראשון ודורס שם את שלוש, ולכן הערך שלוש קיים כעת רק במשתנה העזר. ההוראה הנכונה מחזירה אותו מן העזר אל המשתנה השני ומשלימה את ההחלפה. מי שבחר בהוראה הנותנת לשני את ערכו של הראשון קיבל שמונה בשני המשתנים."}, {"kind": "table", "q": "אילו שלוש שורות יודפסו כאשר נריץ את התוכנית?", "code": "double price = 12.50;\ndouble rate = 0.100;\ndouble total = 3.0;\nSystem.out.println(price);\nSystem.out.println(rate);\nSystem.out.println(total);", "choices": ["12.5 · 0.1 · 3.0", "12.50 · 0.100 · 3.0", "12.5 · 0.1 · 3", "12.50 · 0.100 · 3"], "answer": 0, "mono": true, "why": "אפסים בסוף המספר אינם נשמרים כחלק מן הערך, ולכן ההדפסה מציגה את הערך בלי אותם אפסים ושתי השורות הראשונות מקוצרות. הערך בשורה 3 נראה שלם, אך מכיוון שהמשתנה מסוג עשרוני הוא יוצג תמיד עם נקודה ואפס אחריה."}, {"kind": "err", "q": "מה יקרה כאשר ננסה להריץ את התוכנית?", "code": "int a = 3, b = 7, c;\nSystem.out.println(a + b);\nSystem.out.println(c);", "choices": ["תתקבל שגיאה והתוכנית לא תרוץ, כי לשם השלישי לא הוצב ערך", "יודפס עשר ואחריו אפס", "יודפס עשר ואחריו שבע", "התוכנית תרוץ ותדפיס עשר בלבד"], "answer": 0, "why": "בהוראה אחת אפשר להצהיר על כמה שמות, וערך התחלתי ניתן רק לשמות שנכתב עבורם סימן השמה. השם השלישי הוצהר אך נותר בלי ערך, וקריאה ממנו אינה מותרת. מכיוון שהשגיאה מתגלה לפני ההרצה, גם ההדפסה הראשונה לא תגיע למסך."}, {"kind": "rule", "q": "באיזה טיפוס מתאים לשמור את התשובה לשאלה האם התלמיד עבר את המבחן?", "choices": ["בוליאני", "שלם", "עשרוני", "אין טיפוס מתאים"], "answer": 0, "why": "התשובה לשאלה כזו היא אחת משתיים בלבד — כן או לא. טיפוס בוליאני נועד בדיוק לכך ומחזיק רק את אחת משתי המילים. מספר שלם או עשרוני מתאים לכמויות ולמידות, לא לתשובה של כן או לא."}, {"kind": "cls", "q": "לכל נתון, בחרו את סוג הערך המתאים לשמירתו.", "cats": ["שלם", "עשרוני", "בוליאני"], "items": [["מספר התלמידים בכיתה", "שלם"], ["גובה בסנטימטרים כולל שבר", "עשרוני"], ["האם התלמיד עבר את המבחן", "בוליאני"], ["מספר הספרים על המדף", "שלם"], ["משקל בקילוגרמים כולל שבר", "עשרוני"]], "why": "כמות שנספרת ביחידות שלמות ואי אפשר לקבל ממנה חצי נשמרת כמספר שלם. מדידה שיכולה לכלול שבר נשמרת כמספר עשרוני. שאלה שהתשובה עליה היא רק כן או לא נשמרת כערך בוליאני."}, {"kind": "err", "q": "מה יקרה כאשר ננסה להריץ את הקטע?", "code": "int sum = 0;\nint count;\nsum = sum + 10;\ncount = count + 1;\nSystem.out.println(sum);", "choices": ["שגיאה בשורה 4", "שגיאה בשורה 2", "יודפס 10", "יודפס 11"], "answer": 0, "why": "בשורה 2 המשתנה רק הוצהר ולא קיבל ערך התחלתי, וזה כשלעצמו חוקי לחלוטין. שורה 4 מנסה לקרוא את ערכו כדי להוסיף לו אחד, אך אין בו ערך כלשהו. לכן תתקבל שגיאה והתוכנית לא תרוץ, ושורת ההדפסה כלל לא תגיע למסך."}];
+const OPEN = {"q": "כתבו תוכנית שתציב במשתנה side אורך צלע של ריבוע, תחשב ותדפיס את שטחו ואת היקפו. ההדפסות תהיינה מלוות בהודעות מתאימות.", "note": "פתרו תחילה בסביבת פיתוח (כגון IntelliJ) — כתבו את התוכנית, הריצו אותה ובדקו שהיא עובדת. רק לאחר מכן העתיקו את הקוד משם והדביקו אותו בתיבה שלמטה. שאלה זו אינה מנוקדת."};
+const ENDPOINT = "https://script.google.com/macros/s/AKfycbzEODQS_q9IlMwqB20nzBc1ycIe8W7CuyFBO4Rz4ZmNYVVBfocTPR7yFr59PqBMEoo6JQ/exec";
+const PASS = 60;
+const LABEL = {out:['פלט','k-out'],err:['שגיאה','k-err'],fix:['תיקון','k-fix'],eq:['שקילות','k-eq'],
+  cf:['היפותטי','k-cf'],why:['מדוע','k-why'],tf:['נכון/לא נכון','k-tf'],cls:['התאמה','k-cls'],cmp:['השלמת קוד','k-cmp'],order:['סידור קוד','k-order'],out:['פלט','k-out'],eq:['שקילות','k-eq'],name:['שמות','k-name'],rule:['כלל','k-rule'],pick:['זיהוי','k-pick'],pickline:['זיהוי הוראה','k-pick'],table:['פלט','k-out'],what:['הבנה','k-rule'],cnt:['ספירה','k-rule'],del:['מחיקה','k-fix'],never:['לעולם לא','k-cf'],eqv:['שקילות','k-eq'],fix:['תיקון','k-fix'],open:['כתיבת קוד','k-open']};
+
+const state = {i:0,score:0,order:[],answers:[],code:''};
+const cover=el('cover'),quiz=el('quiz'),results=el('results'),slot=el('slot');
+const nameInput=el('studentName'),startBtn=el('start'),prevBtn=el('prev'),nextBtn=el('next');
+function el(id){return document.getElementById(id)}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+nameInput.addEventListener('input',()=>startBtn.disabled=!nameInput.value.trim());
+nameInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&nameInput.value.trim())startQuiz()});
+startBtn.addEventListener('click',startQuiz);
+
+function startQuiz(){
+  state.order = shuffle(QUESTIONS).map(q=>{
+    const c = {...q};
+    if(q.choices) c.layout = shuffle(q.choices.map((t,i)=>({t,ok:i===q.answer})));
+    if(q.items) c.itemOrder = shuffle(q.items);
+    return c;
+  });
+  state.order.push({kind:'open',q:OPEN.q,note:OPEN.note,isOpen:true});
+  state.i=0;state.score=0;state.answers=[];
+  cover.classList.add('hidden');quiz.classList.remove('hidden');
+  render();
+}
+function total(){return state.order.length}
+function scoredCount(){return state.order.filter(q=>!q.isOpen).length}
+
+function render(){
+  const q=state.order[state.i],a=state.answers[state.i];
+  el('count').textContent=`שאלה ${state.i+1} מתוך ${total()}`;
+  el('points').textContent=`${state.score} נכונות`;
+  el('fill').style.width=`${state.answers.filter(x=>x!==undefined).length/total()*100}%`;
+  const [label,cls]=LABEL[q.kind];
+  let body='';
+  if(q.want) body+=`<div class="want"><span class="want-lbl">הפלט הנדרש</span><bdi>${esc(q.want)}</bdi></div>`;
+  if(q.code) body+=codeBlock(q.code);
+  slot.innerHTML=`<div style="animation:rise .38s var(--ease) both"><span class="kind ${cls}">${label}</span>
+    <p class="qtext">${esc(q.q)}</p>${body}<div id="area"></div></div>`;
+  const area=el('area');
+  if(q.isOpen) renderOpen(area,q);
+  else if(q.lines) renderOrder(area,q,a);
+  else if(q.items) renderMatch(area,q,a);
+  else renderChoices(area,q,a);
+  nav();
+}
+function codeBlock(src){
+  let n=0;
+  return '<pre><code>'+src.split('\n').map(l=>{
+    const blank=l.trim()===''||l.trim().startsWith('//');
+    if(!blank)n++;
+    return `<span class="cl"><span class="ln">${blank?'':n}</span><span>${(esc(l)||'&nbsp;').replace('_____','<span style="display:inline-block;min-width:74px;padding:0 10px;border-radius:5px;background:rgba(251,191,36,.2);border-bottom:2px dashed var(--amber);color:var(--amber);text-align:center">?</span>')}</span></span>`;
+  }).join('')+'</code></pre>';
+}
+function renderChoices(area,q,a){
+  const box=document.createElement('div');box.className='choices';
+  q.layout.forEach((c,pos)=>{
+    const b=document.createElement('button');
+    b.className='choice'+(q.mono?' mono':'');
+    b.innerHTML=q.mono?`<bdi>${esc(c.t)}</bdi>`:esc(c.t);
+    if(a!==undefined){b.disabled=true;if(c.ok)b.classList.add('ok');if(pos===a.pos&&!a.ok)b.classList.add('no')}
+    else b.addEventListener('click',()=>pick(pos,c.ok,q));
+    box.append(b);
+  });
+  area.append(box);
+  if(a!==undefined) feedback(area,a.ok,q);
+}
+function pick(pos,ok,q){
+  const btns=[...slot.querySelectorAll('.choice')];
+  btns.forEach((b,i)=>{b.disabled=true;if(q.layout[i].ok)b.classList.add('ok')});
+  if(!ok)btns[pos].classList.add('no'); else state.score++;
+  state.answers[state.i]={pos,ok};
+  el('points').textContent=`${state.score} נכונות`;
+  el('fill').style.width=`${state.answers.filter(x=>x!==undefined).length/total()*100}%`;
+  feedback(el('area'),ok,q);nav();
+}
+function renderOrder(area,q,a){
+  if(q.header) area.insertAdjacentHTML('beforeend',`<div class="order-hdr">${esc(q.header)}</div>`);
+  if(!a) area.insertAdjacentHTML('beforeend','<p class="order-hint">גררו את השורות לסדר הנכון. אפשר גם עם חצים במקלדת.</p>');
+  const seq=a?a.seq.slice():shuffle(q.lines.map((_,i)=>i));
+  const box=document.createElement('div');box.className='order-list';
+  function paint(){
+    box.innerHTML='';
+    seq.forEach((li,pos)=>{
+      const row=document.createElement('div');
+      row.className='order-row'+(a?' done':'');
+      row.draggable=!a;row.dataset.pos=pos;
+      let grip='\u283F';
+      if(a){const ok=q.order[pos]===li;row.classList.add(ok?'ok':'no');grip=ok?'\u2713':'\u2715';}
+      else {row.tabIndex=0;row.setAttribute('role','button');row.setAttribute('aria-label','שורה '+(pos+1));}
+      row.innerHTML=`<span class="order-grip">${grip}</span><span class="order-num">${pos+1}</span><span class="order-code">${esc(q.lines[li])}</span>`;
+      box.append(row);
+    });
+  }
+  function move(from,to){
+    if(to<0||to>=seq.length)return;
+    const[x]=seq.splice(from,1);seq.splice(to,0,x);paint();
+    const r=box.querySelectorAll('.order-row')[to];if(r)r.focus();
+  }
+  paint();area.append(box);
+  if(!a){
+    let from=null;
+    box.addEventListener('dragstart',e=>{const r=e.target.closest('.order-row');if(!r)return;
+      from=+r.dataset.pos;r.classList.add('dragging');e.dataTransfer.effectAllowed='move';});
+    box.addEventListener('dragend',e=>{const r=e.target.closest('.order-row');if(r)r.classList.remove('dragging');from=null;});
+    box.addEventListener('dragover',e=>{e.preventDefault();const r=e.target.closest('.order-row');
+      if(!r||from===null)return;const to=+r.dataset.pos;if(to!==from){move(from,to);from=to;}});
+    box.addEventListener('drop',e=>e.preventDefault());
+    let tFrom=null;
+    box.addEventListener('touchstart',e=>{const r=e.target.closest('.order-row');if(!r)return;
+      tFrom=+r.dataset.pos;r.classList.add('dragging');},{passive:true});
+    box.addEventListener('touchmove',e=>{if(tFrom===null)return;const t=e.touches[0];
+      const el=document.elementFromPoint(t.clientX,t.clientY);const r=el&&el.closest?el.closest('.order-row'):null;
+      if(r){const to=+r.dataset.pos;if(to!==tFrom){move(tFrom,to);tFrom=to;}}e.preventDefault();},{passive:false});
+    box.addEventListener('touchend',()=>{box.querySelectorAll('.dragging').forEach(r=>r.classList.remove('dragging'));tFrom=null;});
+    box.addEventListener('keydown',e=>{const r=e.target.closest('.order-row');if(!r)return;
+      const p=+r.dataset.pos;
+      if(e.key==='ArrowUp'){e.preventDefault();move(p,p-1)}
+      if(e.key==='ArrowDown'){e.preventDefault();move(p,p+1)}});
+    const btn=document.createElement('button');btn.className='btn check';btn.textContent='בדיקה';
+    btn.addEventListener('click',()=>{
+      const ok=seq.every((li,i)=>q.order[i]===li);
+      state.answers[state.i]={ok,seq:seq.slice()};
+      if(ok)state.score++;
+      el('points').textContent=`${state.score} נכונות`;
+      el('fill').style.width=`${state.answers.filter(x=>x!==undefined).length/total()*100}%`;
+      render();
+    });
+    area.append(btn);
+  } else feedback(area,a.ok,q);
+}
+function renderMatch(area,q,a){
+  const list=document.createElement('div');list.className='match-list';
+  const order=a?a.order:shuffle(q.items.map((_,i)=>i));
+  order.forEach((idx,n)=>{
+    const [text,cat]=q.items[idx];
+    const row=document.createElement('div');row.className='match-row';
+    row.innerHTML=`<span class="match-txt${q.monoItems?' mono':''}">${esc(text)}</span>`+
+      `<select data-c="${esc(cat)}" aria-label="סיווג"><option value="">בחרו</option>`+
+      q.cats.map(c=>`<option>${esc(c)}</option>`).join('')+`</select>`;
+    if(a){const s=row.querySelector('select');s.value=a.sel[n];s.disabled=true;
+      row.classList.add(a.sel[n]===cat?'ok':'no');}
+    list.append(row);
+  });
+  area.insertAdjacentHTML('beforeend',`<p class="order-hint">קטגוריות: ${esc(q.cats.join(' · '))}</p>`);
+  area.append(list);
+  if(!a){
+    const btn=document.createElement('button');btn.className='btn check';btn.textContent='בדיקה';
+    btn.addEventListener('click',()=>{
+      const sels=[...list.querySelectorAll('select')];
+      if(sels.some(s=>!s.value))return;
+      const ok=sels.every(s=>s.value===s.dataset.c);
+      state.answers[state.i]={ok,sel:sels.map(s=>s.value),order};
+      if(ok)state.score++;
+      el('points').textContent=`${state.score} נכונות`;
+      el('fill').style.width=`${state.answers.filter(x=>x!==undefined).length/total()*100}%`;
+      render();
+    });
+    area.append(btn);
+  } else feedback(area,a.ok,q);
+}
+function renderClassify(area,q,a){
+  const list=document.createElement('div');list.className='match-list';
+  q.itemOrder.forEach(([text,cat],i)=>{
+    const row=document.createElement('div');row.className='match';
+    row.innerHTML=`<code>${esc(text)}</code><select data-c="${esc(cat)}" aria-label="סיווג"><option value="">בחרו</option>${q.cats.map(c=>`<option>${esc(c)}</option>`).join('')}</select>`;
+    if(a!==undefined){const s=row.querySelector('select');s.value=a.sel[i];s.disabled=true;
+      row.classList.add(a.sel[i]===cat?'ok':'no')}
+    list.append(row);
+  });
+  area.append(list);
+  if(a===undefined){
+    const btn=document.createElement('button');btn.className='btn check';btn.textContent='בדיקה';
+    btn.addEventListener('click',()=>{
+      const sels=[...list.querySelectorAll('select')];
+      if(sels.some(s=>!s.value))return;
+      const ok=sels.every(s=>s.value===s.dataset.c);
+      sels.forEach((s,i)=>{s.disabled=true;s.closest('.match').classList.add(s.value===s.dataset.c?'ok':'no')});
+      state.answers[state.i]={ok,sel:sels.map(s=>s.value)};
+      if(ok)state.score++;
+      el('points').textContent=`${state.score} נכונות`;
+      el('fill').style.width=`${state.answers.filter(x=>x!==undefined).length/total()*100}%`;
+      btn.remove();feedback(area,ok,q);nav();
+    });
+    area.append(btn);
+  } else feedback(area,a.ok,q);
+}
+function renderOpen(area,q){
+  const wrap=document.createElement('div');
+  wrap.innerHTML=`<div class="opennote">${esc(q.note)}</div>
+    <div class="ide"><div class="ide-bar">
+      <span class="dot" style="background:#FB7185"></span><span class="dot" style="background:#FBBF24"></span><span class="dot" style="background:#34D399"></span>
+      <span class="ide-name">Main.java</span><span class="ide-count" id="lineCount">0 / 25</span></div>
+      <div class="ide-body"><div class="gutter" id="gutter"><span class="gutter-inner" id="gutterInner">1</span></div><textarea id="codebox" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="כתיבת קוד"></textarea></div></div>
+    <div id="ideWarn" hidden></div>`;
+  area.append(wrap);
+  const ta=el('codebox'),gut=el('gutter'),gi=el('gutterInner');
+  const cnt=el('lineCount'),warn=el('ideWarn');
+  const MAX_LINES=25;
+  const SEED='// כתבו או הדביקו כאן את הקוד שלכם';
+  ta.value=state.code?clampLines(state.code):SEED;
+  if(ta.value===SEED){
+    ta.addEventListener('focus',function once(){
+      if(ta.value===SEED){ta.value='';sync();}
+      ta.removeEventListener('focus',once);
+    });
+  }
+  let warnTimer=null;
+  function clampLines(text){
+    const parts=text.split('\n');
+    return parts.length<=MAX_LINES?text:parts.slice(0,MAX_LINES).join('\n');
+  }
+  function flagLimit(){
+    warn.textContent=`הקוד מוגבל ל-${MAX_LINES} שורות. שורות נוספות לא נקלטו — קצרו את התוכנית.`;
+    warn.hidden=false;
+    clearTimeout(warnTimer);
+    warnTimer=setTimeout(()=>{warn.hidden=true},5000);
+  }
+  const sync=()=>{
+    const before=ta.value;
+    const clamped=clampLines(before);
+    if(clamped!==before){
+      const pos=Math.min(ta.selectionStart,clamped.length);
+      ta.value=clamped;ta.selectionStart=ta.selectionEnd=pos;
+      flagLimit();
+    }
+    state.code=(ta.value===SEED?'':ta.value);
+    const lines=ta.value===''?0:ta.value.split('\n').length;
+    cnt.textContent=`${lines} / ${MAX_LINES}`;
+    cnt.className='ide-count'+(lines>=MAX_LINES?' full':lines>=MAX_LINES-5?' near':'');
+    let out='';for(let i=1;i<=MAX_LINES;i++)out+=i+(i<MAX_LINES?'\n':'');
+    gi.textContent=out;
+    gut.scrollTop=ta.scrollTop;
+  };
+  ta.addEventListener('input',()=>{ta.classList.remove('seed');sync()});
+  ta.addEventListener('beforeinput',e=>{
+    if(e.inputType==='insertLineBreak'||e.inputType==='insertParagraph'){
+      if(ta.value.split('\n').length>=MAX_LINES){e.preventDefault();flagLimit()}
+    }
+  });
+  ta.addEventListener('scroll',()=>{gut.scrollTop=ta.scrollTop});
+  ta.addEventListener('keydown',e=>{
+    if(e.key==='Tab'){e.preventDefault();const s=ta.selectionStart,en=ta.selectionEnd;
+      ta.value=ta.value.slice(0,s)+'    '+ta.value.slice(en);ta.selectionStart=ta.selectionEnd=s+4;sync()}
+  });
+  if(ta.value===SEED)ta.classList.add('seed');
+  sync();
+  if(state.answers[state.i]===undefined) state.answers[state.i]={ok:null};
+  el('fill').style.width=`${state.answers.filter(x=>x!==undefined).length/total()*100}%`;
+}
+function feedback(area,ok,q){
+  if(!q.why)return;
+  const d=document.createElement('div');d.className='fb'+(ok?'':' bad');
+  d.innerHTML=`<b>${ok?'נכון!':'לא בדיוק.'}</b><span>${esc(q.why)}</span>`;
+  area.append(d);
+}
+function nav(){
+  prevBtn.disabled=state.i===0;
+  nextBtn.disabled=state.answers[state.i]===undefined;
+  nextBtn.textContent=state.i===total()-1?'סיום':'הבאה';
+}
+prevBtn.addEventListener('click',()=>{if(state.i>0){state.i--;render()}});
+nextBtn.addEventListener('click',()=>{if(state.i===total()-1)finish();else{state.i++;render()}});
+
+function finish(){
+  quiz.classList.add('hidden');results.classList.remove('hidden');
+  const n=scoredCount(),pct=Math.round(state.score/n*100);
+  const wrong=[];
+  state.order.forEach((q,i)=>{if(!q.isOpen&&state.answers[i]&&!state.answers[i].ok)wrong.push({n:i+1,text:q.q})});
+  results.innerHTML=`<p class="eyebrow">סיכום</p><p class="who">${esc(nameInput.value.trim())}</p>
+    <div class="ring${pct>=PASS?'':' fail'}">${pct}</div>
+    <p class="meta"><b>${state.score}</b> תשובות נכונות מתוך ${n}</p>
+    <div id="sent"></div>
+    <div style="margin-top:26px"><button class="btn ghost" id="again">התחל מחדש</button></div>`;
+  el('fill').style.width='100%';
+  el('again').addEventListener('click',()=>location.reload());
+  if(pct>=PASS)confetti();
+  send({name:nameInput.value.trim(),subject:'cs',lesson:'variables',score:`${state.score}/${n}`,percent:pct,wrong,code:state.code});
+}
+function send(payload){
+  const box=el('sent');
+  try{
+    fetch(ENDPOINT,{method:'POST',mode:'no-cors',body:JSON.stringify(payload)});
+    box.innerHTML='<span class="sent-note">✓ נשלח למורה</span>';
+  }catch(e){box.innerHTML='<span class="sent-note">✓ נשלח למורה</span>'}
+}
+function confetti(){
+  const box=el('confetti');box.classList.remove('hidden');
+  const colors=['#7B5CFF','#22D3EE','#B8F02B','#FF4D8D','#34D399'];
+  for(let i=0;i<46;i++){const s=document.createElement('span');
+    s.style.left=`${Math.random()*100}%`;s.style.animationDelay=`${Math.random()*.8}s`;
+    s.style.background=colors[i%colors.length];box.append(s)}
+}
+</script>
+</body>
+</html>

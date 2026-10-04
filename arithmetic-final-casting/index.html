@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#14172B">
+<title>פעולות אריתמטיות, קבועים והמרות — שאלון סיכום</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#14172B;--ink2:#1F2340;--paper:#F6F1E7;--key:#FFFFFF;--lime:#C6F24E;--mint:#2FBF8F;--coral:#FF6B5E;--violet:#7C6CF2;
+--mint-t:#0E7453;--coral-t:#B9382C;--violet-t:#5546CF;--dim:#5E6078;--rule:rgba(20,23,43,.16);
+--r:14px;--rc:10px;--mono:'JetBrains Mono',ui-monospace,monospace;
+--ease:cubic-bezier(.34,1.5,.5,1);--eo:cubic-bezier(.32,.72,0,1)}
+*{box-sizing:border-box}
+body{margin:0;color:var(--ink);direction:rtl;line-height:1.6;font-family:Rubik,system-ui,sans-serif;
+background:var(--ink);background-image:radial-gradient(rgba(124,108,242,.22) 1.2px,transparent 1.2px);background-size:22px 22px;
+padding-block:28px;padding-inline:16px;overflow-x:hidden;min-height:100vh}
+.shell{width:min(680px,100%);margin-inline:auto}
+.card{background:var(--paper);border-radius:var(--r);padding:clamp(20px,5vw,34px);
+box-shadow:0 6px 0 #0A0C18,0 22px 50px rgba(0,0,0,.5);animation:rise .4s var(--eo) both}
+.eyebrow{font:800 12.5px/1 Rubik,sans-serif;letter-spacing:.08em;margin:0 0 14px;color:var(--violet-t)}
+h1{font-size:clamp(28px,6.6vw,44px);line-height:1.08;letter-spacing:-.02em;margin:0 0 12px;font-weight:900;text-wrap:balance}
+.meta{margin:0;color:var(--dim);font-weight:500;font-size:15px}
+.meta b{color:var(--ink);font-weight:700}
+.lcd{margin:22px 0 4px;padding:16px 18px;border-radius:var(--rc);direction:ltr;text-align:right;
+background:var(--lime);border:2px solid var(--ink);box-shadow:inset 0 3px 0 rgba(20,23,43,.14);
+font:800 clamp(17px,4.6vw,24px)/1.2 var(--mono);color:var(--ink);overflow:hidden;white-space:nowrap}
+.lcd small{display:block;font:500 12px var(--mono);opacity:.62;margin-bottom:6px}
+.lcd .cur{display:inline-block;width:.55em;height:1em;vertical-align:-.12em;background:var(--ink);margin-inline-start:4px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.facts li{padding:6px 12px;border-radius:99px;border:1.5px solid var(--rule);font-weight:500;font-size:13.5px;color:var(--dim)}
+.btn{font:800 16px Rubik,sans-serif;border-radius:var(--rc);padding:12px 28px;min-height:50px;cursor:pointer;color:var(--ink);
+border:2px solid var(--ink);box-shadow:0 4px 0 var(--ink);transition:transform .14s var(--ease),box-shadow .14s var(--eo),opacity .2s}
+.btn:active:not(:disabled){transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.btn:focus-visible,.choice:focus-visible,.mv:focus-visible,select:focus-visible,.orow:focus-visible{outline:3px solid var(--violet);outline-offset:3px}
+.btn:disabled{opacity:.32;cursor:not-allowed}
+.primary{background:var(--lime)}
+.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 var(--ink)}
+.ghost{background:transparent;border-color:var(--rule);box-shadow:none;color:var(--dim);font-weight:700}
+.ghost:hover:not(:disabled){border-color:var(--ink);color:var(--ink)}
+.check{background:transparent;border-color:var(--violet-t);color:var(--violet-t);box-shadow:0 4px 0 var(--violet-t)}
+.check:active:not(:disabled){box-shadow:0 0 0 var(--violet-t)}
+.start{margin-top:24px;width:100%}
+.bar-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;font-weight:700;font-size:13.5px;color:var(--dim)}
+.bar-row .n{font-family:var(--mono);color:var(--ink)}
+.segs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:3px;margin-top:10px;direction:rtl}
+.seg{height:9px;border-radius:3px;background:rgba(20,23,43,.13);transition:background .3s var(--eo),transform .3s var(--ease)}
+.seg.on{background:var(--ink)}
+.seg.last{background:var(--violet);transform:scaleY(1.5)}
+.kind{display:inline-block;margin-bottom:12px;padding:4px 12px;border-radius:6px;font:800 12px Rubik,sans-serif;letter-spacing:.03em;
+color:var(--paper);background:var(--ink)}
+.qtext{font-size:clamp(17px,3.8vw,20px);font-weight:700;line-height:1.45;margin:0 0 18px;text-wrap:pretty}
+pre{margin:0 0 20px;padding:15px 16px;border-radius:var(--rc);overflow-x:auto;background:var(--ink);
+direction:ltr;text-align:left;font:500 13.5px/1.8 var(--mono);color:#ECEAFF}
+.cl{display:grid;grid-template-columns:1.6em max-content;gap:14px;min-width:max-content}
+.ln{color:#7377A6;text-align:right;user-select:none}
+.blank{display:inline-block;min-width:70px;padding:0 10px;border-radius:5px;background:rgba(198,242,78,.16);
+border-bottom:2px dashed var(--lime);color:var(--lime);text-align:center}
+.choices{display:grid;gap:11px}
+.choices.two{grid-template-columns:1fr 1fr}
+.choice{position:relative;width:100%;text-align:right;font:500 15.5px/1.5 Rubik,sans-serif;color:var(--ink);
+background:var(--key);border:2px solid var(--ink);border-radius:var(--rc);padding:13px 16px;cursor:pointer;
+box-shadow:0 4px 0 var(--ink);transition:transform .14s var(--ease),box-shadow .14s var(--eo),background .2s}
+.choice:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 var(--ink);background:#FBFFEF}
+.choice:active:not(:disabled){transform:translateY(4px);box-shadow:0 0 0 var(--ink)}
+.choice:disabled{cursor:default;box-shadow:0 2px 0 var(--rule);border-color:var(--rule);color:var(--dim);transform:translateY(2px)}
+.choice.mono{font:700 15px var(--mono);direction:ltr;text-align:left}
+.choice.mono bdi{display:block;direction:ltr;unicode-bidi:isolate}
+.choices.two .choice{text-align:center;font-weight:700}
+.choice.ok{border-color:var(--mint);background:#D9F5EA;color:var(--ink);box-shadow:0 2px 0 var(--mint);animation:pop .42s var(--ease)}
+.choice.no{border-color:var(--coral);background:#FFE3DF;color:var(--ink);box-shadow:0 2px 0 var(--coral);animation:shake .4s var(--eo)}
+.choice.ok::after,.choice.no::after{position:absolute;inset-inline-end:14px;top:50%;transform:translateY(-50%);font:900 15px Rubik,sans-serif}
+.choice.mono.ok::after,.choice.mono.no::after{inset-inline-end:auto;right:14px}
+.choice.ok::after{content:"\2713";color:var(--mint-t)}.choice.no::after{content:"\2715";color:var(--coral-t)}
+.hint{font-size:13px;color:var(--dim);margin:0 0 10px}
+.olist,.mlist{display:grid;gap:9px;margin:0 0 16px}
+.orow{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:8px 10px 8px 12px;direction:ltr;
+border-radius:var(--rc);background:var(--ink);color:#ECEAFF;border:2px solid var(--ink);transition:border-color .2s}
+.onum{font:800 12px var(--mono);color:var(--ink);background:var(--lime);width:24px;height:24px;display:grid;place-items:center;border-radius:6px}
+.ocode{font:500 13px var(--mono);overflow-x:auto;white-space:nowrap;padding-block:6px}
+.mvs{display:flex;gap:6px}
+.mv{width:38px;height:38px;border-radius:8px;border:1.5px solid #4A4F80;background:var(--ink2);color:#ECEAFF;font-size:15px;cursor:pointer;
+transition:transform .14s var(--ease),background .2s}
+.mv:hover:not(:disabled){background:var(--violet)}
+.mv:active:not(:disabled){transform:scale(.9)}
+.mv:disabled{opacity:.25;cursor:not-allowed}
+.orow.ok{border-color:var(--mint)}.orow.no{border-color:var(--coral)}
+.orow.ok .onum{background:var(--mint)}.orow.no .onum{background:var(--coral)}
+.orow.moved{animation:pop .3s var(--ease)}
+.mrow{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 14px;
+border-radius:var(--rc);background:var(--key);border:2px solid var(--rule)}
+.mrow code{direction:ltr;unicode-bidi:isolate;font:700 14px var(--mono);padding:4px 10px;border-radius:6px;background:var(--ink);color:#ECEAFF}
+select{padding:9px 12px;min-height:42px;border:2px solid var(--ink);border-radius:8px;color:var(--ink);background:var(--paper);font:500 15px Rubik,sans-serif;cursor:pointer}
+select:disabled{opacity:1;cursor:default;border-color:var(--rule)}
+.mrow.ok{border-color:var(--mint);background:#D9F5EA}
+.mrow.no{border-color:var(--coral);background:#FFE3DF}
+.fb{margin-top:20px;padding:14px 16px;border-radius:var(--rc);font-size:15px;line-height:1.65;
+background:#D9F5EA;border-inline-start:5px solid var(--mint);animation:rise .34s var(--eo)}
+.fb.bad{background:#FFE3DF;border-inline-start-color:var(--coral)}
+.fb b{display:block;margin-bottom:3px;color:var(--mint-t)}.fb.bad b{color:var(--coral-t)}
+.foot{display:flex;justify-content:space-between;gap:12px;margin-top:24px;padding-top:18px;border-top:1.5px solid var(--rule)}
+.result{text-align:center}
+.ring{width:150px;height:150px;margin:20px auto 18px;display:grid;place-items:center;border-radius:50%;
+font:800 46px var(--mono);font-variant-numeric:tabular-nums;color:var(--ink);background:var(--key);
+border:8px solid var(--mint);box-shadow:0 5px 0 var(--ink);animation:pop .6s var(--ease)}
+.ring.fail{border-color:var(--coral)}
+.submit{margin:22px auto 0;max-width:420px;padding:14px 16px;border-radius:var(--rc);border:2px dashed var(--ink);font-weight:500;font-size:15px;text-wrap:balance}
+.confetti{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:50}
+.confetti span{position:absolute;top:-16px;width:9px;height:14px;border-radius:2px;animation:fall 2.9s linear forwards}
+.hidden{display:none!important}
+.nowrap{white-space:nowrap}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+@keyframes shake{20%{transform:translateX(6px)}40%{transform:translateX(-6px)}60%{transform:translateX(3px)}80%{transform:translateX(-2px)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(560deg)}}
+@media (max-width:600px){.foot .btn{flex:1;padding:12px 14px}.ring{width:128px;height:128px;font-size:38px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+@media print{body{background:#fff;padding:0}.card{box-shadow:none;border:1px solid #999}.btn,.confetti{display:none!important}}
+</style>
+</head>
+<body>
+<main class="shell">
+  <section id="cover" class="card">
+    <p class="eyebrow">מדעי המחשב · שאלון סיכום</p>
+    <h1>פעולות אריתמטיות, קבועים והמרות</h1>
+    <p class="meta"><b>רוני רובן</b> · אוקטובר 2026 · תשפ&quot;ז</p>
+    <div class="lcd" aria-hidden="true"><small>(double) 7 / 2</small>3.5<span class="cur"></span></div>
+    <ul class="facts"><li>20 שאלות</li><li>הסבר אחרי כל תשובה</li><li>ללא הגבלת זמן</li></ul>
+    <button id="start" class="btn primary start">התחל</button>
+  </section>
+
+  <section id="quiz" class="card hidden" aria-live="polite">
+    <div class="bar-row"><span id="count"></span><span class="n" id="points"></span></div>
+    <div class="segs" id="segs" role="progressbar" aria-valuemin="0"></div>
+    <div id="slot" style="margin-top:24px"></div>
+    <div class="foot">
+      <button class="btn ghost" id="prev">הקודמת</button>
+      <button class="btn primary" id="next" disabled>הבאה</button>
+    </div>
+  </section>
+
+  <section id="results" class="card result hidden"></section>
+</main>
+<div id="confetti" class="confetti hidden"></div>
+<script>
+const PASS = 60;
+const QUESTIONS = [
+{kind:'val',q:'מה יהיה ערכו של c בסוף הקטע?',code:`int a = 17;
+int b = 5;
+int c = a / b;`,choices:['3','3.4','4','2'],answer:0,mono:true,
+ why:'כששני האופרנדים שלמים, מתבצעת חלוקת שלמים והחלק השברי נזרק. חמש נכנס בשבע-עשרה שלוש פעמים, ולכן נשמר שלוש. התוצאה אינה מעוגלת כלפי מעלה, ולכן אינה ארבע.'},
+{kind:'val',q:'מה יהיה ערכו של x בסוף הקטע?',code:`int x = 17 % 5;`,choices:['2','3','3.4','12'],answer:0,mono:true,
+ why:'אופרטור השארית מחזיר את מה שנשאר לאחר חלוקת שלמים. חמש נכנס בשבע-עשרה שלוש פעמים, כלומר חמש-עשרה, ונשארות שתיים. שלוש הוא המנה ולא השארית.'},
+{kind:'val',q:'מה יהיה ערכו של r בסוף הקטע?',code:`int r = 2 + 3 * 4 - 6 / 2;`,choices:['11','7','17','4'],answer:0,mono:true,
+ why:'כפל וחילוק מתבצעים לפני חיבור וחיסור. תחילה שלוש כפול ארבע הם שתים-עשרה ושש חלקי שתיים הם שלוש. רק אז מחושב שתיים ועוד שתים-עשרה פחות שלוש, כלומר אחת-עשרה.'},
+{kind:'err',q:'מה יקרה כאשר ננסה להריץ את הקטע?',code:`final int MAX = 10;
+MAX = MAX + 5;
+System.out.println(MAX);`,choices:['שגיאת הידור בשורה 2','יודפס 15','יודפס 10','התוכנית תקרוס בזמן ריצה בשורה 2'],answer:0,
+ why:'משתנה שהוגדר כקבוע מקבל ערך פעם אחת בלבד. בשורה 2 יש ניסיון להשים בו ערך חדש, והמהדר מזהה זאת עוד לפני ההרצה. לכן התוכנית אינה רצה כלל ודבר אינו מודפס.'},
+{kind:'tf',q:'לפי המוסכמה, שם של קבוע נכתב כולו באותיות גדולות, עם קו תחתון בין מילים.',answer:true,
+ why:'זו מוסכמת כתיבה ולא חוק של השפה: התוכנית תעבור הידור גם בלעדיה. האותיות הגדולות מאפשרות לזהות במבט אחד שמדובר בערך שאינו משתנה.'},
+{kind:'val',q:'מה יהיה ערכו של n בסוף הקטע?',code:`double d = 9.99;
+int n = (int) d;`,choices:['9','10','9.99','שגיאת הידור בשורה 2'],answer:0,
+ why:'המרה מפורשת ממספר ממשי לשלם חותכת את החלק השברי ואינה מעגלת. לכן מתקבל תשע ולא עשר, אף שהמספר קרוב מאוד לעשר. ההמרה המפורשת היא שמאפשרת לשורה 2 לעבור הידור.'},
+{kind:'out',q:'מה יודפס?',code:`int a = 7;
+int b = 2;
+double r = a / b;
+System.out.println(r);`,choices:['3.0','3.5','3','4.0'],answer:0,mono:true,
+ why:'בשורה 3 מחושב תחילה הביטוי שמימין לסימן ההשמה: שני שלמים, ולכן חלוקת שלמים שתוצאתה שלוש. רק אחר כך התוצאה מומרת אוטומטית לממשי ונשמרת כשלוש נקודה אפס. טיפוס המשתנה שמקבל את התוצאה אינו משפיע על אופן החישוב.'},
+{kind:'out',q:'מה יודפס?',code:`int a = 7;
+int b = 2;
+double r = (double) a / b;
+System.out.println(r);`,choices:['3.5','3.0','4.0','3'],answer:0,mono:true,
+ why:'ההמרה המפורשת חלה על המשתנה הראשון בלבד, עוד לפני החילוק. כעת אחד האופרנדים ממשי, ולכן מתבצעת חלוקה ממשית ומתקבל שלוש וחצי. בלי ההמרה החלוקה הייתה נעשית בין שלמים, והיה מודפס שלוש נקודה אפס.'},
+{kind:'err',q:'באיזו שורה תתקבל שגיאת הידור?',code:`int a = 5;
+double b = a;
+int c = b;
+double d = c + 1.5;`,choices:['שורה 3','שורה 1','שורה 2','שורה 4'],answer:0,keepOrder:[1,2,0,3],
+ why:'בשורה 3 מנסים להשים ערך ממשי במשתנה שלם, והדבר עלול לגרום לאיבוד מידע. לכן השפה דורשת המרה מפורשת, ובלעדיה מתקבלת שגיאת הידור. בשורות 2 ו-4 ההמרה היא משלם לממשי, והיא מתבצעת אוטומטית.'},
+{kind:'cls',q:'סווגו כל ביטוי לפי טיפוס התוצאה שלו.',cats:['שלם','ממשי'],
+ items:[['7 / 2','שלם'],['7 / 2.0','ממשי'],['(double) 7 / 2','ממשי'],['(int) 3.7 + 1','שלם'],['7 % 2','שלם']],
+ why:'ביטוי שכל האופרנדים בו שלמים נותן תוצאה שלמה, גם בחילוק וגם בשארית. מספיק שאופרנד אחד יהיה ממשי כדי שהתוצאה כולה תהיה ממשית. המרה מפורשת חלה רק על הערך הצמוד אליה: המרה לממשי לפני החילוק הופכת את התוצאה לממשית, והמרה לשלם לפני חיבור עם שלם משאירה תוצאה שלמה.'},
+{kind:'tf',q:'תוצאת חילוק של שני מספרים שלמים בג\'אווה היא תמיד מספר שלם.',answer:true,
+ why:'כששני האופרנדים שלמים, השפה מבצעת חלוקת שלמים והחלק השברי נזרק. כדי לקבל תוצאה ממשית, לפחות אחד האופרנדים צריך להיות ממשי.'},
+{kind:'tf',q:'המרה מפורשת של מספר ממשי לשלם מעגלת אותו לשלם הקרוב ביותר.',answer:false,
+ why:'ההמרה חותכת את החלק השברי ואינה מעגלת. למשל, שלוש נקודה תשע הופך לשלוש ולא לארבע.'},
+{kind:'tf',q:'השמת ערך שלם במשתנה ממשי מחייבת המרה מפורשת.',answer:false,
+ why:'המרה משלם לממשי אינה מאבדת מידע, ולכן השפה מבצעת אותה אוטומטית. המרה מפורשת נדרשת בכיוון ההפוך, מממשי לשלם.'},
+{kind:'out',q:'מה יודפס?',code:`final double RATE = 0.5;
+int n = 9;
+double r = n * RATE;
+System.out.println((int) r);`,choices:['4','4.5','5','0'],answer:0,mono:true,
+ why:'בשורה 3 תשע מוכפל בחצי. מאחר שהקבוע ממשי, התוצאה היא ארבע וחצי. בשורה 4 ההמרה המפורשת לשלם חותכת את החלק השברי, ולכן מודפס ארבע ולא חמש.'},
+{kind:'out',q:'מה יודפס?',code:`int total = 250;
+int hours = total / 60;
+int minutes = total % 60;
+System.out.println(hours + ":" + minutes);`,choices:['4:10','10:4','4:16','5:10'],answer:0,mono:true,
+ why:'חלוקת שלמים של מאתיים וחמישים בשישים נותנת ארבע, כי ארבע פעמים שישים הם מאתיים וארבעים. השארית היא עשר. כך הופכים דקות לשעות ודקות: המנה היא השעות והשארית היא הדקות.'},
+{kind:'order',q:'סדרו את השורות כך שהתוכנית תעבור הידור ותדפיס 5.5.',
+ lines:['final int COUNT = 4;','int sum = COUNT * 5 + 2;','double avg = (double) sum / COUNT;','System.out.println(avg);'],
+ why:'כל שורה משתמשת בערך שהוגדר בשורה שלפניה, ולכן יש סדר אחד בלבד שעובר הידור. הקבוע מוגדר ראשון, ואחריו הסכום, שהוא עשרים ושתיים. בחישוב הממוצע ההמרה לממשי גורמת לחלוקה ממשית בארבע, ומתקבל חמש וחצי. שורת ההדפסה באה אחרונה.'},
+{kind:'fill',q:'מה יש להשלים בשורה 3 כדי שיודפס 7.5?',code:`int sum = 15;
+int count = 2;
+double avg = ____ sum / count;
+System.out.println(avg);`,choices:['(double)','(int)','double','final'],answer:0,mono:true,
+ why:'המרה מפורשת לממשי הופכת את הסכום לממשי לפני החילוק, ולכן מתבצעת חלוקה ממשית ומתקבל שבע וחצי. עם המרה לשלם החלוקה נשארת בין שלמים, ומודפס שבע נקודה אפס. שם של טיפוס ללא סוגריים, או המילה שמגדירה קבוע, אינם חוקיים במקום הזה.'},
+{kind:'fill',q:'איזה אופרטור יש להשלים בשורה 1 כדי שיודפס 2?',code:`int rest = 17 ____ 5;
+System.out.println(rest);`,choices:['%','/','-','*'],answer:0,mono:true,
+ why:'אופרטור השארית מחזיר את מה שנשאר מחלוקת שבע-עשרה בחמש, כלומר שתיים. חילוק היה נותן שלוש, חיסור שתים-עשרה וכפל שמונים וחמש.'},
+{kind:'err',q:'הקטע אינו עובר הידור. באיזו שורה השגיאה ומהי?',code:`final double TAX = 0.17;
+double price = 100;
+TAX = 0.18;
+double total = price + price * TAX;`,
+ choices:['שורה 3 — ניסיון לשנות ערך של קבוע','שורה 2 — השמת ערך שלם במשתנה ממשי','שורה 1 — קבוע חייב להיות מטיפוס שלם','שורה 4 — אסור להשתמש בקבוע בתוך חישוב'],answer:0,
+ why:'בשורה 1 הוגדר קבוע, וערכו אינו ניתן לשינוי לאחר האתחול. שורה 3 מנסה להשים בו ערך חדש, ולכן המהדר עוצר שם. שורה 2 תקינה כי שלם מומר אוטומטית לממשי, וקבוע יכול להיות מכל טיפוס ולהשתתף בכל חישוב.'},
+{kind:'err',q:'המתכנת ציפה שיודפס 3.5, אך הודפס 3.0. היכן הטעות ומהי?',code:`int a = 5;
+int b = 2;
+double avg = (a + b) / 2;
+System.out.println(avg);`,
+ choices:['שורה 3 — החילוק מתבצע בין שלמים, עוד לפני ההשמה במשתנה הממשי','שורה 3 — הסוגריים גורמים לחילוק להתבצע לפני החיבור','שורה 4 — הדפסה של משתנה ממשי מעגלת אותו כלפי מטה','שורה 1 — המשתנים היו צריכים להיות מוגדרים כקבועים'],answer:0,
+ why:'הסכום שבסוגריים הוא שלם וגם המחלק שלם, ולכן מתבצעת חלוקת שלמים: שבע חלקי שתיים הם שלוש. רק לאחר מכן התוצאה מומרת לממשי ונשמרת כשלוש נקודה אפס. כדי לקבל שלוש וחצי, אחד האופרנדים בחילוק צריך להיות ממשי.'}
+];
+const LABEL = {val:'חישוב',out:'מה הפלט',err:'מה השגיאה',tf:'נכון / לא נכון',cls:'סיווג',order:'סדר את הקוד',fill:'השלם את החסר'};
+
+const state = {i:0,score:0,order:[],answers:[]};
+const cover=el('cover'),quiz=el('quiz'),results=el('results'),slot=el('slot'),segs=el('segs');
+const prevBtn=el('prev'),nextBtn=el('next');
+const calm=matchMedia('(prefers-reduced-motion: reduce)').matches;
+function el(id){return document.getElementById(id)}
+function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function shuffle(list){const a=[...list];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
+
+el('start').addEventListener('click',startQuiz);
+
+function startQuiz(){
+  // order and option layout are fixed once here, so going back never reshuffles
+  state.order = shuffle(QUESTIONS).map(q=>{
+    const c = {...q};
+    if(q.kind==='tf') c.layout=[{t:'נכון',ok:q.answer},{t:'לא נכון',ok:!q.answer}];
+    else if(q.choices){
+      const opts=q.choices.map((t,i)=>({t,ok:i===q.answer}));
+      c.layout=q.keepOrder?q.keepOrder.map(i=>opts[i]):shuffle(opts);
+    }
+    if(q.items) c.itemOrder=shuffle(q.items.map((_,i)=>i));
+    if(q.lines){do{c.seq=shuffle(q.lines.map((_,i)=>i))}while(c.seq.every((v,i)=>v===i))}
+    return c;
+  });
+  state.i=0;state.score=0;state.answers=[];
+  segs.innerHTML=state.order.map(()=>'<span class="seg"></span>').join('');
+  segs.setAttribute('aria-valuemax',total());
+  cover.classList.add('hidden');results.classList.add('hidden');quiz.classList.remove('hidden');
+  render();
+}
+function total(){return state.order.length}
+function answered(){return state.answers.filter(x=>x!==undefined).length}
+function progress(){
+  const n=answered();
+  el('points').textContent=`${state.score} נכונות`;
+  [...segs.children].forEach((s,i)=>{s.classList.toggle('on',i<n);s.classList.toggle('last',i===n-1)});
+  segs.setAttribute('aria-valuenow',n);
+}
+function record(a){
+  state.answers[state.i]=a;
+  if(a.ok)state.score++;
+  progress();
+}
+
+function render(){
+  const q=state.order[state.i],a=state.answers[state.i];
+  el('count').textContent=`שאלה ${state.i+1} מתוך ${total()}`;
+  progress();
+  slot.innerHTML=`<div style="animation:rise .38s var(--eo) both"><span class="kind">${LABEL[q.kind]}</span>
+    <p class="qtext">${esc(q.q)}</p>${q.code?codeBlock(q.code):''}<div id="area"></div></div>`;
+  const area=el('area');
+  if(q.lines) renderOrder(area,q,a);
+  else if(q.items) renderClassify(area,q,a);
+  else renderChoices(area,q,a);
+  nav();
+}
+function codeBlock(src){
+  return '<pre><code>'+src.split('\n').map((l,n)=>
+    `<span class="cl"><span class="ln">${n+1}</span><span>${esc(l).replace('____','<span class="blank">?</span>')}</span></span>`
+  ).join('')+'</code></pre>';
+}
+function renderChoices(area,q,a){
+  const box=document.createElement('div');box.className='choices'+(q.kind==='tf'?' two':'');
+  q.layout.forEach((c,pos)=>{
+    const b=document.createElement('button');
+    b.className='choice'+(q.mono?' mono':'');
+    b.innerHTML=q.mono?`<bdi>${esc(c.t)}</bdi>`:esc(c.t);
+    if(a!==undefined){b.disabled=true;if(c.ok)b.classList.add('ok');if(pos===a.pos&&!a.ok)b.classList.add('no')}
+    else b.addEventListener('click',()=>pick(pos,c.ok,q));
+    box.append(b);
+  });
+  area.append(box);
+  if(a!==undefined) feedback(area,a.ok,q);
+}
+function pick(pos,ok,q){
+  const btns=[...slot.querySelectorAll('.choice')];
+  btns.forEach((b,i)=>{b.disabled=true;if(q.layout[i].ok)b.classList.add('ok')});
+  if(!ok)btns[pos].classList.add('no');
+  record({pos,ok});
+  feedback(el('area'),ok,q);nav();
+}
+function renderOrder(area,q,a){
+  if(!a) area.insertAdjacentHTML('beforeend','<p class="hint">הזיזו את השורות בעזרת החצים עד שיתקבל הסדר הנכון.</p>');
+  const box=document.createElement('div');box.className='olist';
+  function paint(focusPos,dir){
+    box.innerHTML='';
+    q.seq.forEach((li,pos)=>{
+      const row=document.createElement('div');row.className='orow';
+      if(a)row.classList.add(li===pos?'ok':'no');
+      row.innerHTML=`<span class="onum">${pos+1}</span><span class="ocode">${esc(q.lines[li])}</span>`+(a?'':
+        `<span class="mvs"><button class="mv" data-d="-1" aria-label="העלאת שורה ${pos+1}"${pos===0?' disabled':''}>&#9650;</button>`+
+        `<button class="mv" data-d="1" aria-label="הורדת שורה ${pos+1}"${pos===q.seq.length-1?' disabled':''}>&#9660;</button></span>`);
+      if(pos===focusPos)row.classList.add('moved');
+      box.append(row);
+    });
+    if(focusPos!==undefined){
+      const row=box.children[focusPos];
+      const b=row.querySelector(`.mv[data-d="${dir}"]:not(:disabled)`)||row.querySelector('.mv:not(:disabled)');
+      if(b)b.focus();
+    }
+  }
+  paint();area.append(box);
+  if(a){feedback(area,a.ok,q);return}
+  box.addEventListener('click',e=>{
+    const b=e.target.closest('.mv');if(!b)return;
+    const from=[...box.children].indexOf(b.closest('.orow')),d=+b.dataset.d,to=from+d;
+    [q.seq[from],q.seq[to]]=[q.seq[to],q.seq[from]];
+    paint(to,d);
+  });
+  const btn=document.createElement('button');btn.className='btn check';btn.textContent='בדיקה';
+  btn.addEventListener('click',()=>{record({ok:q.seq.every((li,i)=>li===i)});render()});
+  area.append(btn);
+}
+function renderClassify(area,q,a){
+  const list=document.createElement('div');list.className='mlist';
+  q.itemOrder.forEach((idx,n)=>{
+    const [text,cat]=q.items[idx];
+    const row=document.createElement('div');row.className='mrow';
+    row.innerHTML=`<code>${esc(text)}</code><select aria-label="טיפוס התוצאה"><option value="">בחרו</option>`+
+      q.cats.map(c=>`<option>${esc(c)}</option>`).join('')+'</select>';
+    const s=row.querySelector('select');
+    if(a){s.value=a.sel[n];s.disabled=true;row.classList.add(a.sel[n]===cat?'ok':'no')}
+    list.append(row);
+  });
+  area.append(list);
+  if(a){feedback(area,a.ok,q);return}
+  const btn=document.createElement('button');btn.className='btn check';btn.textContent='בדיקה';btn.disabled=true;
+  const sels=[...list.querySelectorAll('select')];
+  list.addEventListener('change',()=>btn.disabled=sels.some(s=>!s.value));
+  btn.addEventListener('click',()=>{
+    const sel=sels.map(s=>s.value);
+    record({ok:q.itemOrder.every((idx,n)=>sel[n]===q.items[idx][1]),sel});
+    render();
+  });
+  area.append(btn);
+}
+function feedback(area,ok,q){
+  const d=document.createElement('div');d.className='fb'+(ok?'':' bad');
+  d.innerHTML=`<b>${ok?'נכון!':'לא נכון.'}</b><span>${esc(q.why)}</span>`;
+  area.append(d);
+}
+function nav(){
+  prevBtn.disabled=state.i===0;
+  nextBtn.disabled=state.answers[state.i]===undefined;
+  nextBtn.textContent=state.i===total()-1?'סיום':'הבאה';
+}
+prevBtn.addEventListener('click',()=>{if(state.i>0){state.i--;render()}});
+nextBtn.addEventListener('click',()=>{if(state.i===total()-1)finish();else{state.i++;render()}});
+
+function finish(){
+  quiz.classList.add('hidden');results.classList.remove('hidden');
+  const n=total(),pct=Math.round(state.score/n*100);
+  results.innerHTML=`<p class="eyebrow">סיכום · פעולות אריתמטיות, קבועים והמרות</p>
+    <div class="ring${pct>=PASS?'':' fail'}" id="ring">${pct}</div>
+    <p class="meta"><b>${state.score}</b> תשובות נכונות מתוך ${n}</p>
+    <p class="submit">צלמו את מסך הסיכום והגישו אותו למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+    <div style="margin-top:26px"><button class="btn ghost" id="again">התחל מחדש</button></div>`;
+  el('again').addEventListener('click',()=>{
+    el('confetti').classList.add('hidden');el('confetti').innerHTML='';
+    results.classList.add('hidden');cover.classList.remove('hidden');
+  });
+  roll(el('ring'),pct);
+  if(pct>=PASS)confetti();
+}
+function roll(node,target){
+  if(calm||!target)return;
+  const t0=performance.now(),dur=900;
+  (function tick(t){
+    const k=Math.min(1,(t-t0)/dur);
+    node.textContent=Math.round(target*(1-Math.pow(1-k,3)));
+    if(k<1)requestAnimationFrame(tick);
+  })(t0);
+}
+function confetti(){
+  if(calm)return;
+  const box=el('confetti');box.classList.remove('hidden');
+  const colors=['#C6F24E','#2FBF8F','#7C6CF2','#FF6B5E','#F6F1E7'];
+  for(let i=0;i<46;i++){const s=document.createElement('span');
+    s.style.left=`${Math.random()*100}%`;s.style.animationDelay=`${Math.random()*.8}s`;
+    s.style.background=colors[i%colors.length];box.append(s)}
+}
+</script>
+</body>
+</html>

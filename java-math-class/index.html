@@ -293,7 +293,7 @@ function wire(q){
     body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
       const pick = +b.dataset.i, ok = pick===q.ans;
       body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; const i=+c.dataset.i; if(i===q.ans) c.classList.add('ok'); else if(i===pick) c.classList.add('no'); else c.classList.add('dimmed'); });
-      finish(q, ok, ok?null:`התשובה הנכונה: <code>${esc(q.opts[q.ans])}</code>`);
+      finish(q, ok, ok?null:`התשובה הנכונה: ${isAscii(q.opts[q.ans])?`<code>${esc(q.opts[q.ans])}</code>`:`<b>${esc(q.opts[q.ans])}</b>`}`);
     }));
   } else if(q.type==='tf'){
     body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{

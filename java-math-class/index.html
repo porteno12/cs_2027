@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0f172a">
+<title>המחלקה Math — שאלון סיכום</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--board:#0f172a;--dust:#1e293b;--dust2:#273549;--chalk:#f1f5f9;--dim:#94a3b8;
+--lime:#a3e635;--cyan:#22d3ee;--coral:#fb7185;--rule:rgba(148,163,184,.22);
+--r:14px;--rc:10px;--mono:'JetBrains Mono',ui-monospace,monospace;--sans:Heebo,system-ui,sans-serif;
+--pop:cubic-bezier(.34,1.56,.64,1);--eo:cubic-bezier(.32,.72,0,1)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--board);color:var(--chalk);direction:rtl;line-height:1.65;font-family:var(--sans);
+padding-block:28px;padding-inline:16px;min-height:100vh;overflow-x:hidden;
+background-image:linear-gradient(rgba(148,163,184,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(148,163,184,.06) 1px,transparent 1px);
+background-size:28px 28px}
+.nowrap{white-space:nowrap}
+/* floating formulas */
+.sky{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+.sky span{position:absolute;font:700 clamp(22px,4vw,40px) var(--mono);color:var(--cyan);opacity:.09;animation:drift linear infinite;direction:ltr}
+@keyframes drift{from{transform:translateY(110vh) rotate(-6deg)}to{transform:translateY(-20vh) rotate(6deg)}}
+.shell{width:min(720px,100%);margin-inline:auto}
+.card{position:relative;background:var(--dust);border:1px solid var(--rule);border-radius:var(--r);
+padding:clamp(20px,5vw,34px);box-shadow:0 20px 60px rgba(0,0,0,.45);animation:rise .45s var(--eo) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.eyebrow{font:700 12px var(--mono);letter-spacing:.12em;color:var(--cyan);direction:ltr;text-align:right;margin:0 0 14px}
+h1{font-size:clamp(30px,7vw,50px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;font-weight:900;text-wrap:balance}
+h1 .m{font-family:var(--mono);color:var(--lime);font-weight:700}
+.meta{margin:0;color:var(--dim);font-size:15px}
+.meta b{color:var(--chalk);font-weight:700}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.facts li{padding:6px 13px;border-radius:99px;border:1px solid var(--rule);font-size:13.5px;color:var(--dim)}
+.facts li b{color:var(--cyan);font-family:var(--mono)}
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:26px}
+.btn{font:700 15.5px var(--sans);border-radius:var(--rc);padding:12px 28px;min-height:48px;cursor:pointer;border:2px solid transparent;
+transition:transform .22s var(--pop),box-shadow .22s var(--eo),opacity .2s,background .2s,color .2s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.primary{background:var(--lime);color:#14200a;box-shadow:0 8px 24px rgba(163,230,53,.25)}
+.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 30px rgba(163,230,53,.35)}
+.outline{background:transparent;color:var(--cyan);border-color:rgba(34,211,238,.55)}
+.outline:hover:not(:disabled){background:rgba(34,211,238,.1)}
+.ghost{background:transparent;color:var(--dim);border-color:transparent;padding-inline:14px;font-weight:500}
+.ghost:hover{color:var(--chalk)}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+/* progress */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:16px;color:var(--dim);font-size:14px}
+.top b{color:var(--chalk);font-family:var(--mono)}
+.track{height:7px;border-radius:99px;background:rgba(148,163,184,.16);overflow:hidden;margin-bottom:20px}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--cyan),var(--lime));transition:width .55s var(--eo)}
+/* question */
+.kind{display:inline-block;margin-bottom:12px;padding:4px 12px;border-radius:99px;font:700 11.5px var(--sans);letter-spacing:.04em;border:1px solid}
+.k-code{color:var(--cyan);border-color:rgba(34,211,238,.5);background:rgba(34,211,238,.12)}
+.k-single{color:#c4b5fd;border-color:rgba(196,181,253,.5);background:rgba(196,181,253,.12)}
+.k-tf{color:#fbbf24;border-color:rgba(251,191,36,.5);background:rgba(251,191,36,.12)}
+.k-classify{color:#f9a8d4;border-color:rgba(249,168,212,.5);background:rgba(249,168,212,.12)}
+.k-fill{color:var(--lime);border-color:rgba(163,230,53,.5);background:rgba(163,230,53,.12)}
+.k-order{color:#fdba74;border-color:rgba(253,186,116,.5);background:rgba(253,186,116,.12)}
+.q{font-size:clamp(18px,4.4vw,22px);font-weight:700;margin:0 0 16px;line-height:1.45}
+pre.code{direction:ltr;text-align:left;margin:0 0 18px;padding:14px 16px 14px 0;border-radius:var(--rc);background:#0b1120;border:1px solid var(--rule);
+font:500 14.5px/1.7 var(--mono);color:var(--chalk);overflow-x:auto;counter-reset:ln}
+pre.code .ln{display:block;padding-inline-start:52px;position:relative;white-space:pre}
+pre.code .ln::before{counter-increment:ln;content:counter(ln);position:absolute;left:0;width:36px;text-align:right;color:var(--cyan);opacity:.6}
+pre.code .blank{display:inline-block;min-width:3.2em;border-bottom:2px dashed var(--lime);color:var(--lime);text-align:center}
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.choice{width:100%;text-align:start;padding:13px 16px;border-radius:var(--rc);border:1.5px solid var(--rule);background:var(--dust2);color:var(--chalk);
+font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:center;transition:border-color .18s,background .18s,transform .18s var(--pop)}
+.choice:hover:not(:disabled){border-color:var(--cyan);transform:translateX(-3px)}
+.choice:disabled{cursor:default}
+.choice .tag{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;font:700 13px var(--mono);background:rgba(148,163,184,.14);color:var(--dim)}
+.choice.ltr .txt{direction:ltr;font-family:var(--mono);font-weight:700;unicode-bidi:isolate}
+.choice.ok{border-color:var(--lime);background:rgba(163,230,53,.14);animation:pop .5s var(--pop)}
+.choice.ok .tag{background:var(--lime);color:#14200a}
+.choice.no{border-color:var(--coral);background:rgba(251,113,133,.14);animation:shake .45s}
+.choice.no .tag{background:var(--coral);color:#fff}
+.choice.dimmed{opacity:.5}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.04)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+/* classify */
+.cls{display:grid;gap:10px}
+.item{padding:12px 14px;border-radius:var(--rc);border:1.5px solid var(--rule);background:var(--dust2);display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.item .code{direction:ltr;font:700 14.5px var(--mono);color:var(--chalk);flex:1 1 180px;unicode-bidi:isolate}
+.cats{display:flex;gap:6px;flex-wrap:wrap}
+.cat{padding:6px 12px;border-radius:99px;border:1.5px solid var(--rule);background:transparent;color:var(--dim);font:700 13px var(--mono);cursor:pointer;direction:ltr;transition:all .15s}
+.cat:hover:not(:disabled){border-color:var(--cyan);color:var(--chalk)}
+.cat.sel{background:rgba(34,211,238,.18);border-color:var(--cyan);color:var(--cyan)}
+.item.ok{border-color:var(--lime);background:rgba(163,230,53,.12)}
+.item.no{border-color:var(--coral);background:rgba(251,113,133,.12);animation:shake .45s}
+.item .mark{font:700 13px var(--sans);flex:none}
+.item.ok .mark{color:var(--lime)}.item.no .mark{color:var(--coral)}
+/* order */
+.ord{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:pos}
+.ord li{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rc);border:1.5px solid var(--rule);background:var(--dust2);transition:transform .25s var(--pop),border-color .18s,background .18s}
+.ord li::before{counter-increment:pos;content:counter(pos);flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:700 13px var(--mono);background:rgba(148,163,184,.14);color:var(--dim)}
+.ord .line{flex:1;direction:ltr;text-align:left;font:700 14px var(--mono);color:var(--chalk);unicode-bidi:isolate;overflow-x:auto;white-space:pre}
+.ord .mv{display:flex;gap:4px;flex:none}
+.mv button{width:34px;height:34px;border-radius:8px;border:1.5px solid var(--rule);background:transparent;color:var(--cyan);cursor:pointer;font-size:16px;display:grid;place-items:center;transition:all .15s}
+.mv button:hover:not(:disabled){background:rgba(34,211,238,.14);border-color:var(--cyan)}
+.mv button:disabled{opacity:.3;cursor:default}
+.ord li.ok{border-color:var(--lime);background:rgba(163,230,53,.12)}
+.ord li.no{border-color:var(--coral);background:rgba(251,113,133,.12)}
+.ord li.ok::before{background:var(--lime);color:#14200a}.ord li.no::before{background:var(--coral);color:#fff}
+.hint{color:var(--dim);font-size:13.5px;margin:0 0 12px}
+/* feedback */
+.fb{margin-top:18px;padding:16px 18px;border-radius:var(--rc);border:1px solid;animation:rise .4s var(--eo) both}
+.fb.ok{border-color:rgba(163,230,53,.5);background:rgba(163,230,53,.09)}
+.fb.no{border-color:rgba(251,113,133,.5);background:rgba(251,113,133,.09)}
+.fb h3{margin:0 0 6px;font-size:16px;font-weight:900}
+.fb.ok h3{color:var(--lime)}.fb.no h3{color:var(--coral)}
+.fb p{margin:0;font-size:15px;color:var(--chalk)}
+.fb .ans{margin-top:8px;font-size:14px;color:var(--dim)}
+.fb .ans code{direction:ltr;unicode-bidi:isolate;font:700 13.5px var(--mono);color:var(--cyan)}
+/* score */
+.score{text-align:center}
+.ring{width:190px;height:190px;margin:10px auto 18px;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12;stroke-linecap:round}
+.ring .bg{stroke:rgba(148,163,184,.18)}
+.ring .val{stroke:var(--lime);stroke-dasharray:502;stroke-dashoffset:502;transition:stroke-dashoffset 1.3s var(--eo)}
+.ring.fail .val{stroke:var(--coral)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font:700 56px var(--mono);color:var(--chalk);direction:ltr}
+.outcome{font-size:20px;font-weight:900;margin:0 0 6px}
+.ring.fail ~ .outcome{color:var(--coral)}
+.score .sub{color:var(--dim);margin:0 0 20px}
+.wrong{text-align:start;margin:0 0 20px;padding:0;list-style:none;display:grid;gap:6px}
+.wrong li{padding:10px 14px;border-radius:var(--rc);border:1px solid rgba(251,113,133,.4);background:rgba(251,113,133,.07);font-size:14.5px}
+.wrong li b{font-family:var(--mono);color:var(--coral);margin-inline-end:8px}
+.submit{margin:0 0 22px;padding:14px 16px;border-radius:var(--rc);background:rgba(34,211,238,.08);border:1px dashed rgba(34,211,238,.45);font-size:15px}
+.hidden{display:none!important}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+@media print{body{background:#fff;color:#000;padding:0}.card{box-shadow:none;border-color:#999;background:#fff;color:#000}.sky,.btn,#confetti{display:none!important}.ring .num{color:#000}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.sky{display:none}}
+</style>
+</head>
+<body>
+<div class="sky" aria-hidden="true"></div>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<main class="shell">
+
+<section class="card" id="cover">
+  <p class="eyebrow">CS · JAVA · java.lang.Math</p>
+  <h1>המחלקה <span class="m">Math</span></h1>
+  <p class="meta"><b>מדעי המחשב</b> · שאלון סיכום</p>
+  <p class="meta">רוני רובן · <span id="date"></span></p>
+  <ul class="facts">
+    <li><b id="nq"></b> שאלות</li>
+    <li>סף מעבר: <b id="passTxt"></b></li>
+    <li>חזקה, שורש, עיגול, מקסימום, אקראי</li>
+    <li>השלמת קוד וסידור שורות</li>
+  </ul>
+  <div class="actions"><button class="btn primary" id="start">התחל</button></div>
+</section>
+
+<section class="card hidden" id="quiz">
+  <div class="top"><span>שאלה <b id="cur"></b> מתוך <b id="tot"></b></span><span><b id="pct">0</b> הושלמו</span></div>
+  <div class="track"><div class="fill" id="bar"></div></div>
+  <div id="body"></div>
+  <div class="actions">
+    <button class="btn ghost" id="reset">התחל מחדש</button>
+    <button class="btn primary" id="next" disabled>הבאה</button>
+  </div>
+</section>
+
+<section class="card score hidden" id="result">
+  <p class="eyebrow">RESULT</p>
+  <div class="ring" id="ring"><svg viewBox="0 0 180 180" width="190" height="190"><circle class="bg" cx="90" cy="90" r="80"/><circle class="val" id="arc" cx="90" cy="90" r="80"/></svg><div class="num" id="num">0</div></div>
+  <p class="outcome" id="outcome"></p>
+  <p class="sub" id="detail"></p>
+  <ul class="wrong" id="wrongList"></ul>
+  <p class="submit">צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <div class="actions" style="justify-content:center"><button class="btn ghost" id="again">התחל מחדש</button></div>
+</section>
+
+</main>
+<script>
+const PASS = 60;
+const SCHOOL_YEAR = 'תשפ"ז';
+const MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+
+const Q = [
+{type:'code', q:'מה יודפס?', code:['double r = Math.pow(2, 3);','System.out.println(r);'], opts:['8.0','8','6.0','9.0'], ans:0,
+ exp:'הפעולה חזקה מחזירה תמיד ערך מסוג double, גם כששני הארגומנטים שלמים. לכן התוצאה של 2 בחזקת 3 נשמרת כ-8.0 ולא כ-8, וההדפסה כוללת את הנקודה העשרונית. כדי לקבל שלם יש להמיר במפורש.'},
+{type:'code', q:'מה טווח הערכים האפשרי של x?', code:['int x = (int)(Math.random() * 10) + 1;'], opts:['1 עד 10 כולל','0 עד 9 כולל','1 עד 11 כולל','0 עד 10 כולל'], ans:0,
+ exp:'ההגרלה מחזירה ממשי מ-0 (כולל) ועד 1 (לא כולל). הכפלה ב-10 נותנת טווח של 0 עד פחות מ-10, והמרה לשלם חותכת את החלק העשרוני ומשאירה 0 עד 9. ההוספה של 1 מזיזה את הטווח ל-1 עד 10.'},
+{type:'single', q:'מה מחזירה הקריאה <bdi class="nowrap">Math.random()</bdi>?', opts:['מספר ממשי בין 0 (כולל) ל-1 (לא כולל)','מספר שלם אקראי בין 0 ל-1','מספר ממשי בין 0 ל-1, כולל שניהם','מספר שלם אקראי בכל טווח'], ans:0,
+ exp:'הפעולה מחזירה double אקראי בחצי-הקטע הפתוח: הערך יכול להיות 0 אך לעולם לא 1. בגלל זה כשמכפילים ב-n ומקצצים לשלם מקבלים בדיוק n ערכים אפשריים, מ-0 עד n פחות 1. כל טווח אחר נבנה בעזרת כפל והזזה.'},
+{type:'code', q:'מה יודפס?', code:['System.out.println(Math.round(2.5));','System.out.println(Math.round(-2.5));'], opts:['3 ואחריו מינוס 2','3 ואחריו מינוס 3','2 ואחריו מינוס 2','2 ואחריו מינוס 3'], ans:0,
+ exp:'עיגול ב-Java מוסיף חצי ואז מעגל כלפי מטה. עבור 2.5 מתקבל 3.0 שמעוגל ל-3. עבור מינוס 2.5 מתקבל מינוס 2.0 שמעוגל למינוס 2, ולא למינוס 3 כפי שרבים מצפים. חצי תמיד נשלח כלפי מעלה על ציר המספרים.'},
+{type:'code', q:'מה יודפס?', code:['double s = Math.floor(3.7) + Math.ceil(3.2);','System.out.println(s);'], opts:['7.0','7','6.0','8.0'], ans:0,
+ exp:'עיגול כלפי מטה של 3.7 נותן 3.0, ועיגול כלפי מעלה של 3.2 נותן 4.0. שתי הפעולות מחזירות double, ולכן הסכום הוא 7.0 ומודפס עם נקודה עשרונית. אין כאן המרה לשלם בשום שלב.'},
+{type:'code', q:'מה הערך של d בסוף הקטע?', code:['int d = Math.abs(5 - 12);'], opts:['7','מינוס 7','17','60'], ans:0,
+ exp:'קודם מחושב הביטוי בסוגריים: 5 פחות 12 שווה מינוס 7. פעולת הערך המוחלט מסירה את הסימן ומחזירה 7. מכיוון שהארגומנט שלם, גם הערך המוחזר שלם ומתאים למשתנה מסוג int.'},
+{type:'code', q:'מה יודפס?', code:['int a = Math.max(3, 8);','int b = Math.min(a, 5);','System.out.println(a - b);'], opts:['3','5','8','0'], ans:0,
+ exp:'המקסימום בין 3 ל-8 הוא 8, ולכן a שווה 8. המינימום בין 8 ל-5 הוא 5, ולכן b שווה 5. ההדפסה של a פחות b נותנת 3.'},
+{type:'tf', q:'הקבוע <bdi class="nowrap">Math.PI</bdi> הוא מסוג double וערכו בקירוב 3.14159.', ans:true,
+ exp:'זהו קבוע סטטי סופי מסוג double שמייצג את היחס בין היקף מעגל לקוטרו. הערך המאוחסן הוא הקירוב הקרוב ביותר שניתן לייצג ב-64 סיביות. משתמשים בו כשמחשבים היקף ושטח מעגל במקום להקליד ספרות ידנית.'},
+{type:'tf', q:'הקריאה <bdi class="nowrap">Math.sqrt(16)</bdi> מחזירה את המספר השלם 4.', ans:false,
+ exp:'פעולת השורש מקבלת double ומחזירה double, ולכן התוצאה היא 4.0 ולא 4. גם כשהארגומנט הוא מספר שלם, הוא מומר ל-double לפני החישוב. השמה למשתנה int תדרוש המרה מפורשת.'},
+{type:'classify', q:'סווגו כל ביטוי לפי טיפוס הערך שהוא מחזיר.', cats:['int','long','double'],
+ items:[['Math.pow(2, 3)','double'],['Math.round(2.6)','long'],['Math.abs(-4)','int'],['Math.sqrt(9.0)','double'],['Math.max(2, 7)','int'],['Math.floor(2.1)','double']],
+ exp:'חזקה, שורש ועיגול כלפי מטה מחזירים תמיד double. עיגול של double מחזיר long, כדי שיוכל להכיל גם ערכים גדולים מאוד. ערך מוחלט ומקסימום מחזירים את הטיפוס של הארגומנטים, ולכן עם שלמים מתקבל int.'},
+{type:'code', q:'תלמיד ניסה להגריל קובייה. מה טווח הערכים שיתקבל בפועל?', code:['int die = (int)(Math.random() * 6);'], opts:['0 עד 5 כולל','1 עד 6 כולל','0 עד 6 כולל','1 עד 5 כולל'], ans:0,
+ exp:'ההכפלה ב-6 נותנת טווח של 0 עד פחות מ-6, והקיצוץ לשלם משאיר את הערכים 0 עד 5. קובייה אמיתית דורשת 1 עד 6, ולכן חסרה הוספה של 1 אחרי ההמרה. זו טעות נפוצה: הטווח מתחיל תמיד מאפס עד שמזיזים אותו.'},
+{type:'code', q:'מה יקרה בשורה הבאה?', code:['int n = Math.pow(3, 2);'], opts:['שגיאת קומפילציה: אי אפשר להשים ערך מסוג double למשתנה שלם בלי המרה מפורשת','המשתנה מקבל את הערך 9','המשתנה מקבל את הערך 9.0','שגיאה בזמן ריצה'], ans:0,
+ exp:'חזקה מחזירה double, והשמה של double למשתנה int היא המרה מצמצמת שעלולה לאבד מידע. Java אינה מבצעת אותה אוטומטית ומדווחת על שגיאה עוד לפני שהתוכנית רצה. הפתרון הוא לכתוב המרה מפורשת לשלם לפני הקריאה.'},
+{type:'code', q:'מה טווח הערכים של num?', code:['int min = 5, max = 9;','int num = (int)(Math.random() * (max - min + 1)) + min;'], opts:['5 עד 9 כולל','5 עד 8 כולל','0 עד 4 כולל','6 עד 9 כולל'], ans:0,
+ exp:'הביטוי בסוגריים הוא 9 פחות 5 ועוד 1, כלומר 5 ערכים אפשריים. ההכפלה והקיצוץ נותנים 0 עד 4, וההוספה של המינימום מזיזה ל-5 עד 9. זו הנוסחה הכללית להגרלת שלם בטווח סגור: גודל הטווח ועוד אחד, ואז הזזה למינימום.'},
+{type:'tf', q:'הקריאה <bdi class="nowrap">Math.sqrt(-9)</bdi> גורמת לשגיאת קומפילציה.', ans:false,
+ exp:'הקוד תקין מבחינת המהדר, כי הארגומנט הוא מספר חוקי מסוג double. בזמן ריצה אין שורש ממשי למספר שלילי, ולכן הפעולה מחזירה את הערך המיוחד NaN שמסמן "לא מספר". התוכנית ממשיכה לרוץ ללא חריגה.'},
+{type:'fill', q:'השלימו כך שהמשתנה יקבל ערך שלם אקראי בין 1 ל-6 כולל.', code:['int die = (int)(Math.random() * ____) + 1;'], opts:['6','7','5','1'], ans:0,
+ exp:'כדי לקבל שישה ערכים שונים מכפילים ב-6 ומקבלים 0 עד 5 אחרי הקיצוץ. ההוספה של 1 מזיזה ל-1 עד 6, בדיוק פאות של קובייה. הכפלה ב-7 הייתה מאפשרת גם 7, והכפלה ב-5 הייתה מחסירה את 6.'},
+{type:'fill', q:'השלימו כך שהמשתנה יקבל את אורך היתר במשולש ישר-זווית.', code:['double hyp = Math.____(a * a + b * b);'], opts:['sqrt','pow','abs','round'], ans:0,
+ exp:'לפי משפט פיתגורס, ריבוע היתר שווה לסכום ריבועי הניצבים. בביטוי כבר מחושב הסכום של הריבועים, ולכן נותר להוציא שורש ריבועי. הפעולה מחזירה double ומתאימה לטיפוס המשתנה.'},
+{type:'fill', q:'השלימו כך שהמשתנה יקבל את הגדול מבין שני המספרים.', code:['int bigger = Math.____(x, y);'], opts:['max','min','abs','ceil'], ans:0,
+ exp:'פעולת המקסימום מקבלת שני ארגומנטים ומחזירה את הגדול מהם, באותו טיפוס של הארגומנטים. מינימום היה מחזיר את הקטן. ערך מוחלט ועיגול כלפי מעלה מקבלים ארגומנט יחיד בלבד ואינם מתאימים כאן.'},
+{type:'fill', q:'השלימו כך שהקטע יתקמפל והמשתנה יקבל את הערך 32.', code:['int n = ____ Math.pow(2, 5);'], opts:['(int)','(double)','(String)','לא צריך להוסיף דבר'], ans:0,
+ exp:'חזקה מחזירה 32.0 מסוג double, ואי אפשר להשים אותו ישירות למשתנה שלם. המרה מפורשת לשלם מקצצת את החלק העשרוני ומשאירה 32. בלי ההמרה המהדר מדווח על שגיאה, והמרה למחרוזת אינה חוקית כלל.'},
+{type:'order', q:'סדרו את השורות כך שהתוכנית תגריל מספר שלם בין 1 ל-100, תחשב את השורש שלו ותדפיס אותו מעוגל.',
+ lines:['int num = (int)(Math.random() * 100) + 1;','double root = Math.sqrt(num);','long rounded = Math.round(root);','System.out.println(rounded);'],
+ exp:'כל שורה משתמשת במשתנה שהוגדר בשורה שלפניה, ולכן יש סדר יחיד. קודם מגרילים את המספר, אחר כך מחשבים את השורש שלו, מעגלים את השורש ל-long, ולבסוף מדפיסים את התוצאה המעוגלת.'},
+{type:'order', q:'סדרו את השורות כך שהתוכנית תחשב שטח מעגל ותדפיס אותו מעוגל לשתי ספרות אחרי הנקודה.',
+ lines:['double radius = 3.5;','double area = Math.PI * Math.pow(radius, 2);','area = Math.round(area * 100) / 100.0;','System.out.println(area);'],
+ exp:'קודם מגדירים את הרדיוס, ואז מחשבים את השטח לפי פאי כפול הרדיוס בריבוע. השורה השלישית מכפילה ב-100, מעגלת ומחלקת ב-100.0 כדי להשאיר שתי ספרות אחרי הנקודה. ההדפסה חייבת לבוא אחרי העיגול, אחרת יודפס הערך הלא מעוגל.'},
+{type:'order', q:'סדרו את השורות כך שהתוכנית תדפיס 8.0.',
+ lines:['double a = -7.8;','double b = Math.abs(a);','double c = Math.ceil(b);','System.out.println(c);'],
+ exp:'מתחילים מהערך מינוס 7.8. הערך המוחלט מחזיר 7.8, ועיגול כלפי מעלה מעלה אותו ל-8.0. ההדפסה בסוף מציגה 8.0. אם היו מעגלים לפני הערך המוחלט, התוצאה הייתה מינוס 7.0 ואז 7.0.'}
+];
+
+const KIND = {code:'קוד', single:'בחירה', tf:'נכון / לא נכון', classify:'סיווג', fill:'השלמת קוד', order:'סידור שורות'};
+const LETTERS = ['א','ב','ג','ד','ה','ו'];
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const isAscii = s => /^[\x00-\x7F]+$/.test(s);
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+let order=[], idx=0, answered=0, results=[];
+
+function start(){
+  order = shuffle(Q.map((_,i)=>i));
+  idx=0; answered=0; results=Q.map(()=>null);
+  Q.forEach(q=>{
+    if(q.type==='code'||q.type==='single'||q.type==='fill'){ q.perm = shuffle(q.opts.map((_,i)=>i)); }
+    if(q.type==='order'){ let p; do{ p = shuffle(q.lines.map((_,i)=>i)); }while(p.every((v,i)=>v===i)); q.perm=p; }
+    if(q.type==='classify'){ q.sel = q.items.map(()=>null); }
+  });
+  $('cover').classList.add('hidden'); $('result').classList.add('hidden'); $('quiz').classList.remove('hidden');
+  $('tot').textContent = Q.length;
+  render();
+}
+
+function progress(){
+  const p = Math.round(answered/Q.length*100);
+  $('bar').style.width = p+'%'; $('pct').textContent = p;
+}
+
+function codeBlock(lines){
+  return '<pre class="code" dir="ltr">'+lines.map(l=>'<span class="ln">'+esc(l).replace('____','<span class="blank">____</span>')+'</span>').join('')+'</pre>';
+}
+
+function render(){
+  const qi = order[idx], q = Q[qi];
+  $('cur').textContent = idx+1; progress();
+  $('next').disabled = true;
+  $('next').textContent = idx===Q.length-1 ? 'לסיכום' : 'הבאה';
+  let h = `<span class="kind k-${q.type}">${KIND[q.type]}</span><p class="q">${q.q}</p>`;
+  if(q.code) h += codeBlock(q.code);
+  if(q.type==='code'||q.type==='single'||q.type==='fill'){
+    h += '<ul class="opts">'+q.perm.map((oi,k)=>`<li><button class="choice${isAscii(q.opts[oi])?' ltr':''}" data-i="${oi}"><span class="tag">${LETTERS[k]}</span><span class="txt">${esc(q.opts[oi])}</span></button></li>`).join('')+'</ul>';
+  } else if(q.type==='tf'){
+    h += '<div class="tf"><button class="choice" data-v="true"><span class="tag">✓</span><span class="txt">נכון</span></button><button class="choice" data-v="false"><span class="tag">✗</span><span class="txt">לא נכון</span></button></div>';
+  } else if(q.type==='classify'){
+    h += '<p class="hint">בחרו קטגוריה לכל ביטוי, ואז לחצו "בדיקה".</p><div class="cls">'+q.items.map((it,i)=>`<div class="item" data-i="${i}"><span class="code">${esc(it[0])}</span><span class="cats">${q.cats.map(c=>`<button class="cat" data-c="${c}">${c}</button>`).join('')}</span><span class="mark"></span></div>`).join('')+'</div>';
+    h += '<div class="actions" style="margin-top:14px"><span></span><button class="btn outline" id="check" disabled>בדיקה</button></div>';
+  } else if(q.type==='order'){
+    h += '<p class="hint">השתמשו בחצים כדי להזיז שורה למעלה או למטה, ואז לחצו "בדיקה".</p><ol class="ord" id="ord">'+q.perm.map(li=>`<li data-l="${li}"><span class="line">${esc(q.lines[li])}</span><span class="mv"><button data-d="-1" aria-label="הזז למעלה">▲</button><button data-d="1" aria-label="הזז למטה">▼</button></span></li>`).join('')+'</ol>';
+    h += '<div class="actions" style="margin-top:14px"><span></span><button class="btn outline" id="check">בדיקה</button></div>';
+  }
+  h += '<div id="fb"></div>';
+  $('body').innerHTML = h;
+  wire(q);
+  $('quiz').scrollIntoView({block:'start'});
+}
+
+function wire(q){
+  const body = $('body');
+  if(q.type==='code'||q.type==='single'||q.type==='fill'){
+    body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      const pick = +b.dataset.i, ok = pick===q.ans;
+      body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; const i=+c.dataset.i; if(i===q.ans) c.classList.add('ok'); else if(i===pick) c.classList.add('no'); else c.classList.add('dimmed'); });
+      finish(q, ok, ok?null:`התשובה הנכונה: <code>${esc(q.opts[q.ans])}</code>`);
+    }));
+  } else if(q.type==='tf'){
+    body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      const pick = b.dataset.v==='true', ok = pick===q.ans;
+      body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; const v=c.dataset.v==='true'; if(v===q.ans) c.classList.add('ok'); else if(v===pick) c.classList.add('no'); else c.classList.add('dimmed'); });
+      finish(q, ok, ok?null:`התשובה הנכונה: ${q.ans?'נכון':'לא נכון'}`);
+    }));
+  } else if(q.type==='classify'){
+    const check = $('check');
+    body.querySelectorAll('.cat').forEach(b=>b.addEventListener('click',()=>{
+      const item = b.closest('.item'), i=+item.dataset.i;
+      item.querySelectorAll('.cat').forEach(c=>c.classList.remove('sel')); b.classList.add('sel'); q.sel[i]=b.dataset.c;
+      check.disabled = q.sel.some(s=>s===null);
+    }));
+    check.addEventListener('click',()=>{
+      let all=true;
+      body.querySelectorAll('.item').forEach(item=>{
+        const i=+item.dataset.i, ok=q.sel[i]===q.items[i][1]; if(!ok) all=false;
+        item.classList.add(ok?'ok':'no'); item.querySelector('.mark').textContent = ok?'נכון':`הנכון: ${q.items[i][1]}`;
+        item.querySelectorAll('.cat').forEach(c=>c.disabled=true);
+      });
+      check.disabled=true;
+      finish(q, all, all?null:'הפריטים המסומנים באדום סווגו לא נכון; הקטגוריה הנכונה מופיעה לידם.');
+    });
+  } else if(q.type==='order'){
+    const ol = $('ord');
+    ol.addEventListener('click',e=>{
+      const b = e.target.closest('button[data-d]'); if(!b) return;
+      const li = b.closest('li'), d=+b.dataset.d;
+      if(d<0 && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+      if(d>0 && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+      b.focus();
+    });
+    $('check').addEventListener('click',()=>{
+      let all=true;
+      [...ol.children].forEach((li,pos)=>{ const ok=+li.dataset.l===pos; if(!ok) all=false; li.classList.add(ok?'ok':'no'); li.querySelectorAll('button').forEach(x=>x.disabled=true); });
+      $('check').disabled=true;
+      finish(q, all, all?null:'הסדר הנכון:<br><code style="display:block;white-space:pre;text-align:left">'+q.lines.map(esc).join('\n')+'</code>');
+    });
+  }
+}
+
+function finish(q, ok, ansHtml){
+  results[Q.indexOf(q)] = ok; answered++; progress();
+  $('fb').innerHTML = `<div class="fb ${ok?'ok':'no'}"><h3>${ok?'נכון!':'לא נכון'}</h3><p>${q.exp}</p>${ansHtml?`<div class="ans">${ansHtml}</div>`:''}</div>`;
+  $('next').disabled=false; $('next').focus();
+}
+
+function showResult(){
+  $('quiz').classList.add('hidden'); $('result').classList.remove('hidden');
+  const correct = results.filter(Boolean).length, score = Math.round(correct/Q.length*100), pass = score>=PASS;
+  $('ring').classList.toggle('fail',!pass);
+  $('num').textContent = score;
+  $('outcome').textContent = pass ? 'מעל סף המעבר' : 'מתחת לסף המעבר';
+  $('outcome').style.color = pass ? 'var(--lime)' : 'var(--coral)';
+  $('detail').textContent = `${correct} מתוך ${Q.length} תשובות נכונות · סף המעבר ${PASS}`;
+  const wl = $('wrongList'); wl.innerHTML='';
+  Q.forEach((q,i)=>{ if(results[i]===false){ const li=document.createElement('li'); li.innerHTML=`<b>${i+1}</b>${q.q}`; wl.appendChild(li); } });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ $('arc').style.strokeDashoffset = 502 - 502*score/100; }));
+  if(pass) confetti();
+  window.scrollTo({top:0});
+}
+
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=$('confetti'), ctx=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight;
+  const cols=['#a3e635','#22d3ee','#f1f5f9','#fbbf24'];
+  const ps=Array.from({length:140},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:4+Math.random()*5,a:Math.random()*6,va:(Math.random()-.5)*.3,col:cols[Math.floor(Math.random()*4)]}));
+  let t=0; (function frame(){ ctx.clearRect(0,0,c.width,c.height); ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle=p.col; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); ctx.restore(); }); if(++t<260) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height); })();
+}
+
+$('start').addEventListener('click',start);
+$('next').addEventListener('click',()=>{ if(idx<Q.length-1){ idx++; render(); } else showResult(); });
+$('reset').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התשובות עד כה יימחקו.')) start(); });
+$('again').addEventListener('click',start);
+
+(function init(){
+  const d=new Date(); $('date').textContent = `${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${SCHOOL_YEAR}`;
+  $('nq').textContent=Q.length; $('passTxt').textContent=PASS;
+  const sky=document.querySelector('.sky'), syms=['√','π','x²','|x|','⌊x⌋','⌈x⌉','max','min','2³','Math'];
+  syms.forEach((s,i)=>{ const e=document.createElement('span'); e.textContent=s; e.style.left=(i*10+Math.random()*6)+'%'; e.style.animationDuration=(26+Math.random()*22)+'s'; e.style.animationDelay=(-Math.random()*40)+'s'; sky.appendChild(e); });
+})();
+</script>
+</body>
+</html>

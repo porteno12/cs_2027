@@ -156,7 +156,7 @@ font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:cente
     <li><b id="nq"></b> שאלות</li>
     <li>סף מעבר: <b id="passTxt"></b></li>
   </ul>
-  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר, ואי אפשר לחזור לשאלה קודמת. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר. אפשר לחזור לשאלות קודמות כדי לעיין בהן, אבל לא לשנות תשובה שכבר נבחרה. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
   <div class="field"><label for="name">שם התלמיד/ה</label><input id="name" type="text" autocomplete="name" placeholder="הקלידו שם מלא" maxlength="60"></div>
   <div class="actions"><button class="btn primary" id="start" disabled>התחל</button></div>
 </section>
@@ -166,7 +166,7 @@ font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:cente
   <div class="track"><div class="fill" id="bar"></div></div>
   <div id="body"></div>
   <div class="actions">
-    <button class="btn ghost" id="reset">התחל מחדש</button>
+    <button class="btn outline" id="prev" disabled>לשאלה הקודמת</button>
     <button class="btn primary" id="next" disabled>הבאה</button>
   </div>
 </section>
@@ -244,11 +244,11 @@ const isAscii = s => /^[\x00-\x7F]+$/.test(s);
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-let order=[], idx=0, answered=0, results=[], studentName='';
+let order=[], idx=0, answered=0, results=[], studentName='', done={};
 
 function start(){
   order = shuffle(Q.map((_,i)=>i));
-  idx=0; answered=0; results=Q.map(()=>null);
+  idx=0; answered=0; results=Q.map(()=>null); done={};
   Q.forEach(q=>{
     if(q.type==='code'||q.type==='single'||q.type==='fill'){ q.perm = shuffle(q.opts.map((_,i)=>i)); }
     if(q.type==='order'){ let p; do{ p = shuffle(q.lines.map((_,i)=>i)); }while(p.every((v,i)=>v===i)); q.perm=p; }
@@ -271,8 +271,10 @@ function codeBlock(lines){
 function render(){
   const qi = order[idx], q = Q[qi];
   $('cur').textContent = idx+1; progress();
-  $('next').disabled = true;
+  $('prev').disabled = idx===0;
   $('next').textContent = idx===Q.length-1 ? 'לסיכום' : 'הבאה';
+  if(done[qi]){ $('body').innerHTML = done[qi]; $('next').disabled = false; $('quiz').scrollIntoView({block:'start'}); return; }
+  $('next').disabled = true;
   let h = `<span class="kind k-${q.type}">${KIND[q.type]}</span><p class="q">${q.q}</p>`;
   if(q.code) h += codeBlock(q.code);
   if(q.type==='code'||q.type==='single'||q.type==='fill'){
@@ -345,6 +347,7 @@ function finish(q, ok, ansHtml){
   results[Q.indexOf(q)] = ok; answered++; progress();
   $('fb').innerHTML = `<div class="fb ${ok?'ok':'no'}"><h3>${ok?'נכון!':'לא נכון'}</h3><p>${q.exp}</p>${ansHtml?`<div class="ans">${ansHtml}</div>`:''}</div>`;
   $('next').disabled=false; $('next').focus();
+  done[Q.indexOf(q)] = $('body').innerHTML;
 }
 
 function showResult(){
@@ -376,7 +379,7 @@ nameEl.addEventListener('input',()=>{ $('start').disabled = nameEl.value.trim().
 nameEl.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('start').disabled) start(); });
 $('start').addEventListener('click',()=>{ studentName = nameEl.value.trim(); start(); });
 $('next').addEventListener('click',()=>{ if(idx<Q.length-1){ idx++; render(); } else showResult(); });
-$('reset').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התשובות עד כה יימחקו.')) start(); });
+$('prev').addEventListener('click',()=>{ if(idx>0){ idx--; render(); } });
 $('again').addEventListener('click',start);
 
 (function init(){

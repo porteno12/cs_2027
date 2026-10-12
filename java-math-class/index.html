@@ -156,7 +156,7 @@ font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:cente
     <li><b id="nq"></b> שאלות</li>
     <li>סף מעבר: <b id="passTxt"></b></li>
   </ul>
-  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר. אפשר לחזור לשאלות קודמות כדי לעיין בהן, אבל לא לשנות תשובה שכבר נבחרה. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר. אפשר לחזור לשאלות קודמות ולשנות תשובה לפני ההגשה. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
   <div class="field"><label for="name">שם התלמיד/ה</label><input id="name" type="text" autocomplete="name" placeholder="הקלידו שם מלא" maxlength="60"></div>
   <div class="actions"><button class="btn primary" id="start" disabled>התחל</button></div>
 </section>
@@ -273,7 +273,10 @@ function render(){
   $('cur').textContent = idx+1; progress();
   $('prev').disabled = idx===0;
   $('next').textContent = idx===Q.length-1 ? 'לסיכום' : 'הבאה';
-  if(done[qi]){ $('body').innerHTML = done[qi]; $('next').disabled = false; $('quiz').scrollIntoView({block:'start'}); return; }
+  if(done[qi]){
+    $('body').innerHTML = done[qi] + '<div class="actions" style="margin-top:14px;justify-content:flex-start"><button class="btn outline" id="redo">שינוי תשובה</button></div>';
+    $('redo').addEventListener('click',()=>{ delete done[qi]; results[qi]=null; answered--; render(); });
+    $('next').disabled = false; $('quiz').scrollIntoView({block:'start'}); return; }
   $('next').disabled = true;
   let h = `<span class="kind k-${q.type}">${KIND[q.type]}</span><p class="q">${q.q}</p>`;
   if(q.code) h += codeBlock(q.code);

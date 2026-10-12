@@ -36,6 +36,10 @@ h1 .m{font-family:var(--mono);color:var(--lime);font-weight:700}
 .facts{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
 .facts li{padding:6px 13px;border-radius:99px;border:1px solid var(--rule);font-size:13.5px;color:var(--dim)}
 .facts li b{color:var(--cyan);font-family:var(--mono)}
+.field{margin-top:22px}.field label{display:block;font-weight:700;margin-bottom:8px}
+.field input{width:100%;padding:13px 16px;border:2px solid var(--rule);border-radius:var(--rc);background:#0b1120;color:var(--chalk);font:500 16px var(--sans);outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.2)}
+.who{font-size:17px;margin:0 0 4px}.who b{color:var(--cyan)}
 .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:26px}
 .btn{font:700 15.5px var(--sans);border-radius:var(--rc);padding:12px 28px;min-height:48px;cursor:pointer;border:2px solid transparent;
 transition:transform .22s var(--pop),box-shadow .22s var(--eo),opacity .2s,background .2s,color .2s}
@@ -153,7 +157,8 @@ font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:cente
     <li>חזקה, שורש, עיגול, מקסימום, אקראי</li>
     <li>השלמת קוד וסידור שורות</li>
   </ul>
-  <div class="actions"><button class="btn primary" id="start">התחל</button></div>
+  <div class="field"><label for="name">שם התלמיד/ה</label><input id="name" type="text" autocomplete="name" placeholder="הקלידו שם מלא" maxlength="60"></div>
+  <div class="actions"><button class="btn primary" id="start" disabled>התחל</button></div>
 </section>
 
 <section class="card hidden" id="quiz">
@@ -168,6 +173,8 @@ font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:cente
 
 <section class="card score hidden" id="result">
   <p class="eyebrow">RESULT</p>
+  <h2 style="margin:0 0 4px;font-size:clamp(22px,5vw,30px);font-weight:900">המחלקה <span style="font-family:var(--mono);color:var(--lime)">Math</span> — שאלון סיכום</h2>
+  <p class="who" id="who"></p>
   <div class="ring" id="ring"><svg viewBox="0 0 180 180" width="190" height="190"><circle class="bg" cx="90" cy="90" r="80"/><circle class="val" id="arc" cx="90" cy="90" r="80"/></svg><div class="num" id="num">0</div></div>
   <p class="outcome" id="outcome"></p>
   <p class="sub" id="detail"></p>
@@ -237,7 +244,7 @@ const isAscii = s => /^[\x00-\x7F]+$/.test(s);
 
 function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
-let order=[], idx=0, answered=0, results=[];
+let order=[], idx=0, answered=0, results=[], studentName='';
 
 function start(){
   order = shuffle(Q.map((_,i)=>i));
@@ -345,8 +352,9 @@ function showResult(){
   const correct = results.filter(Boolean).length, score = Math.round(correct/Q.length*100), pass = score>=PASS;
   $('ring').classList.toggle('fail',!pass);
   $('num').textContent = score;
-  $('outcome').textContent = pass ? 'מעל סף המעבר' : 'מתחת לסף המעבר';
+  $('outcome').textContent = pass ? 'כל הכבוד, עברת את הסף!' : 'עוד קצת תרגול ונעבור את הסף';
   $('outcome').style.color = pass ? 'var(--lime)' : 'var(--coral)';
+  $('who').innerHTML = `<b>${esc(studentName)}</b> · מדעי המחשב`;
   $('detail').textContent = `${correct} מתוך ${Q.length} תשובות נכונות · סף המעבר ${PASS}`;
   const wl = $('wrongList'); wl.innerHTML='';
   Q.forEach((q,i)=>{ if(results[i]===false){ const li=document.createElement('li'); li.innerHTML=`<b>${i+1}</b>${q.q}`; wl.appendChild(li); } });
@@ -363,7 +371,10 @@ function confetti(){
   let t=0; (function frame(){ ctx.clearRect(0,0,c.width,c.height); ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle=p.col; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); ctx.restore(); }); if(++t<260) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height); })();
 }
 
-$('start').addEventListener('click',start);
+const nameEl=$('name');
+nameEl.addEventListener('input',()=>{ $('start').disabled = nameEl.value.trim().length<2; });
+nameEl.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('start').disabled) start(); });
+$('start').addEventListener('click',()=>{ studentName = nameEl.value.trim(); start(); });
 $('next').addEventListener('click',()=>{ if(idx<Q.length-1){ idx++; render(); } else showResult(); });
 $('reset').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התשובות עד כה יימחקו.')) start(); });
 $('again').addEventListener('click',start);

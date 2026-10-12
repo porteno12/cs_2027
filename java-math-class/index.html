@@ -36,6 +36,7 @@ h1 .m{font-family:var(--mono);color:var(--lime);font-weight:700}
 .facts{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
 .facts li{padding:6px 13px;border-radius:99px;border:1px solid var(--rule);font-size:13.5px;color:var(--dim)}
 .facts li b{color:var(--cyan);font-family:var(--mono)}
+.guide{margin:20px 0 0;padding:14px 16px;border-radius:var(--rc);background:rgba(34,211,238,.07);border:1px solid rgba(34,211,238,.3);font-size:15px;color:var(--chalk)}
 .field{margin-top:22px}.field label{display:block;font-weight:700;margin-bottom:8px}
 .field input{width:100%;padding:13px 16px;border:2px solid var(--rule);border-radius:var(--rc);background:#0b1120;color:var(--chalk);font:500 16px var(--sans);outline:none;transition:border-color .2s,box-shadow .2s}
 .field input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(34,211,238,.2)}
@@ -154,9 +155,8 @@ font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:cente
   <ul class="facts">
     <li><b id="nq"></b> שאלות</li>
     <li>סף מעבר: <b id="passTxt"></b></li>
-    <li>חזקה, שורש, עיגול, מקסימום, אקראי</li>
-    <li>השלמת קוד וסידור שורות</li>
   </ul>
+  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר, ואי אפשר לחזור לשאלה קודמת. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
   <div class="field"><label for="name">שם התלמיד/ה</label><input id="name" type="text" autocomplete="name" placeholder="הקלידו שם מלא" maxlength="60"></div>
   <div class="actions"><button class="btn primary" id="start" disabled>התחל</button></div>
 </section>

@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1E3A8A">
+<title>תנאים if / else — שאלון סיכום</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#1E3A8A;--navy2:#172554;--paper:#F8FAFC;--amber:#F59E0B;--true:#16A34A;--false:#E5484D;--ink:#0F172A;
+--dim:#475569;--line:#CBD5E1;--soft:#EEF2FF;--codefg:#E0E7FF;
+--r:12px;--rc:10px;--mono:'Fira Code',ui-monospace,monospace;--sans:Rubik,system-ui,sans-serif;
+--pop:cubic-bezier(.34,1.56,.64,1);--eo:cubic-bezier(.32,.72,0,1)}
+*{box-sizing:border-box}
+body{margin:0;background-color:var(--paper);color:var(--ink);direction:rtl;line-height:1.65;font-family:var(--sans);
+padding-block:28px;padding-inline:16px;min-height:100vh;overflow-x:hidden;
+background-image:linear-gradient(rgba(30,58,138,.09) 1px,transparent 1px),linear-gradient(90deg,rgba(30,58,138,.09) 1px,transparent 1px),
+linear-gradient(rgba(30,58,138,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(30,58,138,.04) 1px,transparent 1px);
+background-size:120px 120px,120px 120px,24px 24px,24px 24px}
+.nowrap{white-space:nowrap}
+.ltr{direction:ltr;unicode-bidi:isolate}
+.shell{width:min(740px,100%);margin-inline:auto}
+.card{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);
+padding:clamp(20px,5vw,34px);box-shadow:0 1px 0 rgba(30,58,138,.06),0 18px 50px rgba(30,58,138,.12);animation:rise .45s var(--eo) both}
+.card::before{content:"";position:absolute;inset-inline:0;top:0;height:4px;border-radius:var(--r) var(--r) 0 0;background:var(--navy)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.eyebrow{font:600 12px var(--mono);letter-spacing:.12em;color:var(--navy);direction:ltr;text-align:right;margin:0 0 14px}
+h1{font-size:clamp(32px,7vw,52px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px;font-weight:800;color:var(--navy);text-wrap:balance}
+h1 .m,h2 .m{font-family:var(--mono);font-weight:600;color:var(--amber);direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.meta{margin:0;color:var(--dim);font-size:15px}
+.meta b{color:var(--ink);font-weight:700}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.facts li{padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);font-size:13.5px;color:var(--dim);background:#fff}
+.facts li b{color:var(--navy);font-family:var(--mono)}
+.guide{margin:20px 0 0;padding:14px 16px;border-radius:var(--rc);background:var(--soft);border:1.5px solid rgba(30,58,138,.18);font-size:15px}
+.field{margin-top:22px}.field label{display:block;font-weight:700;margin-bottom:8px}
+.field input{width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:var(--rc);background:#fff;color:var(--ink);font:500 16px var(--sans);outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:var(--navy);box-shadow:0 0 0 3px rgba(30,58,138,.15)}
+/* cover flowchart */
+.flow{display:block;width:min(260px,70%);height:auto;margin:0 auto 18px}
+.flow .dia{transform-origin:130px 38px;animation:tilt 5s ease-in-out infinite}
+@keyframes tilt{0%,100%{transform:rotate(0)}50%{transform:rotate(8deg)}}
+.flow .br{stroke-dasharray:160;stroke-dashoffset:160;animation:draw 1.1s var(--eo) forwards}
+.flow .br.f{animation-delay:.35s}
+@keyframes draw{to{stroke-dashoffset:0}}
+.flow text{font:700 13px var(--sans)}
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:26px}
+.btn{font:700 15.5px var(--sans);border-radius:var(--rc);padding:12px 28px;min-height:48px;cursor:pointer;border:2px solid transparent;
+transition:transform .22s var(--pop),box-shadow .22s var(--eo),opacity .2s,background .2s,color .2s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.primary{background:var(--amber);color:var(--ink);box-shadow:0 6px 18px rgba(245,158,11,.3)}
+.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 26px rgba(245,158,11,.4)}
+.outline{background:#fff;color:var(--navy);border-color:var(--navy)}
+.outline:hover:not(:disabled){background:var(--soft)}
+.ghost{background:transparent;color:var(--dim);border-color:transparent;padding-inline:14px;font-weight:500}
+.ghost:hover{color:var(--navy)}
+:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
+/* progress */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;color:var(--dim);font-size:14px}
+.top b{color:var(--navy);font-family:var(--mono)}
+.track{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-bottom:20px;border:1px solid rgba(30,58,138,.12)}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--navy),var(--amber));transition:width .55s var(--eo)}
+/* question */
+.kind{display:inline-flex;align-items:center;gap:7px;margin-bottom:12px;padding:4px 12px 4px 10px;border-radius:99px;font:700 12px var(--sans);color:var(--navy);background:var(--soft);border:1.5px solid rgba(30,58,138,.25)}
+.kind::before{content:"";width:9px;height:9px;transform:rotate(45deg);background:var(--amber);border-radius:2px}
+.q{font-size:clamp(18px,4.4vw,21px);font-weight:700;margin:0 0 16px;line-height:1.5}
+.hint{color:var(--dim);font-size:13.5px;margin:0 0 12px}
+.code{direction:ltr;text-align:left;margin:0 0 18px;padding:12px 0;border-radius:var(--rc);background:var(--navy2);
+font:500 14.5px/1.75 var(--mono);color:var(--codefg);overflow-x:auto;box-shadow:inset 0 0 0 1px rgba(255,255,255,.06)}
+.code .ln{display:flex;align-items:center;min-height:1.75em;padding-inline-end:16px;white-space:pre}
+.code .no{flex:none;width:44px;padding-inline-end:12px;text-align:right;color:#7C8DC4;user-select:none}
+.kw{color:#FBBF24}.str{color:#86EFAC}.num{color:#93C5FD}
+.blank{display:inline-block;min-width:3em;padding:0 6px;border-bottom:2px dashed var(--amber);color:var(--amber);text-align:center}
+.blank.ok{border-color:#4ADE80;color:#4ADE80;border-bottom-style:solid}
+.blank.no{border-color:#FB7185;color:#FB7185;border-bottom-style:solid;animation:shake .45s}
+/* find the error: clickable lines */
+.code.pick .ln{width:100%;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;text-align:left;direction:ltr;border-inline-start:3px solid transparent;transition:background .15s,border-color .15s}
+.code.pick .ln:hover:not(:disabled){background:rgba(245,158,11,.14);border-inline-start-color:var(--amber)}
+.code.pick .ln:disabled{cursor:default}
+.code.pick .ln.ok{background:rgba(22,163,74,.3);border-inline-start-color:#4ADE80;animation:pop .5s var(--pop)}
+.code.pick .ln.no{background:rgba(229,72,77,.3);border-inline-start-color:#FB7185;animation:shake .45s}
+/* placement slots */
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:5.5em;min-height:1.6em;padding:0 8px;margin:0 2px;border-radius:6px;
+border:1.5px dashed var(--amber);background:rgba(245,158,11,.1);color:var(--amber);font:600 13.5px var(--mono);cursor:pointer;vertical-align:middle;white-space:pre;transition:background .15s,transform .2s var(--pop)}
+.slot.full{border-style:solid;color:var(--codefg);background:rgba(255,255,255,.08)}
+.slot.armed{background:rgba(245,158,11,.25);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 3px rgba(245,158,11,.35)}}
+.slot.ok{border-color:#4ADE80;border-style:solid;color:#BBF7D0;background:rgba(22,163,74,.3);animation:pop .5s var(--pop)}
+.slot.no{border-color:#FB7185;border-style:solid;color:#FECDD3;background:rgba(229,72,77,.3);animation:shake .45s}
+.slot:disabled{cursor:default}
+.bank{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-radius:var(--rc);border:1.5px dashed var(--line);background:var(--paper);min-height:56px;direction:ltr}
+.bank:empty::after{content:"כל הקטעים מוקמו";direction:rtl;color:var(--dim);font-size:13.5px;margin:auto}
+.chip{font:600 14px var(--mono);direction:ltr;padding:7px 13px;border-radius:8px;border:1.5px solid var(--navy);background:#fff;color:var(--navy);cursor:pointer;white-space:pre;transition:transform .18s var(--pop),background .15s,color .15s}
+.chip:hover:not(:disabled){transform:translateY(-2px)}
+.chip[aria-pressed="true"]{background:var(--navy);color:#fff;transform:translateY(-2px);box-shadow:0 6px 14px rgba(30,58,138,.3)}
+/* options */
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.opts.two{grid-template-columns:1fr 1fr}
+.choice{width:100%;text-align:start;padding:12px 14px;border-radius:var(--rc);border:1.5px solid var(--line);background:#fff;color:var(--ink);
+font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:center;transition:border-color .18s,background .18s,transform .18s var(--pop)}
+.choice:hover:not(:disabled){border-color:var(--navy);transform:translateY(-2px)}
+.choice:disabled{cursor:default}
+.choice .tag{flex:none;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font:700 13px var(--sans);background:var(--soft);color:var(--navy)}
+.choice .txt{direction:ltr;unicode-bidi:isolate;font:600 15px var(--mono);white-space:pre}
+.choice.ok{border-color:var(--true);background:rgba(22,163,74,.09);animation:pop .5s var(--pop)}
+.choice.ok .tag{background:var(--true);color:#fff}
+.choice.no{border-color:var(--false);background:rgba(229,72,77,.08);animation:shake .45s}
+.choice.no .tag{background:var(--false);color:#fff}
+.choice.dimmed{opacity:.5}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.035)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+/* order */
+.ord{list-style:none;margin:0;padding:0;display:grid;gap:7px;counter-reset:pos}
+.ord li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--rc);border:1.5px solid var(--line);background:#fff;transition:transform .25s var(--pop),border-color .18s,background .18s,opacity .15s}
+.ord li[draggable="true"]{cursor:grab}
+.ord li.drag{opacity:.4}
+.ord li::before{counter-increment:pos;content:counter(pos);flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:700 13px var(--mono);background:var(--soft);color:var(--navy)}
+.ord .line{flex:1;direction:ltr;text-align:left;font:500 14px var(--mono);color:var(--ink);unicode-bidi:isolate;overflow-x:auto;white-space:pre}
+.ord .line .kw{color:#B45309}.ord .line .str{color:#15803D}.ord .line .num{color:#1D4ED8}
+.mv{display:flex;gap:4px;flex:none}
+.mv button{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--line);background:#fff;color:var(--navy);cursor:pointer;font-size:14px;display:grid;place-items:center;transition:all .15s}
+.mv button:hover:not(:disabled){background:var(--soft);border-color:var(--navy)}
+.mv button:disabled{opacity:.3;cursor:default}
+.ord li.ok{border-color:var(--true);background:rgba(22,163,74,.08)}
+.ord li.no{border-color:var(--false);background:rgba(229,72,77,.07)}
+.ord li.ok::before{background:var(--true);color:#fff}.ord li.no::before{background:var(--false);color:#fff}
+/* feedback */
+.fb{margin-top:18px;padding:16px 18px;border-radius:var(--rc);border:1.5px solid;display:flex;gap:14px;align-items:flex-start;animation:rise .4s var(--eo) both}
+.fb.ok{border-color:rgba(22,163,74,.45);background:rgba(22,163,74,.06)}
+.fb.no{border-color:rgba(229,72,77,.45);background:rgba(229,72,77,.05)}
+.fb svg{flex:none;width:42px;height:42px}
+.fb .br{stroke-dasharray:60;stroke-dashoffset:60;animation:draw .7s var(--eo) .1s forwards}
+.fb h3{margin:0 0 6px;font-size:16px;font-weight:800}
+.fb.ok h3{color:var(--true)}.fb.no h3{color:var(--false)}
+.fb p{margin:0;font-size:15px}
+.fb .ans{margin-top:8px;font-size:14px;color:var(--dim)}
+.fb code{direction:ltr;unicode-bidi:isolate;font:600 13.5px var(--mono);color:var(--navy);white-space:pre}
+.fb pre{direction:ltr;text-align:left;margin:6px 0 0;padding:10px 12px;border-radius:8px;background:var(--soft);font:500 13px/1.6 var(--mono);color:var(--ink);overflow-x:auto}
+/* score */
+.score{text-align:center}
+.ring{width:190px;height:190px;margin:10px auto 18px;position:relative}
+.ring svg{transform:rotate(-90deg)}
+.ring circle{fill:none;stroke-width:12;stroke-linecap:round}
+.ring .bg{stroke:var(--soft)}
+.ring .val{stroke:var(--true);stroke-dasharray:502;stroke-dashoffset:502;transition:stroke-dashoffset 1.3s var(--eo)}
+.ring.fail .val{stroke:var(--false)}
+.ring .num{position:absolute;inset:0;display:grid;place-items:center;font:600 56px var(--mono);color:var(--navy);direction:ltr}
+.outcome{font-size:20px;font-weight:800;margin:0 0 6px;color:var(--true)}
+.ring.fail ~ .outcome{color:var(--false)}
+.who{font-size:17px;margin:0 0 4px}.who b{color:var(--navy)}
+.score .sub{color:var(--dim);margin:0 0 20px}
+.wrong{text-align:start;margin:0 0 20px;padding:0;list-style:none;display:grid;gap:6px}
+.wrong li{padding:10px 14px;border-radius:var(--rc);border:1.5px solid rgba(229,72,77,.35);background:rgba(229,72,77,.05);font-size:14.5px}
+.wrong li b{font-family:var(--mono);color:var(--false);margin-inline-end:8px}
+.submit{margin:0 0 6px;padding:14px 16px;border-radius:var(--rc);background:var(--soft);border:1.5px dashed rgba(30,58,138,.35);font-size:15px}
+/* practice */
+.task{margin-top:22px;padding:18px;border:1.5px solid var(--line);border-radius:var(--r);background:#fff}
+.task h3{margin:0 0 8px;font-size:18px;color:var(--navy);display:flex;align-items:center;gap:10px}
+.task h3 .pill{font:600 12px var(--mono);padding:3px 10px;border-radius:99px;background:var(--amber);color:var(--ink)}
+.task ul{margin:6px 0 14px;padding-inline-start:20px}
+.ide{border-radius:var(--rc);overflow:hidden;background:var(--navy2);border:1.5px solid var(--navy2)}
+.ide:focus-within{border-color:var(--amber);box-shadow:0 0 0 3px rgba(245,158,11,.2)}
+.ide-bar{display:flex;align-items:center;gap:7px;padding:8px 12px;direction:ltr;background:rgba(255,255,255,.06);font:600 12px var(--mono);color:#93A4D8}
+.ide-bar i{width:10px;height:10px;border-radius:50%;background:#475569}
+.ide-bar span{margin-inline-start:8px}
+.ide-body{display:flex;direction:ltr}
+.gutter{flex:none;width:44px;padding:12px 10px 12px 0;text-align:right;font:500 14px/1.7 var(--mono);color:#7C8DC4;user-select:none;white-space:pre;overflow:hidden}
+.ide textarea{flex:1;min-height:190px;resize:vertical;padding:12px 14px 12px 4px;border:0;outline:none;background:transparent;color:var(--codefg);font:500 14px/1.7 var(--mono);direction:ltr;text-align:left;white-space:pre;overflow-x:auto;tab-size:4}
+.sol{margin-top:14px;animation:rise .4s var(--eo) both}
+.sol h4{margin:14px 0 8px;font-size:15px}
+table.tests{border-collapse:collapse;width:100%;font-size:14.5px}
+table.tests th,table.tests td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:start}
+table.tests th{color:var(--dim);font-weight:500;font-size:13px}
+table.tests td.v{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
+.hidden{display:none!important}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+@media (max-width:520px){.opts.two{grid-template-columns:1fr}.mv button{width:40px;height:40px}}
+@media print{body{background:#fff;padding:0}.card{box-shadow:none;animation:none}.btn,#confetti,.flow{display:none!important}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.flow .br,.fb .br{stroke-dashoffset:0}}
+</style>
+</head>
+<body>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<main class="shell">
+
+<section class="card" id="cover">
+  <svg class="flow" viewBox="0 0 260 130" aria-hidden="true">
+    <path class="br" d="M88 38 H40 V96" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round"/>
+    <path class="br f" d="M172 38 H220 V96" fill="none" stroke="#E5484D" stroke-width="3" stroke-linecap="round"/>
+    <g class="dia"><polygon points="130,4 172,38 130,72 88,38" fill="#fff" stroke="#1E3A8A" stroke-width="3"/><text x="130" y="43" text-anchor="middle" fill="#1E3A8A">?</text></g>
+    <rect x="8" y="96" width="64" height="28" rx="8" fill="#16A34A"/><text x="40" y="115" text-anchor="middle" fill="#fff">אמת</text>
+    <rect x="188" y="96" width="64" height="28" rx="8" fill="#E5484D"/><text x="220" y="115" text-anchor="middle" fill="#fff">שקר</text>
+  </svg>
+  <p class="eyebrow">CS · JAVA · IF / ELSE</p>
+  <h1>תנאים <span class="m">if / else</span></h1>
+  <p class="meta"><b>מדעי המחשב</b> · שאלון סיכום</p>
+  <p class="meta">רוני רובן · אוקטובר 2026 · תשפ"ז</p>
+  <ul class="facts">
+    <li><b id="nq"></b> שאלות</li>
+    <li>סף מעבר: <b id="passTxt"></b></li>
+    <li>ובסוף: תרגול כתיבה</li>
+  </ul>
+  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר, ואי אפשר לחזור לשאלה קודמת. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>. אחרי הסיכום מחכה תרגול כתיבת קוד שאינו נכלל בציון.</p>
+  <div class="field"><label for="name">שם התלמיד/ה</label><input id="name" type="text" autocomplete="name" placeholder="הקלידו שם מלא" maxlength="60"></div>
+  <div class="actions"><button class="btn primary" id="start" disabled>התחל</button></div>
+</section>
+
+<section class="card hidden" id="quiz">
+  <div class="top"><span>שאלה <b id="cur"></b> מתוך <b id="tot"></b></span><span><b id="pct">0</b> הושלמו</span></div>
+  <div class="track"><div class="fill" id="bar"></div></div>
+  <div id="body"></div>
+  <div class="actions">
+    <button class="btn ghost" id="reset">התחל מחדש</button>
+    <button class="btn primary" id="next" disabled>הבאה</button>
+  </div>
+</section>
+
+<section class="card score hidden" id="result">
+  <p class="eyebrow">RESULT</p>
+  <h2 style="margin:0 0 4px;font-size:clamp(22px,5vw,30px);font-weight:800;color:var(--navy)">תנאים <span class="m">if / else</span> — שאלון סיכום</h2>
+  <p class="who" id="who"></p>
+  <div class="ring" id="ring"><svg viewBox="0 0 180 180" width="190" height="190"><circle class="bg" cx="90" cy="90" r="80"/><circle class="val" id="arc" cx="90" cy="90" r="80"/></svg><div class="num" id="num">0</div></div>
+  <p class="outcome" id="outcome"></p>
+  <p class="sub" id="detail"></p>
+  <ul class="wrong" id="wrongList"></ul>
+  <p class="submit">צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <div class="actions"><button class="btn ghost" id="again">התחל מחדש</button><button class="btn primary" id="toPractice">לתרגול הכתיבה</button></div>
+</section>
+
+<section class="card hidden" id="practice">
+  <p class="eyebrow">PRACTICE</p>
+  <h2 style="margin:0 0 6px;font-size:clamp(24px,5.5vw,32px);font-weight:800;color:var(--navy)">תרגול כתיבה עצמית</h2>
+  <p class="meta">החלק הזה אינו נכלל בציון.</p>
+  <p class="guide">פתרו כל משימה בסביבת פיתוח (כגון <bdi class="nowrap">IntelliJ</bdi>): כתבו את התוכנית, הריצו אותה על כל הערכים שבטבלת הבדיקה, ובדקו שהפלט נכון. אפשר להדביק את הקוד בתיבה שלמטה. רק אחרי שניסיתם בעצמכם, פתחו את הפתרון לדוגמה והשוו.</p>
+  <div id="tasks"></div>
+  <div class="actions"><button class="btn ghost" id="backToResult">חזרה לסיכום</button></div>
+</section>
+
+</main>
+<script>
+const PASS = 60;
+
+const Q = [
+{type:'place', q:'מקמו את התנאים כך שציון 90 ומעלה יקבל בונוס 100, ציון 80 עד 89 יקבל 50, ציון 70 עד 79 יקבל 20, וכל ציון נמוך יותר יקבל 0.',
+ code:['int bonus;','if ([[0]]) bonus = 100;','else if ([[1]]) bonus = 50;','else if ([[2]]) bonus = 20;','else bonus = 0;'],
+ chips:['grade >= 90','grade >= 80','grade >= 70'], ans:['grade >= 90','grade >= 80','grade >= 70'],
+ exp:'בשרשרת תנאים מתבצע רק הענף הראשון שהתנאי שלו מתקיים, ולכן הסדר קובע. אם בודקים קודם את הסף הנמוך, ציון 95 ייעצר כבר בתנאי של 70 ויקבל בונוס 20. כשהספים מסודרים מהגבוה לנמוך, כל ציון נעצר בדיוק בטווח שלו.'},
+{type:'place', q:'התוכנית צריכה לספור כמה מהתנאים מתקיימים, כך שעבור 25 יודפס 3. מקמו את מילות המפתח.',
+ code:['int x = 25, count = 0;','[[0]] (x > 5) count++;','[[1]] (x > 10) count++;','[[2]] (x > 20) count++;','System.out.println(count);'],
+ chips:['if','if','if','else if','else if','else'], ans:['if','if','if'],
+ exp:'כל תנאי צריך להיבדק בנפרד, ולכן בכל שלושת המקומות מתחיל תנאי עצמאי חדש. אם תנאי היה ממשיך שרשרת, הוא היה מדולג ברגע שהתנאי שלפניו מתקיים, והמונה היה עוצר מוקדם מדי. עבור 25 שלושת התנאים מתקיימים, ולכן מודפס 3.'},
+{type:'place', q:'מקמו את התנאים כך שיודפס 1 אם שני המספרים גדולים מ-5, יודפס 2 אם בדיוק אחד מהם גדול מ-5, ואחרת יודפס 3.',
+ code:['if ([[0]]) System.out.println(1);','else if ([[1]]) System.out.println(2);','else System.out.println(3);'],
+ chips:['a > 5 && b > 5','a > 5 || b > 5','a > 5','!(a > 5)'], ans:['a > 5 && b > 5','a > 5 || b > 5'],
+ exp:'התנאי הראשון דורש ששני החלקים יתקיימו יחד, ולכן הוא משתמש ב"וגם". לענף השני מגיעים רק אם לא שני המספרים גדולים מ-5, ולכן "או" מתקיים שם בדיוק כשאחד מהם גדול מ-5. אילו הסדר היה הפוך, גם מקרה של שני מספרים גדולים היה נעצר בענף של "או".'},
+{type:'find', q:'הקוד מדפיס <bdi>hot</bdi> למרות שהטמפרטורה היא 10. באיזו שורה נמצאת השגיאה?',
+ code:['int temp = 10;','System.out.println("checking");','if (temp > 25);','{','    System.out.println("hot");','}'], ans:2,
+ exp:'הנקודה-פסיק בסוף שורה 3 סוגרת את התנאי עם פקודה ריקה. הבלוק שבסוגריים המסולסלים כבר אינו שייך לתנאי, ולכן הוא מתבצע תמיד. מוחקים את הנקודה-פסיק, והבלוק יתבצע רק כשהטמפרטורה גבוהה מ-25.'},
+{type:'find', q:'הקוד אינו עובר הידור. באיזו שורה נמצאת השגיאה?',
+ code:['int a = 3;','int b = 7;','if (a > b) {','    System.out.println("a");','} else if (a = b) {','    System.out.println("equal");','} else {','    System.out.println("b");','}'], ans:4,
+ exp:'בשורה 5 מופיע סימן שווה בודד, שהוא השמה ולא השוואה. תוצאת ההשמה היא מספר שלם ולא ערך אמת או שקר, ולכן הקוד אינו עובר הידור. להשוואה משתמשים בשני סימני שווה צמודים.'},
+{type:'fill', q:'השלימו כך שיודפס <bdi>adult</bdi> עבור גיל 18 ומעלה.',
+ code:['int age = 18;','if (age ____ 18) System.out.println("adult");','else System.out.println("minor");'], opts:['>=','>','==','<='], ans:0,
+ exp:'הדרישה כוללת את גיל 18 עצמו, ולכן צריך "גדול או שווה". "גדול ממש" היה מדפיס עבור 18 את ההודעה של קטין. "שווה" מתאים רק לגיל 18 בדיוק, ו"קטן או שווה" הופך את הדרישה.'},
+{type:'fill', q:'השלימו כך שיודפס <bdi>valid</bdi> רק עבור מספר בין 1 ל-10, כולל.',
+ code:['int n = 12;','if (n >= 1 ____ n <= 10) System.out.println("valid");'], opts:['&&','||','!','=='], ans:0,
+ exp:'מספר נמצא בטווח רק אם שני התנאים מתקיימים יחד: הוא לפחות 1 וגם לכל היותר 10. עם "או" כל מספר היה עובר, כי כל מספר מקיים לפחות אחד משני החלקים. עבור 12 החלק השני נכשל, ולכן לא יודפס דבר.'},
+{type:'order', q:'סדרו את השורות כך שמעל 30 יודפס <bdi>hot</bdi>, מעל 15 יודפס <bdi>nice</bdi>, ואחרת יודפס <bdi>cold</bdi>.',
+ lines:['int temp = 18;','if (temp > 30)','    System.out.println("hot");','else if (temp > 15)','    System.out.println("nice");','else','    System.out.println("cold");'],
+ exp:'השרשרת בודקת קודם את הסף הגבוה ואחריו את הנמוך. כל הדפסה באה מיד אחרי התנאי שלה, והענף האחרון תופס את כל שאר המקרים. עבור 18 התנאי הראשון נכשל והשני מתקיים, ולכן יודפס <bdi>nice</bdi>.'},
+{type:'order', q:'סדרו את השורות: כניסה חינם מתחת לגיל 6 או מגיל 65 ומעלה, ואחרת בתשלום. בסוף תמיד יודפס <bdi>bye</bdi>.',
+ lines:['int age = 70;','if (age < 6 || age >= 65)','    System.out.println("free");','else','    System.out.println("pay");','System.out.println("bye");'],
+ exp:'מגדירים קודם את הגיל, ואז תנאי אחד עם "או" מכסה את שני המקרים של כניסה חינם. ההדפסה של התשלום שייכת לענף החלופי. ההדפסה האחרונה אינה תלויה בתנאי, ולכן היא באה אחרי שני הענפים ומתבצעת תמיד.'},
+{type:'order', q:'סדרו את השורות כך שהתוכנית תדפיס 13.',
+ lines:['int x = 7;','if (x > 5) x = x - 4;','if (x > 3) x = x * 2;','else x = x + 10;','System.out.println(x);'],
+ exp:'אחרי ההגדרה, התנאי הראשון מוריד 4 מ-7, והמשתנה שווה 3. התנאי השני נבדק על הערך החדש: 3 אינו גדול מ-3, ולכן מתבצע הענף החלופי ומוסיף 10. כך מתקבל 13, וההדפסה חייבת לבוא בסוף.'},
+{type:'place', q:'מקמו את התנאים כך שעבור 15 יודפס 1, עבור 25 יודפס 2 ועבור 3 יודפס 3.',
+ code:['if ([[0]]) System.out.println(1);','else if ([[1]]) System.out.println(2);','else System.out.println(3);'],
+ chips:['n > 10 && n < 20','n > 5 || n == 0','n > 10 || n < 20','n > 5 && n == 0'], ans:['n > 10 && n < 20','n > 5 || n == 0'],
+ exp:'רק התנאי "גדול מ-10 וגם קטן מ-20" מבודד את 15, כי 25 אינו קטן מ-20. לענף השני מגיעים 25 ו-3, והתנאי "גדול מ-5 או שווה 0" מתקיים עבור 25 בלבד. התנאי "גדול מ-10 או קטן מ-20" מתקיים עבור כל מספר, והתנאי "גדול מ-5 וגם שווה 0" לעולם אינו מתקיים.'},
+{type:'find', q:'המטרה: מעל 30 יודפס <bdi>hot</bdi>, מ-20 עד 30 יודפס <bdi>pleasant</bdi>, ומתחת ל-20 יודפס <bdi>cold</bdi>. עבור 10 הקוד מדפיס <bdi>pleasant</bdi>. באיזו שורה נמצאת השגיאה?',
+ code:['int t = 10;','if (t > 30)','    System.out.println("hot");','else if (t >= 20 || t <= 30)','    System.out.println("pleasant");','else','    System.out.println("cold");'], ans:3,
+ exp:'בשורה 4 התנאי משתמש ב"או", וכל מספר מקיים לפחות אחד משני החלקים: גדול או שווה ל-20, או קטן או שווה ל-30. לכן התנאי מתקיים תמיד, והענף האחרון לעולם אינו מתבצע. צריך "וגם" במקום "או", ואז עבור 10 יודפס <bdi>cold</bdi>.'},
+{type:'fill', q:'בחרו את התנאי שידפיס <bdi>out</bdi> בדיוק כאשר המספר נמצא מחוץ לטווח 1 עד 10.',
+ code:['if (____) System.out.println("out");'], opts:['x < 1 || x > 10','x < 1 && x > 10','!(x >= 1 || x <= 10)','x <= 1 || x >= 10'], ans:0, wide:true,
+ exp:'מספר נמצא מחוץ לטווח אם הוא קטן מ-1 או גדול מ-10, ואף מספר אינו מקיים את שני המקרים יחד, ולכן "וגם" לעולם אינו מתקיים. השלילה של "או" נכשלת תמיד, כי כל מספר מקיים לפחות אחד מהחלקים שבתוכה. האפשרות עם "קטן או שווה" ו"גדול או שווה" מדפיסה בטעות גם עבור 1 ועבור 10.'},
+{type:'fill', q:'הקוד צריך להדפיס את הגדול מבין שלושה מספרים. השלימו את התנאי החסר.',
+ code:['if (a >= b && a >= c) System.out.println(a);','else if (____) System.out.println(b);','else System.out.println(c);'], opts:['b >= c','b > a','b >= a || b >= c','b < c'], ans:0,
+ exp:'לענף השני מגיעים רק אם המספר הראשון אינו הגדול ביותר, ולכן נשאר להשוות רק בין השני לשלישי. התנאי "השני גדול מהראשון" נכשל כשהשלישי הוא הגדול, למשל עבור 1, 3, 5. גם התנאי עם "או" מדפיס 3 באותה דוגמה, והתנאי ההפוך מדפיס את הקטן מבין השניים.'},
+{type:'order', q:'סדרו את השורות: מגיל 65 ומעלה המחיר יורד בחצי. רק אחרי זה, אם המחיר נמוך מ-30, יודפס <bdi>discount</bdi>. בסוף תמיד יודפס המחיר.',
+ lines:['int age = 70, price = 50;','if (age >= 65)','    price = price / 2;','if (price < 30)','    System.out.println("discount");','System.out.println(price);'],
+ exp:'ההנחה לפי גיל צריכה להתבצע לפני בדיקת המחיר, כי הבדיקה תלויה במחיר החדש. מחיר של 50 יורד ל-25, ורק אז התנאי השני מתקיים ומודפסת הודעת ההנחה. ההדפסה האחרונה אינה תלויה באף תנאי, ולכן היא באה בסוף.'}
+];
+
+const PRACTICE = [
+{title:'שעות היום', file:'TimeOfDay.java',
+ intro:'נתון משתנה <bdi>hour</bdi> עם ערך שלם בין 0 ל-23. כתבו תוכנית שמדפיסה:',
+ rules:['<bdi>morning</bdi> בין 5 ל-11','<bdi>afternoon</bdi> בין 12 ל-17','<bdi>evening</bdi> בין 18 ל-21','<bdi>night</bdi> בכל שעה אחרת'],
+ tests:[['7','morning'],['12','afternoon'],['21','evening'],['23','night'],['3','night']], inLabel:'hour',
+ sol:['if (hour >= 5 && hour <= 11) System.out.println("morning");','else if (hour >= 12 && hour <= 17) System.out.println("afternoon");','else if (hour >= 18 && hour <= 21) System.out.println("evening");','else System.out.println("night");']},
+{title:'סוג המשולש', file:'Triangle.java',
+ intro:'נתונים שלושה אורכי צלעות <bdi>a</bdi>, <bdi>b</bdi> ו-<bdi>c</bdi>. כתבו תוכנית שמדפיסה:',
+ rules:['<bdi>equilateral</bdi> אם כל הצלעות שוות','<bdi>isosceles</bdi> אם בדיוק שתי צלעות שוות','<bdi>scalene</bdi> אם אין צלעות שוות'],
+ tests:[['3, 3, 3','equilateral'],['3, 3, 5','isosceles'],['5, 3, 5','isosceles'],['3, 4, 5','scalene']], inLabel:'a, b, c',
+ sol:['if (a == b && b == c) System.out.println("equilateral");','else if (a == b || b == c || a == c) System.out.println("isosceles");','else System.out.println("scalene");']}
+];
+
+const KIND = {place:'מיקום בקוד', find:'מציאת שגיאה', fill:'השלמת קוד', order:'סידור שורות'};
+const LETTERS = ['א','ב','ג','ד','ה','ו'];
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* light Java highlighting; slotFn renders [[k]] placeholders */
+const TOK = /("[^"]*")|\b(if|else|int|boolean|double)\b|\b(\d+)\b|(____)|\[\[(\d)\]\]/g;
+function hl(src, slotFn){
+  let out='', last=0, m; TOK.lastIndex=0;
+  while((m=TOK.exec(src))){
+    out += esc(src.slice(last,m.index));
+    if(m[1]) out += `<span class="str">${esc(m[1])}</span>`;
+    else if(m[2]) out += `<span class="kw">${m[2]}</span>`;
+    else if(m[3]) out += `<span class="num">${m[3]}</span>`;
+    else if(m[4]) out += `<span class="blank" id="blank">____</span>`;
+    else if(m[5]) out += slotFn ? slotFn(+m[5]) : '';
+    last = TOK.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+const codeBlock = (lines, slotFn) => '<div class="code" dir="ltr">'+lines.map((l,i)=>`<div class="ln"><span class="no">${i+1}</span><span>${hl(l,slotFn)}</span></div>`).join('')+'</div>';
+
+let order=[], idx=0, answered=0, results=[], studentName='';
+
+function start(){
+  order = shuffle(Q.map((_,i)=>i));
+  idx=0; answered=0; results=Q.map(()=>null);
+  Q.forEach(q=>{
+    if(q.type==='fill') q.perm = shuffle(q.opts.map((_,i)=>i));
+    if(q.type==='place'){ q.bank = shuffle(q.chips.map((_,i)=>i)); q.put = q.ans.map(()=>null); q.sel = null; q.locked = false; }
+    if(q.type==='order'){ let p; do{ p = shuffle(q.lines.map((_,i)=>i)); }while(p.every((v,i)=>v===i)); q.perm = p; }
+  });
+  ['cover','result','practice'].forEach(s=>$(s).classList.add('hidden')); $('quiz').classList.remove('hidden');
+  $('tot').textContent = Q.length;
+  render();
+}
+
+function progress(){
+  const p = Math.round(answered/Q.length*100);
+  $('bar').style.width = p+'%'; $('pct').textContent = p;
+}
+
+function render(){
+  const q = Q[order[idx]];
+  $('cur').textContent = idx+1; progress();
+  $('next').disabled = true;
+  $('next').textContent = idx===Q.length-1 ? 'לסיכום' : 'הבאה';
+  let h = `<span class="kind">${KIND[q.type]}</span><p class="q">${q.q}</p>`;
+  if(q.type==='place'){
+    h += '<p class="hint">בחרו קטע מהמאגר ואז לחצו על המקום שלו בקוד. לחיצה על מקום מלא מחזירה את הקטע למאגר.</p><div id="placeArea"></div>';
+    h += '<div class="actions" style="margin-top:14px"><span></span><button class="btn outline" id="check" disabled>בדיקה</button></div>';
+  } else if(q.type==='find'){
+    h += '<p class="hint">לחצו על השורה שבה נמצאת השגיאה.</p><div class="code pick" dir="ltr">'+q.code.map((l,i)=>`<button class="ln" data-l="${i}" aria-label="שורה ${i+1}"><span class="no">${i+1}</span><span>${hl(l)}</span></button>`).join('')+'</div>';
+  } else if(q.type==='fill'){
+    h += codeBlock(q.code);
+    h += `<ul class="opts${q.wide?'':' two'}">`+q.perm.map((oi,k)=>`<li><button class="choice" data-i="${oi}"><span class="tag">${LETTERS[k]}</span><span class="txt">${esc(q.opts[oi])}</span></button></li>`).join('')+'</ul>';
+  } else if(q.type==='order'){
+    h += '<p class="hint">גררו שורה למקומה, או השתמשו בחצים כדי להזיז אותה למעלה או למטה. אחר כך לחצו "בדיקה".</p><ol class="ord" id="ord">'+q.perm.map(li=>`<li draggable="true" data-l="${li}"><span class="line">${hl(q.lines[li])}</span><span class="mv"><button data-d="-1" aria-label="הזז למעלה">▲</button><button data-d="1" aria-label="הזז למטה">▼</button></span></li>`).join('')+'</ol>';
+    h += '<div class="actions" style="margin-top:14px"><span></span><button class="btn outline" id="check">בדיקה</button></div>';
+  }
+  h += '<div id="fb"></div>';
+  $('body').innerHTML = h;
+  wire(q);
+  $('quiz').scrollIntoView({block:'start'});
+}
+
+function drawPlace(q, focusSel){
+  const slotFn = k => {
+    const ci = q.put[k], cls = ['slot'];
+    if(ci!==null) cls.push('full');
+    if(ci===null && q.sel!==null) cls.push('armed');
+    if(q.locked) cls.push(q.chips[ci]===q.ans[k] ? 'ok' : 'no');
+    return `<button class="${cls.join(' ')}" data-s="${k}" aria-label="מקום ${k+1}${ci!==null?': '+esc(q.chips[ci]):' ריק'}"${q.locked?' disabled':''}>${ci!==null?esc(q.chips[ci]):k+1}</button>`;
+  };
+  const placed = new Set(q.put.filter(v=>v!==null));
+  $('placeArea').innerHTML = codeBlock(q.code, slotFn) +
+    '<div class="bank" aria-label="מאגר קטעים">'+q.bank.filter(ci=>!placed.has(ci)).map(ci=>`<button class="chip" data-c="${ci}" aria-pressed="${q.sel===ci}"${q.locked?' disabled':''}>${esc(q.chips[ci])}</button>`).join('')+'</div>';
+  $('check').disabled = q.locked || q.put.some(v=>v===null);
+  if(focusSel){ const el = $('placeArea').querySelector(focusSel); if(el) el.focus(); }
+}
+
+function wire(q){
+  const body = $('body');
+  if(q.type==='place'){
+    drawPlace(q);
+    $('placeArea').addEventListener('click',e=>{
+      if(q.locked) return;
+      const chip = e.target.closest('.chip'), slot = e.target.closest('.slot');
+      if(chip){ const ci=+chip.dataset.c; q.sel = q.sel===ci ? null : ci; drawPlace(q, `.chip[data-c="${ci}"]`); return; }
+      if(slot){
+        const k=+slot.dataset.s;
+        if(q.sel!==null){ q.put[k]=q.sel; q.sel=null; }
+        else if(q.put[k]!==null){ q.put[k]=null; }
+        drawPlace(q, `.slot[data-s="${k}"]`);
+      }
+    });
+    $('check').addEventListener('click',()=>{
+      q.locked = true; q.sel = null;
+      const ok = q.put.every((ci,k)=>q.chips[ci]===q.ans[k]);
+      drawPlace(q);
+      finish(q, ok, ok?null:'המיקום הנכון: '+q.ans.map((a,k)=>`מקום ${k+1} — <code>${esc(a)}</code>`).join(' · '));
+    });
+  } else if(q.type==='find'){
+    body.querySelectorAll('.code.pick .ln').forEach(b=>b.addEventListener('click',()=>{
+      const pick=+b.dataset.l, ok=pick===q.ans;
+      body.querySelectorAll('.code.pick .ln').forEach(c=>{ c.disabled=true; const l=+c.dataset.l; if(l===q.ans) c.classList.add('ok'); else if(l===pick) c.classList.add('no'); });
+      finish(q, ok, ok?null:`השגיאה נמצאת בשורה ${q.ans+1}.`);
+    }));
+  } else if(q.type==='fill'){
+    body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      const pick=+b.dataset.i, ok=pick===q.ans;
+      body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; const i=+c.dataset.i; if(i===q.ans) c.classList.add('ok'); else if(i===pick) c.classList.add('no'); else c.classList.add('dimmed'); });
+      const blank=$('blank'); blank.textContent=q.opts[pick]; blank.classList.add(ok?'ok':'no');
+      finish(q, ok, ok?null:`התשובה הנכונה: <code>${esc(q.opts[q.ans])}</code>`);
+    }));
+  } else if(q.type==='order'){
+    const ol = $('ord'); let dragged=null;
+    ol.addEventListener('click',e=>{
+      const b = e.target.closest('button[data-d]'); if(!b) return;
+      const li = b.closest('li'), d=+b.dataset.d;
+      if(d<0 && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+      if(d>0 && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+      b.focus();
+    });
+    ol.addEventListener('dragstart',e=>{ dragged=e.target.closest('li'); if(!dragged) return; dragged.classList.add('drag'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',''); });
+    ol.addEventListener('dragend',()=>{ if(dragged) dragged.classList.remove('drag'); dragged=null; });
+    ol.addEventListener('dragover',e=>{
+      if(!dragged) return; e.preventDefault();
+      const over=e.target.closest('li'); if(!over||over===dragged) return;
+      const r=over.getBoundingClientRect();
+      ol.insertBefore(dragged, e.clientY < r.top+r.height/2 ? over : over.nextElementSibling);
+    });
+    ol.addEventListener('drop',e=>e.preventDefault());
+    $('check').addEventListener('click',()=>{
+      let all=true;
+      [...ol.children].forEach((li,pos)=>{ const ok=+li.dataset.l===pos; if(!ok) all=false; li.classList.add(ok?'ok':'no'); li.draggable=false; li.querySelectorAll('button').forEach(x=>x.disabled=true); });
+      $('check').disabled=true;
+      finish(q, all, all?null:'הסדר הנכון:<pre>'+q.lines.map(esc).join('\n')+'</pre>');
+    });
+  }
+}
+
+function branchIcon(ok){
+  const br = ok ? '<path class="br" d="M34 16 H40 V40" fill="none" stroke="#16A34A" stroke-width="3" stroke-linecap="round"/>'
+                : '<path class="br" d="M6 16 H0 V40" fill="none" stroke="#E5484D" stroke-width="3" stroke-linecap="round"/>';
+  return `<svg viewBox="-2 0 44 42" aria-hidden="true">${br}<polygon points="20,2 34,16 20,30 6,16" fill="${ok?'#16A34A':'#E5484D'}"/><text x="20" y="21" text-anchor="middle" fill="#fff" style="font:700 13px Rubik,sans-serif">${ok?'✓':'✗'}</text></svg>`;
+}
+
+function finish(q, ok, ansHtml){
+  results[Q.indexOf(q)] = ok; answered++; progress();
+  $('fb').innerHTML = `<div class="fb ${ok?'ok':'no'}">${branchIcon(ok)}<div><h3>${ok?'נכון!':'לא נכון'}</h3><p>${q.exp}</p>${ansHtml?`<div class="ans">${ansHtml}</div>`:''}</div></div>`;
+  $('next').disabled=false; $('next').focus({preventScroll:true});
+}
+
+function showResult(){
+  $('quiz').classList.add('hidden'); $('practice').classList.add('hidden'); $('result').classList.remove('hidden');
+  const correct = results.filter(Boolean).length, score = Math.round(correct/Q.length*100), pass = score>=PASS;
+  $('ring').classList.toggle('fail',!pass);
+  $('num').textContent = score;
+  $('outcome').textContent = pass ? 'עבר/ה את סף המעבר' : 'מתחת לסף המעבר';
+  $('who').innerHTML = `<b>${esc(studentName)}</b> · מדעי המחשב`;
+  $('detail').textContent = `${correct} מתוך ${Q.length} תשובות נכונות · סף המעבר ${PASS}`;
+  const wl = $('wrongList'); wl.innerHTML='';
+  order.forEach((qi,pos)=>{ if(results[qi]===false){ const li=document.createElement('li'); li.innerHTML=`<b>${pos+1}</b>${Q[qi].q}`; wl.appendChild(li); } });
+  $('arc').style.transition='none'; $('arc').style.strokeDashoffset=502;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ $('arc').style.transition=''; $('arc').style.strokeDashoffset = 502 - 502*score/100; }));
+  if(pass) confetti();
+  window.scrollTo({top:0});
+}
+
+function buildPractice(){
+  $('tasks').innerHTML = PRACTICE.map((t,i)=>`
+  <div class="task">
+    <h3><span class="pill">${i+1}</span>${t.title}</h3>
+    <p style="margin:0">${t.intro}</p>
+    <ul>${t.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
+    <div class="ide"><div class="ide-bar"><i></i><i></i><i></i><span>${t.file}</span></div>
+      <div class="ide-body"><div class="gutter" id="g${i}">1</div><textarea id="t${i}" spellcheck="false" autocapitalize="off" autocorrect="off" aria-label="כתיבת קוד למשימה ${i+1}"></textarea></div></div>
+    <div class="actions" style="margin-top:14px"><span></span><button class="btn outline" data-sol="${i}" aria-expanded="false">הצג פתרון לדוגמה</button></div>
+    <div class="sol hidden" id="s${i}">
+      <h4>טבלת בדיקה</h4>
+      <table class="tests"><thead><tr><th>קלט (<bdi>${t.inLabel}</bdi>)</th><th>פלט צפוי</th></tr></thead><tbody>${t.tests.map(r=>`<tr><td class="v">${r[0]}</td><td class="v">${r[1]}</td></tr>`).join('')}</tbody></table>
+      <h4>פתרון לדוגמה</h4>
+      ${codeBlock(t.sol)}
+    </div>
+  </div>`).join('');
+  PRACTICE.forEach((_,i)=>{
+    const ta=$('t'+i), g=$('g'+i);
+    const sync=()=>{ const n=ta.value.split('\n').length; g.textContent=Array.from({length:n},(_,k)=>k+1).join('\n'); g.scrollTop=ta.scrollTop; };
+    ta.addEventListener('input',sync); ta.addEventListener('scroll',()=>{ g.scrollTop=ta.scrollTop; });
+  });
+  $('tasks').addEventListener('click',e=>{
+    const b=e.target.closest('button[data-sol]'); if(!b) return;
+    const s=$('s'+b.dataset.sol), open=s.classList.toggle('hidden')===false;
+    b.textContent = open ? 'הסתר פתרון' : 'הצג פתרון לדוגמה'; b.setAttribute('aria-expanded',open);
+  });
+}
+
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=$('confetti'), ctx=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight;
+  const cols=['#F59E0B','#1E3A8A','#16A34A','#93C5FD'];
+  const ps=Array.from({length:140},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:5+Math.random()*5,a:Math.random()*6,va:(Math.random()-.5)*.3,col:cols[Math.floor(Math.random()*4)]}));
+  let t=0; (function frame(){ ctx.clearRect(0,0,c.width,c.height); ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a+Math.PI/4); ctx.fillStyle=p.col; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore(); }); if(++t<260) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height); })();
+}
+
+const nameEl=$('name');
+nameEl.addEventListener('input',()=>{ $('start').disabled = nameEl.value.trim().length<2; });
+nameEl.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('start').disabled){ studentName=nameEl.value.trim(); start(); } });
+$('start').addEventListener('click',()=>{ studentName = nameEl.value.trim(); start(); });
+$('next').addEventListener('click',()=>{ if(idx<Q.length-1){ idx++; render(); } else showResult(); });
+$('reset').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התשובות עד כה יימחקו.')){ nameEl.value=''; $('start').disabled=true; $('quiz').classList.add('hidden'); $('cover').classList.remove('hidden'); window.scrollTo({top:0}); } });
+$('again').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התוצאה הנוכחית תימחק.')) start(); });
+$('toPractice').addEventListener('click',()=>{ $('result').classList.add('hidden'); $('practice').classList.remove('hidden'); window.scrollTo({top:0}); });
+$('backToResult').addEventListener('click',()=>{ $('practice').classList.add('hidden'); $('result').classList.remove('hidden'); window.scrollTo({top:0}); });
+
+$('nq').textContent=Q.length; $('passTxt').textContent=PASS;
+buildPractice();
+</script>
+</body>
+</html>

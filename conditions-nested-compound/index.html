@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0F766E">
+<title>תנאים מקוננים ומורכבים — שאלון סיכום</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0B2027;--teal:#0F766E;--teal2:#115E59;--paper:#F3F8F6;--gold:#EAB308;--true:#15803D;--false:#DC2626;
+--dim:#4B635E;--line:#C9DAD5;--soft:#E2F1EC;--codebg:#0B2027;--codefg:#D1FAE5;
+--r:16px;--rc:11px;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;--sans:Assistant,system-ui,sans-serif;
+--pop:cubic-bezier(.34,1.56,.64,1);--eo:cubic-bezier(.32,.72,0,1)}
+*{box-sizing:border-box;font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+body{margin:0;background-color:var(--paper);color:var(--ink);direction:rtl;line-height:1.65;font-family:var(--sans);font-size:17px;
+padding-block:28px;padding-inline:16px;min-height:100vh;overflow-x:hidden;
+background-image:radial-gradient(rgba(15,118,110,.13) 1.2px,transparent 1.3px);background-size:22px 22px}
+.nowrap{white-space:nowrap}
+.shell{width:min(760px,100%);margin-inline:auto}
+.card{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);
+padding:clamp(20px,5vw,34px);box-shadow:0 0 0 6px rgba(15,118,110,.06),0 20px 50px rgba(11,32,39,.12);animation:rise .45s var(--eo) both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.eyebrow{font:600 12px var(--mono);letter-spacing:.12em;color:var(--teal);direction:ltr;text-align:right;margin:0 0 14px}
+h1{font-size:clamp(32px,7vw,52px);line-height:1.08;letter-spacing:-.01em;margin:0 0 10px;font-weight:800;color:var(--ink);text-wrap:balance}
+h1 em{font-style:normal;color:var(--teal)}
+.meta{margin:0;color:var(--dim);font-size:15.5px}
+.meta b{color:var(--ink);font-weight:700}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.facts li{padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);font-size:14px;color:var(--dim)}
+.facts li b{color:var(--teal);font-family:var(--mono)}
+.guide{margin:20px 0 0;padding:14px 16px;border-radius:var(--rc);background:var(--soft);border:1.5px solid rgba(15,118,110,.2);font-size:15.5px}
+.field{margin-top:22px}.field label{display:block;font-weight:700;margin-bottom:8px}
+.field input{width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:var(--rc);background:#fff;color:var(--ink);font:500 16px var(--sans);outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(15,118,110,.18)}
+/* cover: nested frames */
+.nest{display:block;width:min(250px,70%);height:auto;margin:0 auto 20px}
+.nest rect{fill:none;stroke-width:2.5;stroke-dasharray:640;stroke-dashoffset:640;animation:draw 1.2s var(--eo) forwards}
+.nest .f2{animation-delay:.25s}.nest .f3{animation-delay:.5s}
+.nest text{font:600 13px var(--mono);opacity:0;animation:fade .4s ease forwards}
+.nest .t1{animation-delay:.5s}.nest .t2{animation-delay:.75s}.nest .t3{animation-delay:1s}
+.nest .core{transform-origin:125px 88px;animation:beat 2.4s ease-in-out 1.3s infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:26px}
+.btn{font:700 16px var(--sans);border-radius:var(--rc);padding:12px 28px;min-height:48px;cursor:pointer;border:2px solid transparent;
+transition:transform .22s var(--pop),box-shadow .22s var(--eo),opacity .2s,background .2s,color .2s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.primary{background:var(--gold);color:var(--ink);box-shadow:0 6px 18px rgba(234,179,8,.3)}
+.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 26px rgba(234,179,8,.42)}
+.outline{background:#fff;color:var(--teal);border-color:var(--teal)}
+.outline:hover:not(:disabled){background:var(--soft)}
+.ghost{background:transparent;color:var(--dim);border-color:transparent;padding-inline:14px;font-weight:600}
+.ghost:hover{color:var(--teal)}
+:focus-visible{outline:3px solid var(--teal);outline-offset:3px}
+/* progress */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;color:var(--dim);font-size:14.5px}
+.top b{color:var(--teal);font-family:var(--mono)}
+.track{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-bottom:20px}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--teal),var(--gold));transition:width .55s var(--eo)}
+/* question */
+.kind{display:inline-flex;align-items:center;gap:8px;margin-bottom:12px;padding:4px 12px;border-radius:8px;font:700 12.5px var(--sans);color:var(--teal2);background:var(--soft);border:1.5px solid rgba(15,118,110,.28)}
+.kind::before{content:"";width:12px;height:12px;border:2px solid var(--teal);border-radius:3px;box-shadow:inset 0 0 0 2px #fff,inset 0 0 0 6px var(--gold)}
+.kind.bagrut{background:#FEF9C3;border-color:rgba(234,179,8,.6);color:#854D0E}
+.q{font-size:clamp(18px,4.4vw,21px);font-weight:700;margin:0 0 16px;line-height:1.5}
+.hint{color:var(--dim);font-size:14px;margin:0 0 12px}
+.label{font-weight:700;font-size:14.5px;color:var(--teal2);margin:0 0 6px}
+.code{direction:ltr;text-align:left;margin:0 0 18px;padding:12px 0;border-radius:var(--rc);background:var(--codebg);
+font:500 14.5px/1.75 var(--mono);color:var(--codefg);overflow-x:auto}
+.code.ref{background:#16323A;border:1.5px dashed rgba(209,250,229,.35)}
+.code .ln{display:flex;align-items:center;min-height:1.75em;padding-inline-end:16px;white-space:pre}
+.code .no{flex:none;width:44px;padding-inline-end:12px;text-align:right;color:#5E8F86;user-select:none}
+.kw{color:#FCD34D}.str{color:#86EFAC}.num{color:#7DD3FC}.op{color:#FDA4AF;font-weight:600}.cm{color:#7FA59E;font-style:italic}
+.blank{display:inline-block;min-width:3em;padding:0 6px;border-bottom:2px dashed var(--gold);color:var(--gold);text-align:center}
+.blank.ok{border-color:#4ADE80;color:#4ADE80;border-bottom-style:solid}
+.blank.no{border-color:#F87171;color:#F87171;border-bottom-style:solid;animation:shake .45s}
+/* find the error */
+.code.pick .ln{width:100%;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;text-align:left;direction:ltr;border-inline-start:3px solid transparent;transition:background .15s,border-color .15s}
+.code.pick .ln:hover:not(:disabled){background:rgba(234,179,8,.14);border-inline-start-color:var(--gold)}
+.code.pick .ln:disabled{cursor:default}
+.code.pick .ln.ok{background:rgba(21,128,61,.35);border-inline-start-color:#4ADE80;animation:pop .5s var(--pop)}
+.code.pick .ln.no{background:rgba(220,38,38,.32);border-inline-start-color:#F87171;animation:shake .45s}
+/* placement */
+.slot{display:inline-flex;align-items:center;justify-content:center;min-width:3.4em;min-height:1.6em;padding:0 8px;margin:0 2px;border-radius:6px;
+border:1.5px dashed var(--gold);background:rgba(234,179,8,.1);color:var(--gold);font:600 13.5px var(--mono);cursor:pointer;vertical-align:middle;white-space:pre;transition:background .15s}
+.slot.full{border-style:solid;color:var(--codefg);background:rgba(255,255,255,.08)}
+.slot.armed{background:rgba(234,179,8,.26);animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{box-shadow:0 0 0 3px rgba(234,179,8,.35)}}
+.slot.ok{border-color:#4ADE80;border-style:solid;color:#BBF7D0;background:rgba(21,128,61,.35);animation:pop .5s var(--pop)}
+.slot.no{border-color:#F87171;border-style:solid;color:#FECACA;background:rgba(220,38,38,.32);animation:shake .45s}
+.slot:disabled{cursor:default}
+.bank{display:flex;flex-wrap:wrap;gap:8px;padding:12px;border-radius:var(--rc);border:1.5px dashed var(--line);background:var(--paper);min-height:56px;direction:ltr}
+.bank:empty::after{content:"כל הקטעים מוקמו";direction:rtl;color:var(--dim);font-size:14px;margin:auto}
+.chip{font:600 14px var(--mono);direction:ltr;padding:7px 13px;border-radius:8px;border:1.5px solid var(--teal);background:#fff;color:var(--teal2);cursor:pointer;white-space:pre;transition:transform .18s var(--pop),background .15s,color .15s}
+.chip:hover:not(:disabled){transform:translateY(-2px)}
+.chip[aria-pressed="true"]{background:var(--teal);color:#fff;transform:translateY(-2px);box-shadow:0 6px 14px rgba(15,118,110,.3)}
+/* options */
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.opts.two{grid-template-columns:1fr 1fr}
+.choice{width:100%;text-align:start;padding:12px 14px;border-radius:var(--rc);border:1.5px solid var(--line);background:#fff;color:var(--ink);
+font:600 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:center;transition:border-color .18s,background .18s,transform .18s var(--pop)}
+.choice:hover:not(:disabled){border-color:var(--teal);transform:translateY(-2px)}
+.choice:disabled{cursor:default}
+.choice .tag{flex:none;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font:700 13px var(--sans);background:var(--soft);color:var(--teal2)}
+.choice .txt{direction:ltr;unicode-bidi:isolate;font:600 15px var(--mono);white-space:pre}
+.choice.ok{border-color:var(--true);background:rgba(21,128,61,.08);animation:pop .5s var(--pop)}
+.choice.ok .tag{background:var(--true);color:#fff}
+.choice.no{border-color:var(--false);background:rgba(220,38,38,.06);animation:shake .45s}
+.choice.no .tag{background:var(--false);color:#fff}
+.choice.dimmed{opacity:.5}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.035)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+/* order */
+.ord{list-style:none;margin:0;padding:0;display:grid;gap:7px;counter-reset:pos}
+.ord li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--rc);border:1.5px solid var(--line);background:#fff;transition:border-color .18s,background .18s,opacity .15s}
+.ord li[draggable="true"]{cursor:grab}
+.ord li.drag{opacity:.4}
+.ord li::before{counter-increment:pos;content:counter(pos);flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:700 13px var(--mono);background:var(--soft);color:var(--teal2)}
+.ord .line{flex:1;direction:ltr;text-align:left;font:500 14px var(--mono);color:var(--ink);unicode-bidi:isolate;overflow-x:auto;white-space:pre}
+.ord .line .kw{color:#A16207}.ord .line .str{color:#15803D}.ord .line .num{color:#0369A1}.ord .line .op{color:#BE123C}
+.mv{display:flex;gap:4px;flex:none}
+.mv button{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--line);background:#fff;color:var(--teal);cursor:pointer;font-size:14px;display:grid;place-items:center;transition:all .15s}
+.mv button:hover:not(:disabled){background:var(--soft);border-color:var(--teal)}
+.mv button:disabled{opacity:.3;cursor:default}
+.ord li.ok{border-color:var(--true);background:rgba(21,128,61,.07)}
+.ord li.no{border-color:var(--false);background:rgba(220,38,38,.06)}
+.ord li.ok::before{background:var(--true);color:#fff}.ord li.no::before{background:var(--false);color:#fff}
+/* bagrut */
+.task{padding:20px 22px;border-radius:var(--rc);border:1.5px solid var(--line);background:var(--paper);font-size:17px;line-height:1.75}
+.task h3{margin:0 0 10px;font-size:20px;font-weight:800}
+.task p{margin:0 0 8px}
+.task ul{margin:6px 0 0;padding-inline-start:22px}
+.task li{margin-bottom:4px}
+.marks{display:grid;gap:10px;margin-top:20px}
+.mark{display:flex;align-items:center;gap:12px;width:100%;text-align:start;padding:13px 16px;border-radius:var(--rc);border:2px solid var(--line);background:#fff;color:var(--ink);font:700 16px var(--sans);cursor:pointer;transition:border-color .18s,background .18s,transform .18s var(--pop)}
+.mark:hover{border-color:var(--teal)}
+.mark .dot{flex:none;width:20px;height:20px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;transition:all .18s}
+.mark[aria-checked="true"]{transform:translateY(-1px)}
+.mark[aria-checked="true"] .dot::after{content:"";width:10px;height:10px;border-radius:50%;background:currentColor}
+.mark.full[aria-checked="true"]{border-color:var(--true);background:rgba(21,128,61,.08);color:var(--true)}
+.mark.part[aria-checked="true"]{border-color:#CA8A04;background:rgba(234,179,8,.12);color:#854D0E}
+.mark.wrong[aria-checked="true"]{border-color:var(--false);background:rgba(220,38,38,.06);color:var(--false)}
+.mark[aria-checked="true"] .dot{border-color:currentColor}
+/* feedback */
+.fb{margin-top:18px;padding:16px 18px;border-radius:var(--rc);border:1.5px solid;display:flex;gap:14px;align-items:flex-start;animation:rise .4s var(--eo) both}
+.fb.ok{border-color:rgba(21,128,61,.45);background:rgba(21,128,61,.05)}
+.fb.no{border-color:rgba(220,38,38,.42);background:rgba(220,38,38,.04)}
+.fb svg{flex:none;width:40px;height:40px}
+.fb svg .in{transform-origin:20px 20px;animation:pop .5s var(--pop)}
+.fb h3{margin:0 0 6px;font-size:17px;font-weight:800}
+.fb.ok h3{color:var(--true)}.fb.no h3{color:var(--false)}
+.fb p{margin:0;font-size:15.5px}
+.fb .ans{margin-top:8px;font-size:14.5px;color:var(--dim)}
+.fb code{direction:ltr;unicode-bidi:isolate;font:600 13.5px var(--mono);color:var(--teal2);white-space:pre}
+.fb pre{direction:ltr;text-align:left;margin:6px 0 0;padding:10px 12px;border-radius:8px;background:var(--soft);font:500 13px/1.6 var(--mono);color:var(--ink);overflow-x:auto}
+/* summary */
+.who{font-size:17px;margin:0 0 4px}.who b{color:var(--teal)}
+.sec-h{margin:24px 0 12px;font-size:18px;font-weight:800;color:var(--ink)}
+.topics{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.topics li{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--rc);border:1.5px solid rgba(220,38,38,.3);background:rgba(220,38,38,.04);font-size:15.5px;font-weight:600}
+.topics li::before{content:"";flex:none;width:10px;height:10px;border-radius:3px;background:var(--false)}
+.selfs{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.selfs li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;padding:10px 14px;border-radius:var(--rc);border:1.5px solid var(--line);font-size:15.5px}
+.selfs li b{font-family:var(--mono);color:var(--teal);margin-inline-end:8px}
+.badge{padding:3px 11px;border-radius:99px;font-size:13.5px;font-weight:700}
+.badge.full{background:rgba(21,128,61,.12);color:var(--true)}
+.badge.part{background:rgba(234,179,8,.2);color:#854D0E}
+.badge.wrong{background:rgba(220,38,38,.1);color:var(--false)}
+.submit{margin:24px 0 0;padding:14px 16px;border-radius:var(--rc);background:var(--soft);border:1.5px dashed rgba(15,118,110,.4);font-size:15.5px}
+.hidden{display:none!important}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+@media (max-width:520px){.opts.two{grid-template-columns:1fr}.mv button{width:40px;height:40px}}
+@media print{body{background:#fff;padding:0}.card{box-shadow:none;animation:none}.btn,#confetti,.nest{display:none!important}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.nest rect{stroke-dashoffset:0}.nest text{opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<main class="shell">
+
+<section class="card" id="cover">
+  <svg class="nest" viewBox="0 0 250 176" aria-hidden="true">
+    <rect class="f1" x="4" y="4" width="242" height="168" rx="18" stroke="#0F766E"/>
+    <rect class="f2" x="34" y="34" width="182" height="108" rx="14" stroke="#14B8A6"/>
+    <rect class="f3" x="70" y="62" width="110" height="52" rx="10" stroke="#EAB308"/>
+    <text class="t1" x="18" y="24" fill="#0F766E">if (age &gt;= 18)</text>
+    <text class="t2" x="46" y="54" fill="#0D9488">if (a &amp;&amp; b)</text>
+    <circle class="core" cx="125" cy="88" r="11" fill="#EAB308"/>
+    <text class="t3" x="186" y="134" fill="#0F766E">else</text>
+  </svg>
+  <p class="eyebrow">CS · JAVA · NESTED &amp; COMPOUND</p>
+  <h1>תנאים <em>מקוננים</em> ו<em>מורכבים</em></h1>
+  <p class="meta"><b>מדעי המחשב</b> · שאלון סיכום</p>
+  <p class="meta">רוני רובן · אוקטובר 2026 · תשפ"ז</p>
+  <ul class="facts">
+    <li><b id="nAuto"></b> שאלות קוד</li>
+    <li><b id="nOpen"></b> שאלות בסגנון בגרות</li>
+  </ul>
+  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר, ואי אפשר לחזור לשאלה קודמת. ארבע השאלות האחרונות הן בסגנון בגרות: פתרו אותן בסביבת פיתוח או על דף, וסמנו עד כמה הפתרון שלכם נכון. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <div class="field"><label for="name">שם התלמיד/ה</label><input id="name" type="text" autocomplete="name" placeholder="הקלידו שם מלא" maxlength="60"></div>
+  <div class="actions"><button class="btn primary" id="start" disabled>התחל</button></div>
+</section>
+
+<section class="card hidden" id="quiz">
+  <div class="top"><span>שאלה <b id="cur"></b> מתוך <b id="tot"></b></span><span><b id="done">0</b> נענו</span></div>
+  <div class="track"><div class="fill" id="bar"></div></div>
+  <div id="body"></div>
+  <div class="actions">
+    <button class="btn ghost" id="reset">התחל מחדש</button>
+    <button class="btn primary" id="next" disabled>הבאה</button>
+  </div>
+</section>
+
+<section class="card hidden" id="result">
+  <p class="eyebrow">SUMMARY</p>
+  <h2 style="margin:0 0 4px;font-size:clamp(22px,5vw,30px);font-weight:800">תנאים מקוננים ומורכבים — שאלון סיכום</h2>
+  <p class="who" id="who"></p>
+  <h3 class="sec-h" id="topicsH"></h3>
+  <ul class="topics" id="topics"></ul>
+  <h3 class="sec-h">שאלות בסגנון בגרות — הערכה עצמית</h3>
+  <ul class="selfs" id="selfs"></ul>
+  <p class="submit">צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <div class="actions" style="justify-content:center"><button class="btn ghost" id="again">התחל מחדש</button></div>
+</section>
+
+</main>
+<script>
+const Q = [
+{type:'place', topic:'תנאים מורכבים עם "וגם" ו"או" בשרשרת', q:'מקמו את התנאים כך שיודפס 1 אם שני המספרים גדולים מ-5, יודפס 2 אם בדיוק אחד מהם גדול מ-5, ואחרת יודפס 3.',
+ code:['if ([[0]]) System.out.println(1);','else if ([[1]]) System.out.println(2);','else System.out.println(3);'],
+ chips:['a > 5 && b > 5','a > 5 || b > 5','a > 5','!(a > 5)'], ans:['a > 5 && b > 5','a > 5 || b > 5'],
+ exp:'התנאי הראשון דורש ששני החלקים יתקיימו יחד, ולכן הוא משתמש ב"וגם". לענף השני מגיעים רק אם לא שני המספרים גדולים מ-5, ולכן "או" מתקיים שם בדיוק כשאחד מהם גדול מ-5. אילו הסדר היה הפוך, גם מקרה של שני מספרים גדולים היה נעצר בענף של "או".'},
+{type:'fill', topic:'תנאי טווח עם "וגם"', q:'השלימו כך שיודפס <bdi>valid</bdi> רק עבור מספר בין 1 ל-10, כולל.',
+ code:['int n = 12;','if (n >= 1 ____ n <= 10) System.out.println("valid");'], opts:['&&','||','!','=='], ans:0,
+ exp:'מספר נמצא בטווח רק אם שני התנאים מתקיימים יחד: הוא לפחות 1 וגם לכל היותר 10. עם "או" כל מספר היה עובר, כי כל מספר מקיים לפחות אחד משני החלקים. עבור 12 החלק השני נכשל, ולכן לא יודפס דבר.'},
+{type:'order', topic:'תנאי "או" שמכסה כמה מקרים', q:'סדרו את השורות: כניסה חינם מתחת לגיל 6 או מגיל 65 ומעלה, ואחרת בתשלום. בסוף תמיד יודפס <bdi>bye</bdi>.',
+ lines:['int age = 70;','if (age < 6 || age >= 65)','    System.out.println("free");','else','    System.out.println("pay");','System.out.println("bye");'],
+ exp:'מגדירים קודם את הגיל, ואז תנאי אחד עם "או" מכסה את שני המקרים של כניסה חינם. ההדפסה של התשלום שייכת לענף החלופי. ההדפסה האחרונה אינה תלויה בתנאי, ולכן היא באה אחרי שני הענפים ומתבצעת תמיד.'},
+{type:'place', topic:'בחירת תנאים מורכבים לפי דוגמאות', q:'מקמו את התנאים כך שעבור 15 יודפס 1, עבור 25 יודפס 2 ועבור 3 יודפס 3.',
+ code:['if ([[0]]) System.out.println(1);','else if ([[1]]) System.out.println(2);','else System.out.println(3);'],
+ chips:['n > 10 && n < 20','n > 5 || n == 0','n > 10 || n < 20','n > 5 && n == 0'], ans:['n > 10 && n < 20','n > 5 || n == 0'],
+ exp:'רק התנאי "גדול מ-10 וגם קטן מ-20" מבודד את 15, כי 25 אינו קטן מ-20. לענף השני מגיעים 25 ו-3, והתנאי "גדול מ-5 או שווה 0" מתקיים עבור 25 בלבד. התנאי "גדול מ-10 או קטן מ-20" מתקיים עבור כל מספר, והתנאי "גדול מ-5 וגם שווה 0" לעולם אינו מתקיים.'},
+{type:'find', topic:'תנאי "או" שמתקיים תמיד', q:'המטרה: מעל 30 יודפס <bdi>hot</bdi>, מ-20 עד 30 יודפס <bdi>pleasant</bdi>, ומתחת ל-20 יודפס <bdi>cold</bdi>. עבור 10 הקוד מדפיס <bdi>pleasant</bdi>. באיזו שורה נמצאת השגיאה?',
+ code:['int t = 10;','if (t > 30)','    System.out.println("hot");','else if (t >= 20 || t <= 30)','    System.out.println("pleasant");','else','    System.out.println("cold");'], ans:3,
+ exp:'בשורה 4 התנאי משתמש ב"או", וכל מספר מקיים לפחות אחד משני החלקים: גדול או שווה ל-20, או קטן או שווה ל-30. לכן התנאי מתקיים תמיד, והענף האחרון לעולם אינו מתבצע. צריך "וגם" במקום "או", ואז עבור 10 יודפס <bdi>cold</bdi>.'},
+{type:'fill', topic:'תנאי מחוץ לטווח', q:'בחרו את התנאי שידפיס <bdi>out</bdi> בדיוק כאשר המספר נמצא מחוץ לטווח 1 עד 10.',
+ code:['if (____) System.out.println("out");'], opts:['x < 1 || x > 10','x < 1 && x > 10','!(x >= 1 || x <= 10)','x <= 1 || x >= 10'], ans:0, wide:true,
+ exp:'מספר נמצא מחוץ לטווח אם הוא קטן מ-1 או גדול מ-10, ואף מספר אינו מקיים את שני המקרים יחד, ולכן "וגם" לעולם אינו מתקיים. השלילה של "או" נכשלת תמיד, כי כל מספר מקיים לפחות אחד מהחלקים שבתוכה. האפשרות עם "קטן או שווה" ו"גדול או שווה" מדפיסה בטעות גם עבור 1 ועבור 10.'},
+{type:'fill', topic:'צמצום תנאים בשרשרת', q:'הקוד צריך להדפיס את הגדול מבין שלושה מספרים. השלימו את התנאי החסר.',
+ code:['if (a >= b && a >= c) System.out.println(a);','else if (____) System.out.println(b);','else System.out.println(c);'], opts:['b >= c','b > a','b >= a || b >= c','b < c'], ans:0,
+ exp:'לענף השני מגיעים רק אם המספר הראשון אינו הגדול ביותר, ולכן נשאר להשוות רק בין השני לשלישי. התנאי "השני גדול מהראשון" נכשל כשהשלישי הוא הגדול, למשל עבור 1, 3, 5. גם התנאי עם "או" מדפיס 3 באותה דוגמה, והתנאי ההפוך מדפיס את הקטן מבין השניים.'},
+{type:'place', topic:'שיוך החלק החלופי בתנאים מקוננים', q:'מקמו את הסימנים כך שהחלק החלופי יהיה שייך לתנאי החיצוני: עבור מספר ראשון שאינו חיובי יודפס <bdi>a is not positive</bdi>.',
+ code:['int a = -2, b = 5;','if (a > 0) [[0]]','    if (b > 0)','        System.out.println("both positive");','[[1]] else','    System.out.println("a is not positive");'],
+ chips:['{','}',';','()'], ans:['{','}'],
+ exp:'בלי סוגריים מסולסלים, החלק החלופי נצמד תמיד לתנאי הקרוב אליו ביותר, כלומר לתנאי הפנימי. לכן עבור מספר ראשון שלילי לא יודפס דבר, כי התנאי החיצוני נכשל ואין לו חלק חלופי. סוגר מסולסל שנפתח אחרי התנאי החיצוני ונסגר לפני החלק החלופי מצמיד אותו לתנאי החיצוני. ההזחה בקוד אינה משפיעה על המשמעות.'},
+{type:'order', topic:'מבנה של תנאי מקונן', q:'סדרו את השורות: מתחת לגיל 13 יודפס <bdi>child</bdi>. מגיל 13 ומעלה: עם כרטיס יודפס <bdi>enter</bdi>, ובלי כרטיס יודפס <bdi>buy ticket</bdi>.',
+ lines:['int age = 15; boolean ticket = false;','if (age < 13)','    System.out.println("child");','else {','    if (ticket)','        System.out.println("enter");','    else','        System.out.println("buy ticket");','}'],
+ exp:'הבדיקה החיצונית היא הגיל, כי רק מגיל 13 ומעלה יש משמעות לכרטיס. בתוך החלק החלופי של בדיקת הגיל נמצא תנאי פנימי שבודק את הכרטיס, ולכל אחד מענפיו הדפסה משלו. הסוגר המסולסל האחרון סוגר את הבלוק של החלק החלופי.'},
+{type:'fill', topic:'שלילה של תנאי מורכב', q:'בחרו את התנאי שידפיס <bdi>not both positive</bdi> בדיוק כאשר לא שני המספרים חיוביים.',
+ code:['if (____) System.out.println("not both positive");'], opts:['x <= 0 || y <= 0','x <= 0 && y <= 0','x < 0 || y < 0','!(x > 0) && y > 0'], ans:0, wide:true,
+ exp:'השלילה של "גם זה וגם זה" היא "לפחות אחד מהם לא": המספר הראשון אינו חיובי או המספר השני אינו חיובי. "לא חיובי" פירושו קטן או שווה לאפס, ולכן אפס נכלל. האפשרות עם "וגם" דורשת ששניהם לא יהיו חיוביים, והאפשרות עם "קטן ממש" מפספסת את האפס. האפשרות האחרונה מפספסת מקרה שבו רק המספר השני אינו חיובי.'},
+{type:'find', topic:'תנאי מורכב עם שארית', q:'שנה מעוברת היא שנה שמתחלקת ב-400, או שמתחלקת ב-4 ולא מתחלקת ב-100. עבור 2023 הקוד מדפיס <bdi>true</bdi>. באיזו שורה נמצאת השגיאה?',
+ code:['int year = 2023;','boolean leap;','if (year % 400 == 0)','    leap = true;','else if (year % 4 == 0 || year % 100 != 0)','    leap = true;','else','    leap = false;','System.out.println(leap);'], ans:4,
+ exp:'לפי ההגדרה, שנה שאינה מתחלקת ב-400 היא מעוברת רק אם היא מתחלקת ב-4 וגם אינה מתחלקת ב-100. בשורה 5 מופיע "או", ולכן כל שנה שאינה מתחלקת ב-100, כמו 2023, נחשבת מעוברת. החלפת "או" ב"וגם" מתקנת את הקוד.'},
+{type:'find', topic:'כתיבת תנאי טווח ב-Java', q:'הקוד אינו עובר הידור. באיזו שורה נמצאת השגיאה?',
+ code:['int x = 15;','int count = 0;','if (x % 5 == 0)','    count++;','if (10 < x < 20)','    count++;','System.out.println(count);'], ans:4,
+ exp:'ההשוואה הראשונה בשורה 5 מחזירה ערך אמת או שקר, ואי אפשר להשוות ערך כזה למספר 20. לכן השורה אינה עוברת הידור. כדי לבדוק טווח כותבים שתי השוואות נפרדות ומחברים אותן ב"וגם".'},
+{type:'place', topic:'תנאים מקוננים לפי שני משתנים', q:'מקמו את התנאים כך שיודפס מספר הרביע שבו נמצאת נקודה שאינה על הצירים.',
+ code:['if (x > 0) {','    if ([[0]]) System.out.println(1);','    else System.out.println(4);','} else {','    if ([[1]]) System.out.println(2);','    else System.out.println(3);','}'],
+ chips:['y > 0','y > 0','y < 0','x < 0','x > 0'], ans:['y > 0','y > 0'],
+ exp:'התנאי החיצוני כבר קבע אם הנקודה מימין או משמאל לציר האנכי, ולכן בכל ענף נשאר לבדוק רק אם היא מעל הציר האופקי. בשני הענפים זו אותה בדיקה: השיעור האנכי חיובי. מימין זה רביע 1, ומשמאל זה רביע 2.'},
+{type:'order', topic:'שילוב תנאי מקונן ותנאי פשוט', q:'סדרו את השורות: מספר זוגי וחיובי ידפיס <bdi>A</bdi>, מספר זוגי שאינו חיובי ידפיס <bdi>B</bdi>, ומספר אי-זוגי ידפיס <bdi>C</bdi>.',
+ lines:['int n = -4;','if (n % 2 == 0) {','    if (n > 0)','        System.out.println("A");','    else','        System.out.println("B");','} else','    System.out.println("C");'],
+ exp:'התנאי החיצוני בודק זוגיות, כי שניים מתוך שלושת המקרים תלויים בה. בתוך הבלוק של מספר זוגי נמצא תנאי פנימי שמבחין בין חיובי לשאינו חיובי. החלק החלופי של התנאי החיצוני מטפל במספר אי-זוגי, ולכן הוא בא אחרי הסוגר המסולסל שסוגר את הבלוק.'},
+{type:'place', topic:'המרת תנאי מקונן לשרשרת עם תנאי מורכב', q:'מקמו את התנאים כך ששרשרת התנאים תתנהג בדיוק כמו הקוד המקונן.',
+ ref:['if (age >= 18) {','    if (hasLicense) System.out.println("may drive");','    else System.out.println("get a license");','} else System.out.println("too young");'],
+ code:['if ([[0]]) System.out.println("may drive");','else if ([[1]]) System.out.println("get a license");','else System.out.println("too young");'],
+ chips:['age >= 18 && hasLicense','age >= 18','age >= 18 || hasLicense','hasLicense','!hasLicense'], ans:['age >= 18 && hasLicense','age >= 18'],
+ exp:'בקוד המקונן מודפס שמותר לנהוג רק כשהגיל לפחות 18 וגם יש רישיון, ולכן התנאי הראשון בשרשרת מחבר את שניהם ב"וגם". לענף השני מגיעים רק אם התנאי הראשון נכשל, ולכן מספיק לבדוק שם את הגיל: אם הוא לפחות 18, חסר רק הרישיון. תנאי שבודק רק את הרישיון בענף השני היה מטפל לא נכון בנהג צעיר.'},
+{type:'order', topic:'תנאי מורכב בן שלושה חלקים בתוך תנאי מקונן', q:'סדרו את השורות: קודם בודקים אם הצלעות יוצרות משולש. אם כן, יודפס <bdi>equilateral</bdi> כשכל הצלעות שוות, ואחרת <bdi>triangle</bdi>. אם לא, יודפס <bdi>not a triangle</bdi>.',
+ lines:['int a = 3, b = 3, c = 3;','if (a < b + c && b < a + c && c < a + b) {','    if (a == b && b == c)','        System.out.println("equilateral");','    else','        System.out.println("triangle");','} else','    System.out.println("not a triangle");'],
+ exp:'קודם בודקים שהצלעות יוצרות משולש: כל צלע קטנה מסכום שתי האחרות, ושלושת התנאים מחוברים ב"וגם". רק בתוך הבלוק הזה יש משמעות לבדיקה אם כל הצלעות שוות, ולכן היא מקוננת בו. החלק החלופי של התנאי החיצוני בא אחרי הסוגר המסולסל ומטפל בצלעות שאינן יוצרות משולש.'},
+{type:'open', title:'ציון סופי', body:`
+ <p>כתבו תוכנית הקולטת ציון מבחן וציון עבודה (מספרים שלמים).</p>
+ <ul>
+  <li>אם אחד הציונים אינו בטווח 0 עד 100, יש להדפיס "קלט שגוי".</li>
+  <li>אחרת, יש לחשב ציון סופי: 70% מציון המבחן ועוד 30% מציון העבודה, ולהדפיס אותו.</li>
+  <li>לאחר מכן יש להדפיס "עובר" אם הציון הסופי הוא 55 לפחות <b>וגם</b> ציון המבחן הוא 45 לפחות. אחרת יש להדפיס "נכשל".</li>
+ </ul>`},
+{type:'open', title:'חניון', body:`
+ <p>כתבו תוכנית הקולטת את יום השבוע (1 עד 7) ואת מספר שעות החניה (שלם חיובי), ומדפיסה את הסכום לתשלום לפי הכללים:</p>
+ <ul>
+  <li>אם יום השבוע אינו בטווח 1 עד 7, יש להדפיס "יום שגוי".</li>
+  <li>ביום 7 החניה חינם.</li>
+  <li>בשאר הימים: עד 3 שעות, 12 ₪ לכל שעה. כל שעה נוספת מעבר ל-3 שעות עולה 8 ₪.</li>
+  <li>חניה של יותר מ-10 שעות משלמת תעריף יומי קבוע של 90 ₪.</li>
+ </ul>`},
+{type:'open', title:'תאריך ועונה', body:`
+ <p>כתבו תוכנית הקולטת יום וחודש של תאריך בשנה שאינה מעוברת.</p>
+ <ul>
+  <li>בחודשים 4, 6, 9 ו-11 יש 30 ימים. בחודש 2 יש 28 ימים. בשאר החודשים יש 31 ימים.</li>
+  <li>אם התאריך אינו חוקי, יש להדפיס "תאריך שגוי".</li>
+  <li>אם התאריך חוקי, יש להדפיס את העונה: חורף בחודשים 12, 1 ו-2, אביב בחודשים 3 עד 5, קיץ בחודשים 6 עד 8, וסתיו בחודשים 9 עד 11.</li>
+ </ul>`},
+{type:'open', title:'משחק קוביות', body:`
+ <p>כתבו תוכנית שמגרילה שלוש קוביות (מספרים שלמים בין 1 ל-6), מדפיסה את שלושת הערכים, ואחר כך מדפיסה את התוצאה ואת מספר הנקודות:</p>
+ <ul>
+  <li>אם שלוש הקוביות שוות: "טריפל", 100 נקודות.</li>
+  <li>אם בדיוק שתי קוביות שוות: "זוג", 20 נקודות כפול הערך של הזוג.</li>
+  <li>אחרת, אם שלוש הקוביות יוצרות רצף בכל סדר שהוא (למשל 5, 3, 4): "רצף", 50 נקודות.</li>
+  <li>אחרת: 0 נקודות.</li>
+ </ul>`}
+];
+
+const MARKS = [{k:'full',t:'כתבתי פתרון נכון במלואו'},{k:'part',t:'פתרון נכון חלקית'},{k:'wrong',t:'פתרון שגוי'}];
+const KIND = {place:'מיקום בקוד', find:'מציאת שגיאה', fill:'השלמת קוד', order:'סידור שורות', open:'שאלה בסגנון בגרות'};
+const LETTERS = ['א','ב','ג','ד','ה','ו'];
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* light Java highlighting; operators stay as typed characters */
+const TOK = /(\/\/.*$)|("[^"]*")|\b(if|else|int|boolean|double|true|false)\b|\b(\d+)\b|(&&|\|\||!(?!=))|(____)|\[\[(\d)\]\]/g;
+function hl(src, slotFn){
+  let out='', last=0, m; TOK.lastIndex=0;
+  while((m=TOK.exec(src))){
+    out += esc(src.slice(last,m.index));
+    if(m[1]) out += `<span class="cm">${esc(m[1])}</span>`;
+    else if(m[2]) out += `<span class="str">${esc(m[2])}</span>`;
+    else if(m[3]) out += `<span class="kw">${m[3]}</span>`;
+    else if(m[4]) out += `<span class="num">${m[4]}</span>`;
+    else if(m[5]) out += `<span class="op">${esc(m[5])}</span>`;
+    else if(m[6]) out += `<span class="blank" id="blank">____</span>`;
+    else if(m[7]) out += slotFn ? slotFn(+m[7]) : '';
+    last = TOK.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+const codeBlock = (lines, slotFn, cls='') => `<div class="code ${cls}" dir="ltr">`+lines.map((l,i)=>`<div class="ln"><span class="no">${i+1}</span><span>${hl(l,slotFn)}</span></div>`).join('')+'</div>';
+
+let order=[], idx=0, answered=0, results=[], studentName='';
+
+function start(){
+  const auto = Q.map((_,i)=>i).filter(i=>Q[i].type!=='open'), open = Q.map((_,i)=>i).filter(i=>Q[i].type==='open');
+  order = shuffle(auto).concat(open);
+  idx=0; answered=0; results=Q.map(()=>null);
+  Q.forEach(q=>{
+    if(q.type==='fill') q.perm = shuffle(q.opts.map((_,i)=>i));
+    if(q.type==='place'){ q.bank = shuffle(q.chips.map((_,i)=>i)); q.put = q.ans.map(()=>null); q.sel = null; q.locked = false; }
+    if(q.type==='order'){ let p; do{ p = shuffle(q.lines.map((_,i)=>i)); }while(p.every((v,i)=>q.lines[v]===q.lines[i])); q.perm = p; }
+    if(q.type==='open') q.mark = null;
+  });
+  ['cover','result'].forEach(s=>$(s).classList.add('hidden')); $('quiz').classList.remove('hidden');
+  $('tot').textContent = Q.length;
+  render();
+}
+
+function progress(){
+  $('bar').style.width = Math.round(answered/Q.length*100)+'%'; $('done').textContent = answered;
+}
+
+function render(){
+  const q = Q[order[idx]];
+  $('cur').textContent = idx+1; progress();
+  $('next').disabled = true;
+  $('next').textContent = idx===Q.length-1 ? 'לסיכום' : 'הבאה';
+  let h = `<span class="kind${q.type==='open'?' bagrut':''}">${KIND[q.type]}</span>`;
+  if(q.type!=='open') h += `<p class="q">${q.q}</p>`;
+  if(q.type==='place'){
+    if(q.ref) h += '<p class="label">הקוד המקונן:</p>'+codeBlock(q.ref,null,'ref')+'<p class="label">השרשרת להשלמה:</p>';
+    h += '<div id="placeArea"></div><p class="hint" style="margin-top:10px">בחרו קטע מהמאגר ואז לחצו על המקום שלו בקוד. לחיצה על מקום מלא מחזירה את הקטע למאגר.</p>';
+    h += '<div class="actions" style="margin-top:6px"><span></span><button class="btn outline" id="check" disabled>בדיקה</button></div>';
+  } else if(q.type==='find'){
+    h += '<p class="hint">לחצו על השורה שבה נמצאת השגיאה.</p><div class="code pick" dir="ltr">'+q.code.map((l,i)=>`<button class="ln" data-l="${i}" aria-label="שורה ${i+1}"><span class="no">${i+1}</span><span>${hl(l)}</span></button>`).join('')+'</div>';
+  } else if(q.type==='fill'){
+    h += codeBlock(q.code);
+    h += `<ul class="opts${q.wide?'':' two'}">`+q.perm.map((oi,k)=>`<li><button class="choice" data-i="${oi}"><span class="tag">${LETTERS[k]}</span><span class="txt">${esc(q.opts[oi])}</span></button></li>`).join('')+'</ul>';
+  } else if(q.type==='order'){
+    h += '<p class="hint">גררו שורה למקומה, או השתמשו בחצים כדי להזיז אותה למעלה או למטה. אחר כך לחצו "בדיקה".</p><ol class="ord" id="ord">'+q.perm.map(li=>`<li draggable="true" data-l="${li}"><span class="line">${hl(q.lines[li])}</span><span class="mv"><button data-d="-1" aria-label="הזז למעלה">▲</button><button data-d="1" aria-label="הזז למטה">▼</button></span></li>`).join('')+'</ol>';
+    h += '<div class="actions" style="margin-top:14px"><span></span><button class="btn outline" id="check">בדיקה</button></div>';
+  } else if(q.type==='open'){
+    h += `<div class="task"><h3>${q.title}</h3>${q.body}</div>`;
+    h += '<p class="hint" style="margin-top:16px">פתרו בסביבת פיתוח או על דף, ואז סמנו:</p><div class="marks" role="radiogroup" aria-label="הערכה עצמית">'+MARKS.map(m=>`<button class="mark ${m.k}" role="radio" aria-checked="false" data-k="${m.k}"><span class="dot"></span>${m.t}</button>`).join('')+'</div>';
+  }
+  h += '<div id="fb"></div>';
+  $('body').innerHTML = h;
+  wire(q);
+  $('quiz').scrollIntoView({block:'start'});
+}
+
+function drawPlace(q, focusSel){
+  const slotFn = k => {
+    const ci = q.put[k], cls = ['slot'];
+    if(ci!==null) cls.push('full');
+    if(ci===null && q.sel!==null) cls.push('armed');
+    if(q.locked) cls.push(q.chips[ci]===q.ans[k] ? 'ok' : 'no');
+    return `<button class="${cls.join(' ')}" data-s="${k}" aria-label="מקום ${k+1}${ci!==null?': '+esc(q.chips[ci]):' ריק'}"${q.locked?' disabled':''}>${ci!==null?esc(q.chips[ci]):k+1}</button>`;
+  };
+  const placed = new Set(q.put.filter(v=>v!==null));
+  $('placeArea').innerHTML = codeBlock(q.code, slotFn) +
+    '<div class="bank" aria-label="מאגר קטעים">'+q.bank.filter(ci=>!placed.has(ci)).map(ci=>`<button class="chip" data-c="${ci}" aria-pressed="${q.sel===ci}"${q.locked?' disabled':''}>${esc(q.chips[ci])}</button>`).join('')+'</div>';
+  $('check').disabled = q.locked || q.put.some(v=>v===null);
+  if(focusSel){ const el = $('placeArea').querySelector(focusSel); if(el) el.focus(); }
+}
+
+function wire(q){
+  const body = $('body');
+  if(q.type==='place'){
+    drawPlace(q);
+    $('placeArea').addEventListener('click',e=>{
+      if(q.locked) return;
+      const chip = e.target.closest('.chip'), slot = e.target.closest('.slot');
+      if(chip){ const ci=+chip.dataset.c; q.sel = q.sel===ci ? null : ci; drawPlace(q, `.chip[data-c="${ci}"]`); return; }
+      if(slot){
+        const k=+slot.dataset.s;
+        if(q.sel!==null){ q.put[k]=q.sel; q.sel=null; }
+        else if(q.put[k]!==null){ q.put[k]=null; }
+        drawPlace(q, `.slot[data-s="${k}"]`);
+      }
+    });
+    $('check').addEventListener('click',()=>{
+      q.locked = true; q.sel = null;
+      const ok = q.put.every((ci,k)=>q.chips[ci]===q.ans[k]);
+      drawPlace(q);
+      finish(q, ok, ok?null:'המיקום הנכון: '+q.ans.map((a,k)=>`מקום ${k+1} — <code>${esc(a)}</code>`).join(' · '));
+    });
+  } else if(q.type==='find'){
+    body.querySelectorAll('.code.pick .ln').forEach(b=>b.addEventListener('click',()=>{
+      const pick=+b.dataset.l, ok=pick===q.ans;
+      body.querySelectorAll('.code.pick .ln').forEach(c=>{ c.disabled=true; const l=+c.dataset.l; if(l===q.ans) c.classList.add('ok'); else if(l===pick) c.classList.add('no'); });
+      finish(q, ok, ok?null:`השגיאה נמצאת בשורה ${q.ans+1}.`);
+    }));
+  } else if(q.type==='fill'){
+    body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      const pick=+b.dataset.i, ok=pick===q.ans;
+      body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; const i=+c.dataset.i; if(i===q.ans) c.classList.add('ok'); else if(i===pick) c.classList.add('no'); else c.classList.add('dimmed'); });
+      const blank=$('blank'); blank.textContent=q.opts[pick]; blank.classList.add(ok?'ok':'no');
+      finish(q, ok, ok?null:`התשובה הנכונה: <code>${esc(q.opts[q.ans])}</code>`);
+    }));
+  } else if(q.type==='order'){
+    const ol = $('ord'); let dragged=null;
+    ol.addEventListener('click',e=>{
+      const b = e.target.closest('button[data-d]'); if(!b) return;
+      const li = b.closest('li'), d=+b.dataset.d;
+      if(d<0 && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+      if(d>0 && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+      b.focus();
+    });
+    ol.addEventListener('dragstart',e=>{ dragged=e.target.closest('li'); if(!dragged) return; dragged.classList.add('drag'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',''); });
+    ol.addEventListener('dragend',()=>{ if(dragged) dragged.classList.remove('drag'); dragged=null; });
+    ol.addEventListener('dragover',e=>{
+      if(!dragged) return; e.preventDefault();
+      const over=e.target.closest('li'); if(!over||over===dragged) return;
+      const r=over.getBoundingClientRect();
+      ol.insertBefore(dragged, e.clientY < r.top+r.height/2 ? over : over.nextElementSibling);
+    });
+    ol.addEventListener('drop',e=>e.preventDefault());
+    $('check').addEventListener('click',()=>{
+      let all=true;
+      [...ol.children].forEach((li,pos)=>{ const ok=q.lines[+li.dataset.l]===q.lines[pos]; if(!ok) all=false; li.classList.add(ok?'ok':'no'); li.draggable=false; li.querySelectorAll('button').forEach(x=>x.disabled=true); });
+      $('check').disabled=true;
+      finish(q, all, all?null:'הסדר הנכון:<pre>'+q.lines.map(esc).join('\n')+'</pre>');
+    });
+  } else if(q.type==='open'){
+    body.querySelector('.marks').addEventListener('click',e=>{
+      const b=e.target.closest('.mark'); if(!b) return;
+      if(q.mark===null){ answered++; progress(); }
+      q.mark=b.dataset.k;
+      body.querySelectorAll('.mark').forEach(m=>m.setAttribute('aria-checked', m===b));
+      $('next').disabled=false;
+    });
+  }
+}
+
+function icon(ok){
+  return `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="9" fill="none" stroke="${ok?'#15803D':'#DC2626'}" stroke-width="2.5"/><rect class="in" x="9" y="9" width="22" height="22" rx="6" fill="${ok?'#15803D':'#DC2626'}"/><text x="20" y="25.5" text-anchor="middle" fill="#fff" style="font:700 14px Assistant,sans-serif">${ok?'✓':'✗'}</text></svg>`;
+}
+
+function finish(q, ok, ansHtml){
+  results[Q.indexOf(q)] = ok; answered++; progress();
+  $('fb').innerHTML = `<div class="fb ${ok?'ok':'no'}">${icon(ok)}<div><h3>${ok?'נכון!':'לא נכון'}</h3><p>${q.exp}</p>${ansHtml?`<div class="ans">${ansHtml}</div>`:''}</div></div>`;
+  $('next').disabled=false; $('next').focus({preventScroll:true});
+}
+
+function showResult(){
+  $('quiz').classList.add('hidden'); $('result').classList.remove('hidden');
+  $('who').innerHTML = `<b>${esc(studentName)}</b> · מדעי המחשב`;
+  const topics = [...new Set(order.filter(qi=>results[qi]===false).map(qi=>Q[qi].topic))];
+  $('topicsH').textContent = topics.length ? 'נושאים שבהם הייתה שגיאה' : 'לא הייתה שגיאה באף נושא';
+  $('topics').innerHTML = topics.map(t=>`<li>${t}</li>`).join('');
+  $('selfs').innerHTML = order.map((qi,pos)=>({q:Q[qi],pos})).filter(o=>o.q.type==='open').map(o=>{
+    const m = MARKS.find(x=>x.k===o.q.mark);
+    return `<li><span><b>${o.pos+1}</b>${o.q.title}</span><span class="badge ${m.k}">${m.t}</span></li>`;
+  }).join('');
+  if(!topics.length) confetti();
+  window.scrollTo({top:0});
+}
+
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=$('confetti'), ctx=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight;
+  const cols=['#EAB308','#0F766E','#14B8A6','#15803D'];
+  const ps=Array.from({length:140},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:5+Math.random()*5,a:Math.random()*6,va:(Math.random()-.5)*.3,col:cols[Math.floor(Math.random()*4)]}));
+  let t=0; (function frame(){ ctx.clearRect(0,0,c.width,c.height); ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.strokeStyle=p.col; ctx.lineWidth=2; ctx.strokeRect(-p.r/2,-p.r/2,p.r,p.r); ctx.restore(); }); if(++t<260) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height); })();
+}
+
+const nameEl=$('name');
+nameEl.addEventListener('input',()=>{ $('start').disabled = nameEl.value.trim().length<2; });
+nameEl.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('start').disabled){ studentName=nameEl.value.trim(); start(); } });
+$('start').addEventListener('click',()=>{ studentName = nameEl.value.trim(); start(); });
+$('next').addEventListener('click',()=>{ if(idx<Q.length-1){ idx++; render(); } else showResult(); });
+$('reset').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התשובות עד כה יימחקו.')){ nameEl.value=''; $('start').disabled=true; $('quiz').classList.add('hidden'); $('cover').classList.remove('hidden'); window.scrollTo({top:0}); } });
+$('again').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התוצאה הנוכחית תימחק.')) start(); });
+
+$('nAuto').textContent = Q.filter(q=>q.type!=='open').length;
+$('nOpen').textContent = Q.filter(q=>q.type==='open').length;
+</script>
+</body>
+</html>

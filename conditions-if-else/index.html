@@ -154,7 +154,9 @@ font:500 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:cente
 .score .sub{color:var(--dim);margin:0 0 20px}
 .wrong{text-align:start;margin:0 0 20px;padding:0;list-style:none;display:grid;gap:6px}
 .wrong li{padding:10px 14px;border-radius:var(--rc);border:1.5px solid rgba(229,72,77,.35);background:rgba(229,72,77,.05);font-size:14.5px}
-.wrong li b{font-family:var(--mono);color:var(--false);margin-inline-end:8px}
+.topics-h{margin:22px 0 12px;font-size:18px;font-weight:800;color:var(--navy)}
+.wrong li{display:flex;align-items:center;gap:10px;font-weight:500}
+.wrong li::before{content:"";flex:none;width:10px;height:10px;transform:rotate(45deg);border-radius:2px;background:var(--false)}
 .submit{margin:0 0 6px;padding:14px 16px;border-radius:var(--rc);background:var(--soft);border:1.5px dashed rgba(30,58,138,.35);font-size:15px}
 /* practice */
 .task{margin-top:22px;padding:18px;border:1.5px solid var(--line);border-radius:var(--r);background:#fff}
@@ -200,7 +202,6 @@ table.tests td.v{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
   <p class="meta">רוני רובן · אוקטובר 2026 · תשפ"ז</p>
   <ul class="facts">
     <li><b id="nq"></b> שאלות</li>
-    <li>סף מעבר: <b id="passTxt"></b></li>
     <li>ובסוף: תרגול כתיבה</li>
   </ul>
   <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר, ואי אפשר לחזור לשאלה קודמת. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>. אחרי הסיכום מחכה תרגול כתיבת קוד שאינו נכלל בציון.</p>
@@ -222,9 +223,7 @@ table.tests td.v{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
   <p class="eyebrow">RESULT</p>
   <h2 style="margin:0 0 4px;font-size:clamp(22px,5vw,30px);font-weight:800;color:var(--navy)">תנאים <span class="m">if / else</span> — שאלון סיכום</h2>
   <p class="who" id="who"></p>
-  <div class="ring" id="ring"><svg viewBox="0 0 180 180" width="190" height="190"><circle class="bg" cx="90" cy="90" r="80"/><circle class="val" id="arc" cx="90" cy="90" r="80"/></svg><div class="num" id="num">0</div></div>
-  <p class="outcome" id="outcome"></p>
-  <p class="sub" id="detail"></p>
+  <h3 class="topics-h" id="topicsH"></h3>
   <ul class="wrong" id="wrongList"></ul>
   <p class="submit">צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
   <div class="actions"><button class="btn ghost" id="again">התחל מחדש</button><button class="btn primary" id="toPractice">לתרגול הכתיבה</button></div>
@@ -241,56 +240,31 @@ table.tests td.v{font-family:var(--mono);direction:ltr;unicode-bidi:isolate}
 
 </main>
 <script>
-const PASS = 60;
-
 const Q = [
-{type:'place', q:'מקמו את התנאים כך שציון 90 ומעלה יקבל בונוס 100, ציון 80 עד 89 יקבל 50, ציון 70 עד 79 יקבל 20, וכל ציון נמוך יותר יקבל 0.',
+{type:'place', topic:'סדר התנאים בשרשרת תנאים', q:'מקמו את התנאים כך שציון 90 ומעלה יקבל בונוס 100, ציון 80 עד 89 יקבל 50, ציון 70 עד 79 יקבל 20, וכל ציון נמוך יותר יקבל 0.',
  code:['int bonus;','if ([[0]]) bonus = 100;','else if ([[1]]) bonus = 50;','else if ([[2]]) bonus = 20;','else bonus = 0;'],
  chips:['grade >= 90','grade >= 80','grade >= 70'], ans:['grade >= 90','grade >= 80','grade >= 70'],
  exp:'בשרשרת תנאים מתבצע רק הענף הראשון שהתנאי שלו מתקיים, ולכן הסדר קובע. אם בודקים קודם את הסף הנמוך, ציון 95 ייעצר כבר בתנאי של 70 ויקבל בונוס 20. כשהספים מסודרים מהגבוה לנמוך, כל ציון נעצר בדיוק בטווח שלו.'},
-{type:'place', q:'התוכנית צריכה לספור כמה מהתנאים מתקיימים, כך שעבור 25 יודפס 3. מקמו את מילות המפתח.',
+{type:'place', topic:'תנאים נפרדים לעומת שרשרת תנאים', q:'התוכנית צריכה לספור כמה מהתנאים מתקיימים, כך שעבור 25 יודפס 3. מקמו את מילות המפתח.',
  code:['int x = 25, count = 0;','[[0]] (x > 5) count++;','[[1]] (x > 10) count++;','[[2]] (x > 20) count++;','System.out.println(count);'],
  chips:['if','if','if','else if','else if','else'], ans:['if','if','if'],
  exp:'כל תנאי צריך להיבדק בנפרד, ולכן בכל שלושת המקומות מתחיל תנאי עצמאי חדש. אם תנאי היה ממשיך שרשרת, הוא היה מדולג ברגע שהתנאי שלפניו מתקיים, והמונה היה עוצר מוקדם מדי. עבור 25 שלושת התנאים מתקיימים, ולכן מודפס 3.'},
-{type:'place', q:'מקמו את התנאים כך שיודפס 1 אם שני המספרים גדולים מ-5, יודפס 2 אם בדיוק אחד מהם גדול מ-5, ואחרת יודפס 3.',
- code:['if ([[0]]) System.out.println(1);','else if ([[1]]) System.out.println(2);','else System.out.println(3);'],
- chips:['a > 5 && b > 5','a > 5 || b > 5','a > 5','!(a > 5)'], ans:['a > 5 && b > 5','a > 5 || b > 5'],
- exp:'התנאי הראשון דורש ששני החלקים יתקיימו יחד, ולכן הוא משתמש ב"וגם". לענף השני מגיעים רק אם לא שני המספרים גדולים מ-5, ולכן "או" מתקיים שם בדיוק כשאחד מהם גדול מ-5. אילו הסדר היה הפוך, גם מקרה של שני מספרים גדולים היה נעצר בענף של "או".'},
-{type:'find', q:'הקוד מדפיס <bdi>hot</bdi> למרות שהטמפרטורה היא 10. באיזו שורה נמצאת השגיאה?',
+{type:'find', topic:'נקודה-פסיק אחרי התנאי', q:'הקוד מדפיס <bdi>hot</bdi> למרות שהטמפרטורה היא 10. באיזו שורה נמצאת השגיאה?',
  code:['int temp = 10;','System.out.println("checking");','if (temp > 25);','{','    System.out.println("hot");','}'], ans:2,
  exp:'הנקודה-פסיק בסוף שורה 3 סוגרת את התנאי עם פקודה ריקה. הבלוק שבסוגריים המסולסלים כבר אינו שייך לתנאי, ולכן הוא מתבצע תמיד. מוחקים את הנקודה-פסיק, והבלוק יתבצע רק כשהטמפרטורה גבוהה מ-25.'},
-{type:'find', q:'הקוד אינו עובר הידור. באיזו שורה נמצאת השגיאה?',
+{type:'find', topic:'השמה לעומת השוואה', q:'הקוד אינו עובר הידור. באיזו שורה נמצאת השגיאה?',
  code:['int a = 3;','int b = 7;','if (a > b) {','    System.out.println("a");','} else if (a = b) {','    System.out.println("equal");','} else {','    System.out.println("b");','}'], ans:4,
  exp:'בשורה 5 מופיע סימן שווה בודד, שהוא השמה ולא השוואה. תוצאת ההשמה היא מספר שלם ולא ערך אמת או שקר, ולכן הקוד אינו עובר הידור. להשוואה משתמשים בשני סימני שווה צמודים.'},
-{type:'fill', q:'השלימו כך שיודפס <bdi>adult</bdi> עבור גיל 18 ומעלה.',
+{type:'fill', topic:'אופרטורי יחס ומקרי גבול', q:'השלימו כך שיודפס <bdi>adult</bdi> עבור גיל 18 ומעלה.',
  code:['int age = 18;','if (age ____ 18) System.out.println("adult");','else System.out.println("minor");'], opts:['>=','>','==','<='], ans:0,
  exp:'הדרישה כוללת את גיל 18 עצמו, ולכן צריך "גדול או שווה". "גדול ממש" היה מדפיס עבור 18 את ההודעה של קטין. "שווה" מתאים רק לגיל 18 בדיוק, ו"קטן או שווה" הופך את הדרישה.'},
-{type:'fill', q:'השלימו כך שיודפס <bdi>valid</bdi> רק עבור מספר בין 1 ל-10, כולל.',
- code:['int n = 12;','if (n >= 1 ____ n <= 10) System.out.println("valid");'], opts:['&&','||','!','=='], ans:0,
- exp:'מספר נמצא בטווח רק אם שני התנאים מתקיימים יחד: הוא לפחות 1 וגם לכל היותר 10. עם "או" כל מספר היה עובר, כי כל מספר מקיים לפחות אחד משני החלקים. עבור 12 החלק השני נכשל, ולכן לא יודפס דבר.'},
-{type:'order', q:'סדרו את השורות כך שמעל 30 יודפס <bdi>hot</bdi>, מעל 15 יודפס <bdi>nice</bdi>, ואחרת יודפס <bdi>cold</bdi>.',
+{type:'order', topic:'מבנה של שרשרת תנאים', q:'סדרו את השורות כך שמעל 30 יודפס <bdi>hot</bdi>, מעל 15 יודפס <bdi>nice</bdi>, ואחרת יודפס <bdi>cold</bdi>.',
  lines:['int temp = 18;','if (temp > 30)','    System.out.println("hot");','else if (temp > 15)','    System.out.println("nice");','else','    System.out.println("cold");'],
  exp:'השרשרת בודקת קודם את הסף הגבוה ואחריו את הנמוך. כל הדפסה באה מיד אחרי התנאי שלה, והענף האחרון תופס את כל שאר המקרים. עבור 18 התנאי הראשון נכשל והשני מתקיים, ולכן יודפס <bdi>nice</bdi>.'},
-{type:'order', q:'סדרו את השורות: כניסה חינם מתחת לגיל 6 או מגיל 65 ומעלה, ואחרת בתשלום. בסוף תמיד יודפס <bdi>bye</bdi>.',
- lines:['int age = 70;','if (age < 6 || age >= 65)','    System.out.println("free");','else','    System.out.println("pay");','System.out.println("bye");'],
- exp:'מגדירים קודם את הגיל, ואז תנאי אחד עם "או" מכסה את שני המקרים של כניסה חינם. ההדפסה של התשלום שייכת לענף החלופי. ההדפסה האחרונה אינה תלויה בתנאי, ולכן היא באה אחרי שני הענפים ומתבצעת תמיד.'},
-{type:'order', q:'סדרו את השורות כך שהתוכנית תדפיס 13.',
+{type:'order', topic:'מעקב אחר ערך של משתנה בין תנאים', q:'סדרו את השורות כך שהתוכנית תדפיס 13.',
  lines:['int x = 7;','if (x > 5) x = x - 4;','if (x > 3) x = x * 2;','else x = x + 10;','System.out.println(x);'],
  exp:'אחרי ההגדרה, התנאי הראשון מוריד 4 מ-7, והמשתנה שווה 3. התנאי השני נבדק על הערך החדש: 3 אינו גדול מ-3, ולכן מתבצע הענף החלופי ומוסיף 10. כך מתקבל 13, וההדפסה חייבת לבוא בסוף.'},
-{type:'place', q:'מקמו את התנאים כך שעבור 15 יודפס 1, עבור 25 יודפס 2 ועבור 3 יודפס 3.',
- code:['if ([[0]]) System.out.println(1);','else if ([[1]]) System.out.println(2);','else System.out.println(3);'],
- chips:['n > 10 && n < 20','n > 5 || n == 0','n > 10 || n < 20','n > 5 && n == 0'], ans:['n > 10 && n < 20','n > 5 || n == 0'],
- exp:'רק התנאי "גדול מ-10 וגם קטן מ-20" מבודד את 15, כי 25 אינו קטן מ-20. לענף השני מגיעים 25 ו-3, והתנאי "גדול מ-5 או שווה 0" מתקיים עבור 25 בלבד. התנאי "גדול מ-10 או קטן מ-20" מתקיים עבור כל מספר, והתנאי "גדול מ-5 וגם שווה 0" לעולם אינו מתקיים.'},
-{type:'find', q:'המטרה: מעל 30 יודפס <bdi>hot</bdi>, מ-20 עד 30 יודפס <bdi>pleasant</bdi>, ומתחת ל-20 יודפס <bdi>cold</bdi>. עבור 10 הקוד מדפיס <bdi>pleasant</bdi>. באיזו שורה נמצאת השגיאה?',
- code:['int t = 10;','if (t > 30)','    System.out.println("hot");','else if (t >= 20 || t <= 30)','    System.out.println("pleasant");','else','    System.out.println("cold");'], ans:3,
- exp:'בשורה 4 התנאי משתמש ב"או", וכל מספר מקיים לפחות אחד משני החלקים: גדול או שווה ל-20, או קטן או שווה ל-30. לכן התנאי מתקיים תמיד, והענף האחרון לעולם אינו מתבצע. צריך "וגם" במקום "או", ואז עבור 10 יודפס <bdi>cold</bdi>.'},
-{type:'fill', q:'בחרו את התנאי שידפיס <bdi>out</bdi> בדיוק כאשר המספר נמצא מחוץ לטווח 1 עד 10.',
- code:['if (____) System.out.println("out");'], opts:['x < 1 || x > 10','x < 1 && x > 10','!(x >= 1 || x <= 10)','x <= 1 || x >= 10'], ans:0, wide:true,
- exp:'מספר נמצא מחוץ לטווח אם הוא קטן מ-1 או גדול מ-10, ואף מספר אינו מקיים את שני המקרים יחד, ולכן "וגם" לעולם אינו מתקיים. השלילה של "או" נכשלת תמיד, כי כל מספר מקיים לפחות אחד מהחלקים שבתוכה. האפשרות עם "קטן או שווה" ו"גדול או שווה" מדפיסה בטעות גם עבור 1 ועבור 10.'},
-{type:'fill', q:'הקוד צריך להדפיס את הגדול מבין שלושה מספרים. השלימו את התנאי החסר.',
- code:['if (a >= b && a >= c) System.out.println(a);','else if (____) System.out.println(b);','else System.out.println(c);'], opts:['b >= c','b > a','b >= a || b >= c','b < c'], ans:0,
- exp:'לענף השני מגיעים רק אם המספר הראשון אינו הגדול ביותר, ולכן נשאר להשוות רק בין השני לשלישי. התנאי "השני גדול מהראשון" נכשל כשהשלישי הוא הגדול, למשל עבור 1, 3, 5. גם התנאי עם "או" מדפיס 3 באותה דוגמה, והתנאי ההפוך מדפיס את הקטן מבין השניים.'},
-{type:'order', q:'סדרו את השורות: מגיל 65 ומעלה המחיר יורד בחצי. רק אחרי זה, אם המחיר נמוך מ-30, יודפס <bdi>discount</bdi>. בסוף תמיד יודפס המחיר.',
+{type:'order', topic:'סדר הביצוע של תנאים נפרדים', q:'סדרו את השורות: מגיל 65 ומעלה המחיר יורד בחצי. רק אחרי זה, אם המחיר נמוך מ-30, יודפס <bdi>discount</bdi>. בסוף תמיד יודפס המחיר.',
  lines:['int age = 70, price = 50;','if (age >= 65)','    price = price / 2;','if (price < 30)','    System.out.println("discount");','System.out.println(price);'],
  exp:'ההנחה לפי גיל צריכה להתבצע לפני בדיקת המחיר, כי הבדיקה תלויה במחיר החדש. מחיר של 50 יורד ל-25, ורק אז התנאי השני מתקיים ומודפסת הודעת ההנחה. ההדפסה האחרונה אינה תלויה באף תנאי, ולכן היא באה בסוף.'}
 ];
@@ -300,12 +274,7 @@ const PRACTICE = [
  intro:'נתון משתנה <bdi>hour</bdi> עם ערך שלם בין 0 ל-23. כתבו תוכנית שמדפיסה:',
  rules:['<bdi>morning</bdi> בין 5 ל-11','<bdi>afternoon</bdi> בין 12 ל-17','<bdi>evening</bdi> בין 18 ל-21','<bdi>night</bdi> בכל שעה אחרת'],
  tests:[['7','morning'],['12','afternoon'],['21','evening'],['23','night'],['3','night']], inLabel:'hour',
- sol:['if (hour >= 5 && hour <= 11) System.out.println("morning");','else if (hour >= 12 && hour <= 17) System.out.println("afternoon");','else if (hour >= 18 && hour <= 21) System.out.println("evening");','else System.out.println("night");']},
-{title:'סוג המשולש', file:'Triangle.java',
- intro:'נתונים שלושה אורכי צלעות <bdi>a</bdi>, <bdi>b</bdi> ו-<bdi>c</bdi>. כתבו תוכנית שמדפיסה:',
- rules:['<bdi>equilateral</bdi> אם כל הצלעות שוות','<bdi>isosceles</bdi> אם בדיוק שתי צלעות שוות','<bdi>scalene</bdi> אם אין צלעות שוות'],
- tests:[['3, 3, 3','equilateral'],['3, 3, 5','isosceles'],['5, 3, 5','isosceles'],['3, 4, 5','scalene']], inLabel:'a, b, c',
- sol:['if (a == b && b == c) System.out.println("equilateral");','else if (a == b || b == c || a == c) System.out.println("isosceles");','else System.out.println("scalene");']}
+ sol:['if (hour < 5) System.out.println("night");','else if (hour <= 11) System.out.println("morning");','else if (hour <= 17) System.out.println("afternoon");','else if (hour <= 21) System.out.println("evening");','else System.out.println("night");']}
 ];
 
 const KIND = {place:'מיקום בקוד', find:'מציאת שגיאה', fill:'השלמת קוד', order:'סידור שורות'};
@@ -466,17 +435,11 @@ function finish(q, ok, ansHtml){
 
 function showResult(){
   $('quiz').classList.add('hidden'); $('practice').classList.add('hidden'); $('result').classList.remove('hidden');
-  const correct = results.filter(Boolean).length, score = Math.round(correct/Q.length*100), pass = score>=PASS;
-  $('ring').classList.toggle('fail',!pass);
-  $('num').textContent = score;
-  $('outcome').textContent = pass ? 'עבר/ה את סף המעבר' : 'מתחת לסף המעבר';
   $('who').innerHTML = `<b>${esc(studentName)}</b> · מדעי המחשב`;
-  $('detail').textContent = `${correct} מתוך ${Q.length} תשובות נכונות · סף המעבר ${PASS}`;
-  const wl = $('wrongList'); wl.innerHTML='';
-  order.forEach((qi,pos)=>{ if(results[qi]===false){ const li=document.createElement('li'); li.innerHTML=`<b>${pos+1}</b>${Q[qi].q}`; wl.appendChild(li); } });
-  $('arc').style.transition='none'; $('arc').style.strokeDashoffset=502;
-  requestAnimationFrame(()=>requestAnimationFrame(()=>{ $('arc').style.transition=''; $('arc').style.strokeDashoffset = 502 - 502*score/100; }));
-  if(pass) confetti();
+  const topics = [...new Set(order.filter(qi=>results[qi]===false).map(qi=>Q[qi].topic))];
+  $('topicsH').textContent = topics.length ? 'נושאים שבהם הייתה שגיאה' : 'לא הייתה שגיאה באף נושא';
+  $('wrongList').innerHTML = topics.map(t=>`<li>${t}</li>`).join('');
+  if(!topics.length) confetti();
   window.scrollTo({top:0});
 }
 
@@ -526,7 +489,7 @@ $('again').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? ה�
 $('toPractice').addEventListener('click',()=>{ $('result').classList.add('hidden'); $('practice').classList.remove('hidden'); window.scrollTo({top:0}); });
 $('backToResult').addEventListener('click',()=>{ $('practice').classList.add('hidden'); $('result').classList.remove('hidden'); window.scrollTo({top:0}); });
 
-$('nq').textContent=Q.length; $('passTxt').textContent=PASS;
+$('nq').textContent=Q.length;
 buildPractice();
 </script>
 </body>

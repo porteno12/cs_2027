@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#C2410C">
+<title>לולאת while — שאלון סיכום</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#221A2E;--ember:#C2410C;--ember2:#9A3412;--paper:#FBF6EE;--tang:#FB923C;--true:#15803D;--false:#BE123C;
+--dim:#6A5A66;--line:#E7D9C8;--soft:#FDEBD8;--codebg:#221A2E;--codefg:#FDE7D3;
+--r:18px;--rc:12px;--mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;--sans:Rubik,system-ui,sans-serif;
+--pop:cubic-bezier(.34,1.56,.64,1);--eo:cubic-bezier(.32,.72,0,1)}
+*{box-sizing:border-box;font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0}
+body{margin:0;background-color:var(--paper);color:var(--ink);direction:rtl;line-height:1.65;font-family:var(--sans);font-size:17px;
+padding-block:28px;padding-inline:16px;min-height:100vh;overflow-x:hidden;
+background-image:repeating-linear-gradient(135deg,rgba(194,65,12,.05) 0 2px,transparent 2px 22px)}
+.nowrap{white-space:nowrap}
+.shell{width:min(760px,100%);margin-inline:auto}
+.card{position:relative;background:#fff;border:1.5px solid var(--line);border-radius:var(--r);
+padding:clamp(20px,5vw,34px);box-shadow:0 20px 50px rgba(34,26,46,.12);animation:rise .45s var(--eo) both}
+.card.pass{border-top:5px solid var(--true)}
+.card.below{border-top:5px solid var(--false)}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.eyebrow{font:600 12px var(--mono);letter-spacing:.12em;color:var(--ember);direction:ltr;text-align:right;margin:0 0 14px}
+h1{font-size:clamp(34px,7.5vw,56px);line-height:1.08;letter-spacing:-.01em;margin:0 0 10px;font-weight:800;color:var(--ink);text-wrap:balance}
+h1 em{font-style:normal;color:var(--ember)}
+.meta{margin:0;color:var(--dim);font-size:15.5px}
+.meta b{color:var(--ink);font-weight:700}
+.facts{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 0;padding:0;list-style:none}
+.facts li{padding:6px 13px;border-radius:99px;border:1.5px solid var(--line);font-size:14px;color:var(--dim)}
+.facts li b{color:var(--ember);font-family:var(--mono)}
+.guide{margin:20px 0 0;padding:14px 16px;border-radius:var(--rc);background:var(--soft);border:1.5px solid rgba(194,65,12,.2);font-size:15.5px}
+.field{margin-top:22px}.field label{display:block;font-weight:700;margin-bottom:8px}
+.field input{width:100%;padding:13px 16px;border:2px solid var(--line);border-radius:var(--rc);background:#fff;color:var(--ink);font:500 16px var(--sans);outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(194,65,12,.18)}
+/* cover: a loop track */
+.track-art{display:block;width:min(270px,78%);height:auto;margin:0 auto 20px;direction:ltr}
+.track-art .lap{fill:none;stroke:var(--ember);stroke-width:3;stroke-dasharray:640;stroke-dashoffset:640;animation:draw 1.3s var(--eo) forwards}
+.track-art text{font:600 15px var(--mono);fill:var(--ink);opacity:0;animation:fade .4s ease .7s forwards}
+.track-art .upd{fill:var(--ember);animation-delay:1s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes fade{to{opacity:1}}
+/* buttons */
+.actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-top:26px}
+.btn{font:700 16px var(--sans);border-radius:var(--rc);padding:12px 28px;min-height:48px;cursor:pointer;border:2px solid transparent;
+transition:transform .22s var(--pop),box-shadow .22s var(--eo),opacity .2s,background .2s,color .2s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.primary{background:var(--tang);color:var(--ink);box-shadow:0 6px 18px rgba(251,146,60,.35)}
+.primary:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 10px 26px rgba(251,146,60,.48)}
+.outline{background:#fff;color:var(--ember2);border-color:var(--ember)}
+.outline:hover:not(:disabled){background:var(--soft)}
+.ghost{background:transparent;color:var(--dim);border-color:transparent;padding-inline:14px;font-weight:600}
+.ghost:hover{color:var(--ember)}
+:focus-visible{outline:3px solid var(--ember);outline-offset:3px}
+/* progress */
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:14px;color:var(--dim);font-size:14.5px}
+.top b{color:var(--ember);font-family:var(--mono)}
+.track{height:8px;border-radius:99px;background:var(--soft);overflow:hidden;margin-bottom:20px}
+.fill{height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,var(--ember),var(--tang));transition:width .55s var(--eo)}
+/* question */
+.kind{display:inline-flex;align-items:center;margin-bottom:12px;padding:4px 12px;border-radius:8px;font:700 12.5px var(--sans);color:var(--ember2);background:var(--soft);border:1.5px solid rgba(194,65,12,.28)}
+.q{font-size:clamp(18px,4.4vw,21px);font-weight:700;margin:0 0 16px;line-height:1.5}
+.hint{color:var(--dim);font-size:14px;margin:0 0 12px}
+.code{direction:ltr;text-align:left;margin:0 0 18px;padding:12px 0;border-radius:var(--rc);background:var(--codebg);
+font:500 14.5px/1.75 var(--mono);color:var(--codefg);overflow-x:auto}
+.code .ln{display:flex;align-items:center;min-height:1.75em;padding-inline-end:16px;white-space:pre}
+.code .no{flex:none;width:44px;padding-inline-end:12px;text-align:right;color:#9A8290;user-select:none}
+.kw{color:#FDBA74}.str{color:#86EFAC}.num{color:#7DD3FC}.op{color:#FDA4AF;font-weight:600}.cm{color:#B3A0AC;font-style:italic}
+/* find the error */
+.code.pick .ln{width:100%;border:0;background:transparent;color:inherit;font:inherit;cursor:pointer;text-align:left;direction:ltr;border-inline-start:3px solid transparent;transition:background .15s,border-color .15s}
+.code.pick .ln:hover:not(:disabled){background:rgba(251,146,60,.16);border-inline-start-color:var(--tang)}
+.code.pick .ln:disabled{cursor:default}
+.code.pick .ln.ok{background:rgba(21,128,61,.35);border-inline-start-color:#4ADE80;animation:pop .5s var(--pop)}
+.code.pick .ln.no{background:rgba(190,18,60,.34);border-inline-start-color:#FB7185;animation:shake .45s}
+/* blanks in code */
+.bl{width:3.4em;height:1.55em;margin:0 3px;padding:0 4px;text-align:center;direction:ltr;border-radius:6px;border:1.5px dashed var(--tang);
+background:rgba(251,146,60,.12);color:#FFEDD5;font:600 14.5px var(--mono);outline:none;vertical-align:middle}
+.bl:focus{border-style:solid;box-shadow:0 0 0 3px rgba(251,146,60,.4)}
+.bl.ok{border:1.5px solid #4ADE80;color:#BBF7D0;background:rgba(21,128,61,.35);animation:pop .5s var(--pop)}
+.bl.no{border:1.5px solid #FB7185;color:#FECDD3;background:rgba(190,18,60,.34);animation:shake .45s}
+/* typed answers */
+.inputs{display:flex;flex-wrap:wrap;gap:14px}
+.inp{display:flex;align-items:center;gap:10px;font-weight:700}
+.inp .nm{direction:ltr;unicode-bidi:isolate;font:600 15px var(--mono);color:var(--ember2)}
+.inp input{width:7.5em;padding:10px 12px;border:2px solid var(--line);border-radius:var(--rc);background:#fff;color:var(--ink);font:600 16px var(--mono);text-align:center;direction:ltr;outline:none;transition:border-color .2s,box-shadow .2s}
+.inp input:focus{border-color:var(--ember);box-shadow:0 0 0 3px rgba(194,65,12,.18)}
+.inp input.ok{border-color:var(--true);background:rgba(21,128,61,.08);animation:pop .5s var(--pop)}
+.inp input.no{border-color:var(--false);background:rgba(190,18,60,.06);animation:shake .45s}
+/* options */
+.opts{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.opts.two{grid-template-columns:1fr 1fr}
+.opts.three{grid-template-columns:1fr 1fr 1fr}
+.choice{width:100%;text-align:start;padding:12px 14px;border-radius:var(--rc);border:1.5px solid var(--line);background:#fff;color:var(--ink);
+font:600 16px var(--sans);cursor:pointer;display:flex;gap:12px;align-items:center;transition:border-color .18s,background .18s,transform .18s var(--pop)}
+.choice:hover:not(:disabled){border-color:var(--ember);transform:translateY(-2px)}
+.choice:disabled{cursor:default}
+.choice .tag{flex:none;width:28px;height:28px;border-radius:7px;display:grid;place-items:center;font:700 13px var(--sans);background:var(--soft);color:var(--ember2)}
+.choice .txt{direction:ltr;unicode-bidi:isolate;font:600 15px var(--mono);white-space:pre}
+.choice .txt.he{direction:rtl;font:600 16px var(--sans);white-space:normal}
+.choice[aria-pressed="true"]{border-color:var(--ember);background:var(--soft)}
+.choice[aria-pressed="true"] .tag{background:var(--ember);color:#fff}
+.choice.ok{border-color:var(--true);background:rgba(21,128,61,.08);animation:pop .5s var(--pop)}
+.choice.ok .tag{background:var(--true);color:#fff}
+.choice.no{border-color:var(--false);background:rgba(190,18,60,.06);animation:shake .45s}
+.choice.no .tag{background:var(--false);color:#fff}
+.choice.miss{border-style:dashed;border-color:var(--true)}
+.choice.dimmed{opacity:.5}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.035)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-7px)}40%,80%{transform:translateX(7px)}}
+/* classify */
+.cls{display:grid;gap:10px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;padding:10px 12px;border-radius:var(--rc);border:1.5px solid var(--line);background:#fff;transition:border-color .18s,background .18s}
+.row .it{flex:1 0 7em;font-weight:700}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg button{padding:7px 12px;min-height:38px;border-radius:9px;border:1.5px solid var(--line);background:#fff;color:var(--ink);font:600 14px var(--sans);cursor:pointer;transition:all .15s}
+.seg button:hover:not(:disabled){border-color:var(--ember)}
+.seg button:disabled{cursor:default}
+.seg button[aria-checked="true"]{background:var(--ember);border-color:var(--ember);color:#fff}
+.row.ok{border-color:var(--true);background:rgba(21,128,61,.07)}
+.row.no{border-color:var(--false);background:rgba(190,18,60,.06)}
+.row.ok .seg button[aria-checked="true"]{background:var(--true);border-color:var(--true)}
+.row.no .seg button[aria-checked="true"]{background:var(--false);border-color:var(--false)}
+/* order */
+.ord{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:7px;counter-reset:pos}
+.ord li{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--rc);border:1.5px solid var(--line);background:#fff;transition:border-color .18s,background .18s,opacity .15s}
+.ord li[draggable="true"]{cursor:grab}
+.ord li.drag{opacity:.4}
+.ord li::before{counter-increment:pos;content:counter(pos);flex:none;width:26px;height:26px;border-radius:7px;display:grid;place-items:center;font:700 13px var(--mono);background:var(--soft);color:var(--ember2)}
+.ord .line{flex:1;min-width:0;direction:ltr;text-align:left;font:500 14px var(--mono);color:var(--ink);unicode-bidi:isolate;overflow-x:auto;white-space:pre}
+.ord .line .kw{color:#9A3412}.ord .line .str{color:#15803D}.ord .line .num{color:#0369A1}.ord .line .op{color:#BE123C}
+.mv{display:flex;gap:4px;flex:none}
+.mv button{width:36px;height:36px;border-radius:8px;border:1.5px solid var(--line);background:#fff;color:var(--ember);cursor:pointer;font-size:14px;display:grid;place-items:center;transition:all .15s}
+.mv button:hover:not(:disabled){background:var(--soft);border-color:var(--ember)}
+.mv button:disabled{opacity:.3;cursor:default}
+.ord li.ok{border-color:var(--true);background:rgba(21,128,61,.07)}
+.ord li.no{border-color:var(--false);background:rgba(190,18,60,.06)}
+.ord li.ok::before{background:var(--true);color:#fff}.ord li.no::before{background:var(--false);color:#fff}
+/* feedback */
+.fb{margin-top:18px;padding:16px 18px;border-radius:var(--rc);border:1.5px solid;display:flex;gap:14px;align-items:flex-start;animation:rise .4s var(--eo) both}
+.fb.ok{border-color:rgba(21,128,61,.45);background:rgba(21,128,61,.05)}
+.fb.no{border-color:rgba(190,18,60,.42);background:rgba(190,18,60,.04)}
+.fb svg{flex:none;width:40px;height:40px}
+.fb svg .in{transform-origin:20px 20px;animation:pop .5s var(--pop)}
+.fb h3{margin:0 0 6px;font-size:17px;font-weight:800}
+.fb.ok h3{color:var(--true)}.fb.no h3{color:var(--false)}
+.fb p{margin:0;font-size:15.5px}
+.fb .ans{margin-top:8px;font-size:14.5px;color:var(--dim)}
+.fb pre{direction:ltr;text-align:left;margin:6px 0 0;padding:10px 12px;border-radius:8px;background:var(--soft);font:500 13px/1.6 var(--mono);color:var(--ink);overflow-x:auto}
+/* summary */
+.who{font-size:17px;margin:0 0 4px}.who b{color:var(--ember)}
+.sec-h{margin:24px 0 12px;font-size:18px;font-weight:800;color:var(--ink)}
+.topics{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+.topics li{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:var(--rc);border:1.5px solid rgba(190,18,60,.3);background:rgba(190,18,60,.04);font-size:15.5px;font-weight:600}
+.topics li::before{content:"";flex:none;width:10px;height:10px;border-radius:3px;background:var(--false)}
+.submit{margin:24px 0 0;padding:14px 16px;border-radius:var(--rc);background:var(--soft);border:1.5px dashed rgba(194,65,12,.4);font-size:15.5px}
+.hidden{display:none!important}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
+@media (max-width:520px){.opts.two,.opts.three{grid-template-columns:1fr 1fr}.mv button{width:40px;height:40px}}
+@media print{body{background:#fff;padding:0}.card{box-shadow:none;animation:none}.btn,#confetti,.track-art{display:none!important}}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}.track-art .lap{stroke-dashoffset:0}.track-art text{opacity:1}}
+</style>
+</head>
+<body>
+<canvas id="confetti" aria-hidden="true"></canvas>
+<main class="shell">
+
+<section class="card" id="cover">
+  <svg class="track-art" viewBox="0 0 260 150" aria-hidden="true">
+    <path class="lap" d="M75 15 H185 A60 60 0 0 1 185 135 H75 A60 60 0 0 1 75 15 Z"/>
+    <text x="130" y="68" text-anchor="middle">while (x &lt; 5)</text>
+    <text class="upd" x="130" y="98" text-anchor="middle">x++</text>
+    <circle id="runner" r="8" fill="#FB923C" stroke="#fff" stroke-width="2">
+      <animateMotion id="lapMotion" dur="3.6s" repeatCount="indefinite" path="M75 15 H185 A60 60 0 0 1 185 135 H75 A60 60 0 0 1 75 15 Z"/>
+    </circle>
+  </svg>
+  <p class="eyebrow">CS · JAVA · WHILE LOOP</p>
+  <h1>לולאת <em><bdi class="nowrap">while</bdi></em></h1>
+  <p class="meta"><b>מדעי המחשב</b> · שאלון סיכום</p>
+  <p class="meta">רוני רובן · נובמבר 2026 · תשפ"ז</p>
+  <ul class="facts"><li><b id="nAll"></b> שאלות</li></ul>
+  <p class="guide">קראו כל שאלה בעיון וענו עליה. אחרי כל תשובה יוצג הסבר קצר, ואי אפשר לחזור לשאלה קודמת. בסיום צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <div class="field"><label for="name">שם התלמיד/ה</label><input id="name" type="text" autocomplete="name" placeholder="הקלידו שם מלא" maxlength="60"></div>
+  <div class="actions"><button class="btn primary" id="start" disabled>התחל</button></div>
+</section>
+
+<section class="card hidden" id="quiz">
+  <div class="top"><span>שאלה <b id="cur"></b> מתוך <b id="tot"></b></span><span><b id="done">0</b> נענו</span></div>
+  <div class="track"><div class="fill" id="bar"></div></div>
+  <div id="body"></div>
+  <div class="actions">
+    <button class="btn ghost" id="reset">התחל מחדש</button>
+    <button class="btn primary" id="next" disabled>הבאה</button>
+  </div>
+</section>
+
+<section class="card hidden" id="result">
+  <p class="eyebrow">SUMMARY</p>
+  <h2 style="margin:0 0 4px;font-size:clamp(22px,5vw,30px);font-weight:800">לולאת <bdi class="nowrap">while</bdi> — שאלון סיכום</h2>
+  <p class="who" id="who"></p>
+  <h3 class="sec-h" id="topicsH"></h3>
+  <ul class="topics" id="topics"></ul>
+  <p class="submit">צלמו את מסך הסיכום והגישו את התמונה למטלה בקורס ב-<bdi class="nowrap">Google Classroom</bdi>.</p>
+  <div class="actions" style="justify-content:center"><button class="btn ghost" id="again">התחל מחדש</button></div>
+</section>
+
+</main>
+<script>
+const PASS = 60;
+const Q = [
+{type:'classify', topic:'חלקי הלולאה: אתחול, תנאי, גוף ועדכון', q:'סווגו כל שורה לתפקיד שהיא ממלאת בקטע.',
+ code:['int num = 1;','while (num <= 5) {','    System.out.println(num);','    num = num + 1;','}'],
+ cats:['אתחול','תנאי','פעולה בגוף הלולאה','עדכון המשתנה'],
+ items:[{t:'שורה 1',a:0},{t:'שורה 2',a:1},{t:'שורה 3',a:2},{t:'שורה 4',a:3}],
+ exp:'האתחול נותן למשתנה ערך התחלתי לפני הלולאה, והתנאי נבדק לפני כל סיבוב. בגוף הלולאה מופיעה הפעולה שחוזרת על עצמה. שורת העדכון משנה את המשתנה שבתנאי, ובלעדיה הלולאה לא הייתה מסתיימת.'},
+{type:'truefalse', topic:'בדיקת התנאי לפני הסיבוב הראשון', q:'אם התנאי של לולאת <bdi class="nowrap">while</bdi> שקרי כבר בבדיקה הראשונה, גוף הלולאה יתבצע פעם אחת.', ans:false,
+ exp:'בלולאת <bdi class="nowrap">while</bdi> התנאי נבדק לפני כל סיבוב, כולל הראשון. אם הוא שקרי כבר בהתחלה, גוף הלולאה אינו מתבצע אף פעם, והתוכנית ממשיכה לשורה שאחרי הלולאה.'},
+{type:'classify', topic:'זיהוי לולאה אינסופית, לולאה שלא מתבצעת וטעות של אחד', q:'כל אחד משלושת הקטעים אמור להדפיס בדיוק שלוש שורות. סווגו כל קטע לפי הטעות שבו.',
+ code:['int m = 0;','while (m < 3) {','    System.out.println(m);','}','','int j = 3;','while (j < 0) {','    System.out.println(j);','    j--;','}','','int k = 0;','while (k <= 3) {','    System.out.println(k);','    k++;','}'],
+ cats:['לולאה אינסופית','לולאה שלא מתבצעת','טעות של אחד'],
+ items:[{t:'שורות 1–4',a:0},{t:'שורות 6–10',a:1},{t:'שורות 12–16',a:2}],
+ exp:'בקטע הראשון המשתנה אינו מתעדכן בגוף הלולאה, ולכן התנאי נשאר אמיתי והלולאה אינה נעצרת. בקטע השני התנאי דורש מספר שלילי אבל המשתנה מתחיל ב-3, ולכן הגוף אינו מתבצע. בקטע השלישי התנאי כולל גם את השוויון ל-3, ולכן מודפסות ארבע שורות במקום שלוש.'},
+{type:'single', topic:'ערך סיום: קריאת קלט לפני הלולאה', q:'שתי הגרסאות אמורות לקלוט מספרים עד שנקלט 0, ולספור כמה מספרים נקלטו לפני ה-0. מה נכון לגבי הגרסאות?',
+ code:['Scanner scanner = new Scanner(System.in);','','// Version 1','int count = 0;','int num = scanner.nextInt();','while (num != 0) {','    count++;','    num = scanner.nextInt();','}','','// Version 2','int count = 0;','int num = 1;','while (num != 0) {','    num = scanner.nextInt();','    count++;','}'],
+ opts:['רק הגרסה הראשונה נכונה: השנייה סופרת גם את ערך הסיום','רק הגרסה השנייה נכונה: הראשונה מדלגת על המספר הראשון','שתי הגרסאות נכונות: הן נותנות אותה תוצאה לכל קלט','שתי הגרסאות שגויות: אף אחת מהן אינה עוצרת כשנקלט ערך הסיום'], ans:0,
+ exp:'בגרסה הראשונה הקלט נקרא לפני הלולאה ובסוף כל סיבוב, ולכן התנאי נבדק לפני שסופרים את המספר. בגרסה השנייה הספירה מתבצעת אחרי הקריאה בלי בדיקה, ולכן גם ערך הסיום נספר. עבור הקלט 4, 7, 0 הגרסה הראשונה נותנת 2 והשנייה נותנת 3.'},
+{type:'single', topic:'פירוק מספר לספרות בלולאה', q:'<bdi>n</bdi> הוא מספר שלם חיובי. מה מחשב הקטע?',
+ code:['int sum = 0;','while (n > 0) {','    sum = sum + n % 10;','    n = n / 10;','}'],
+ opts:['את סכום הספרות של המספר','את מספר הספרות של המספר','את הספרה הגדולה ביותר במספר','את המספר בסדר ספרות הפוך'], ans:0,
+ exp:'בכל סיבוב שארית החלוקה ב-10 נותנת את הספרה האחרונה, והיא מתווספת לסכום. חילוק שלמים ב-10 מוחק את הספרה הזו, וכך הלולאה עוברת על כל הספרות עד שהמספר מגיע ל-0. למשל, עבור 3407 מתקבל 14.'},
+{type:'order', topic:'סדר השורות בלולאה: הדפסה לפני עדכון', q:'סדרו את השורות כך שהקטע ידפיס את המספרים הזוגיים מ-2 עד 10.',
+ lines:['int n = 2;','while (n <= 10) {','    System.out.println(n);','    n = n + 2;','}'],
+ exp:'האתחול בא לפני הלולאה, כדי שהתנאי ייבדק על ערך ידוע. בתוך הגוף ההדפסה באה לפני העדכון: בסדר ההפוך יודפסו המספרים 4 עד 12. הסוגר המסולסל סוגר את הגוף ובא אחרון.'},
+{type:'truefalse', topic:'משתנה שאינו מתעדכן בגוף הלולאה', q:'אם המשתנה שבתנאי אינו משתנה בגוף הלולאה, הלולאה תמיד אינסופית.', ans:false,
+ exp:'אם התנאי שקרי כבר בבדיקה הראשונה, הגוף אינו מתבצע כלל והלולאה אינה אינסופית. רק אם התנאי אמיתי בתחילה, שום דבר בגוף אינו משנה אותו והלולאה לא תיעצר.'},
+{type:'single', topic:'לולאה שמדלגת על ערך היעד', q:'מה נכון לגבי הלולאה?',
+ code:['int x = 9;','while (x != 0) {','    x = x - 2;','}'],
+ opts:['הלולאה אינה עוצרת לעולם','הלולאה מתבצעת 5 פעמים ועוצרת','הלולאה מתבצעת 4 פעמים ועוצרת','הלולאה אינה מתבצעת כלל'], ans:0,
+ exp:'המשתנה מתחיל במספר אי-זוגי, והפחתה של 2 שומרת על אי-זוגיות. לכן הוא ממשיך מ-1 ישירות למינוס 1, ולעולם אינו שווה 0. התנאי בודק אי-שוויון ולא "גדול מאפס", ולכן הלולאה אינה נעצרת.'},
+{type:'input', topic:'מעקב אחר שני משתנים שמתעדכנים יחד', q:'מה יהיו ערכי <bdi>num</bdi> ו-<bdi>sum</bdi> בסוף הקטע? הקלידו מספר בכל שדה.',
+ code:['int num = 1;','int sum = 0;','while (sum < 20) {','    num = num * 2;','    sum = sum + num;','}'],
+ fields:[{l:'num',code:true,a:16},{l:'sum',code:true,a:30}],
+ exp:'אחרי הסיבוב הראשון המשתנה הראשון הוא 2 והסכום 2, ואחר כך 4 ו-6, ואז 8 ו-14. הסכום עדיין קטן מ-20, ולכן מתבצע סיבוב נוסף שנותן 16 ו-30. רק עכשיו התנאי שקרי והלולאה מסתיימת.'},
+{type:'input', topic:'מעקב אחר לולאה עם תנאי בתוכה', q:'מה יודפס?',
+ code:['int n = 6;','int steps = 0;','while (n != 1) {','    if (n % 2 == 0) {','        n = n / 2;','    } else {','        n = 3 * n + 1;','    }','    steps++;','}','System.out.println(steps);'],
+ fields:[{l:'הפלט',a:8}],
+ exp:'המספר עובר בערכים 6, 3, 10, 5, 16, 8, 4, 2, 1. בכל מעבר בין שני ערכים המונה גדל ב-1, ויש 8 מעברים כאלה. הערך 1 מסיים את הלולאה, ולכן לא נספר אחריו סיבוב נוסף.'},
+{type:'find', topic:'עדכון שגוי של המשתנה בתנאי', q:'הקטע אמור להדפיס את הספרה הגדולה ביותר במספר החיובי <bdi>n</bdi>. לחצו על השורה השגויה.',
+ code:['int max = 0;','while (n > 0) {','    int digit = n % 10;','    if (digit > max) {','        max = digit;','    }','    n = n % 10;','}','System.out.println(max);'], ans:6,
+ exp:'בשורה 7 יש להשתמש בחילוק שלמים ב-10 כדי להסיר את הספרה האחרונה. שארית החלוקה משאירה רק את הספרה האחרונה, ולכן אם היא אינה 0 המשתנה נשאר באותו ערך והלולאה אינסופית. שאר השורות מוצאות נכון את הספרה הגדולה ביותר.'},
+{type:'multi', topic:'הערך של המשתנה אחרי סיום הלולאה', q:'סמנו את כל ערכי הפתיחה של <bdi>n</bdi> שעבורם ערכו בסוף הקטע יהיה 0.',
+ code:['while (n > 0) {','    n = n - 3;','}'],
+ opts:['9','10','12','0','7','-3'], ans:[0,2,3],
+ exp:'מספר חיובי שמתחלק ב-3 יורד בדיוק עד 0, כמו 9 ו-12. עבור 0 ועבור מינוס 3 התנאי שקרי מההתחלה, ולכן הערך נשאר כפי שהיה: 0 נשאר 0 ומינוס 3 נשאר מינוס 3. עבור 10 ו-7 הלולאה עוצרת רק כשהמשתנה נעשה שלילי, בערך מינוס 2.'},
+{type:'blanks', topic:'קביעת ערך התחלה ותנאי עצירה', q:'הקטע צריך להדפיס את המספרים 20, 16, 12, 8 בסדר הזה. השלימו מספר בכל קו תחתון.',
+ code:['int num = [[0]];','while (num >= [[1]]) {','    System.out.println(num);','    num = num - 4;','}'],
+ ans:[[20],[5,6,7,8]], show:'במקום הראשון 20, ובמקום השני כל מספר מ-5 עד 8.',
+ exp:'הערך המודפס הראשון הוא ערך ההתחלה, ולכן הוא 20. אחרי 8 המשתנה יורד ל-4, וזה הערך שצריך לעצור את הלולאה. לכן הגבול השני חייב להיות גדול מ-4 ולא גדול מ-8: כל מספר מ-5 עד 8 נותן את אותו פלט.'},
+{type:'order', topic:'ערך סיום: בניית לולאה שקולטת וסוכמת', q:'סדרו את השורות כך שהקטע יקלוט מספרים עד שנקלט מספר שלילי, וידפיס את סכום המספרים שלפניו.',
+ lines:['int sum = 0;','int num = scanner.nextInt();','while (num >= 0) {','    sum = sum + num;','    num = scanner.nextInt();','}','System.out.println(sum);'],
+ alts:[['int num = scanner.nextInt();','int sum = 0;','while (num >= 0) {','    sum = sum + num;','    num = scanner.nextInt();','}','System.out.println(sum);']],
+ exp:'קוראים את המספר הראשון לפני הלולאה, כדי שהתנאי ייבדק על קלט אמיתי. בגוף הלולאה קודם מוסיפים לסכום ואחר כך קוראים את המספר הבא, וכך המספר השלילי לא נכנס לסכום. ההדפסה באה אחרי הלולאה, כי צריך להדפיס רק את הסכום הסופי.'}
+];
+
+const KIND = {classify:'סיווג', truefalse:'נכון או לא נכון', single:'ניתוח קוד', order:'סידור שורות', input:'מעקב אחר קוד', find:'מציאת שגיאה', multi:'סימון כמה תשובות', blanks:'השלמת קוד'};
+const LETTERS = ['א','ב','ג','ד','ה','ו'];
+const $ = id => document.getElementById(id);
+const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* light Java highlighting; operators stay as typed characters */
+const TOK = /(\/\/.*$)|("[^"]*")|\b(if|else|while|int|new|true|false)\b|\b(\d+)\b|(&&|\|\||!(?!=))|\[\[(\d)\]\]/g;
+function hl(src, slotFn){
+  let out='', last=0, m; TOK.lastIndex=0;
+  while((m=TOK.exec(src))){
+    out += esc(src.slice(last,m.index));
+    if(m[1]) out += `<span class="cm">${esc(m[1])}</span>`;
+    else if(m[2]) out += `<span class="str">${esc(m[2])}</span>`;
+    else if(m[3]) out += `<span class="kw">${m[3]}</span>`;
+    else if(m[4]) out += `<span class="num">${m[4]}</span>`;
+    else if(m[5]) out += `<span class="op">${esc(m[5])}</span>`;
+    else if(m[6]) out += slotFn ? slotFn(+m[6]) : '';
+    last = TOK.lastIndex;
+  }
+  return out + esc(src.slice(last));
+}
+const codeBlock = (lines, slotFn) => '<div class="code" dir="ltr">'+lines.map((l,i)=>`<div class="ln"><span class="no">${i+1}</span><span>${hl(l,slotFn)}</span></div>`).join('')+'</div>';
+const checkBar = dis => `<div class="actions" style="margin-top:14px"><span></span><button class="btn outline" id="check"${dis?' disabled':''}>בדיקה</button></div>`;
+const isInt = s => /^-?\d+$/.test(s.trim());
+
+let order=[], idx=0, answered=0, results=[], studentName='';
+
+function start(){
+  order = shuffle(Q.map((_,i)=>i));
+  idx=0; answered=0; results=Q.map(()=>null);
+  Q.forEach(q=>{
+    if(q.type==='single'||q.type==='multi') q.perm = shuffle(q.opts.map((_,i)=>i));
+    if(q.type==='classify'){ q.perm = shuffle(q.items.map((_,i)=>i)); q.pick = q.items.map(()=>null); }
+    if(q.type==='order'){
+      const valid=[q.lines,...(q.alts||[])];
+      let p; do{ p = shuffle(q.lines.map((_,i)=>i)); }while(valid.some(v=>p.every((li,pos)=>q.lines[li]===v[pos])));
+      q.perm = p;
+    }
+  });
+  ['cover','result'].forEach(s=>$(s).classList.add('hidden')); $('quiz').classList.remove('hidden');
+  $('tot').textContent = Q.length;
+  render();
+}
+
+function progress(){
+  $('bar').style.width = Math.round(answered/Q.length*100)+'%'; $('done').textContent = answered;
+}
+
+function render(){
+  const q = Q[order[idx]];
+  $('cur').textContent = idx+1; progress();
+  $('next').disabled = true;
+  $('next').textContent = idx===Q.length-1 ? 'לסיכום' : 'הבאה';
+  let h = `<span class="kind">${KIND[q.type]}</span><p class="q">${q.q}</p>`;
+  if(q.type==='classify'){
+    h += codeBlock(q.code)+'<div class="cls">'+q.perm.map(it=>`<div class="row" data-it="${it}"><span class="it">${q.items[it].t}</span><span class="seg" role="radiogroup" aria-label="${q.items[it].t}">`+q.cats.map((c,ci)=>`<button role="radio" aria-checked="false" data-c="${ci}">${c}</button>`).join('')+'</span></div>').join('')+'</div>'+checkBar(true);
+  } else if(q.type==='truefalse'){
+    h += '<ul class="opts two">'+[[true,'נכון'],[false,'לא נכון']].map(([v,t],k)=>`<li><button class="choice" data-v="${v}"><span class="tag">${LETTERS[k]}</span><span class="txt he">${t}</span></button></li>`).join('')+'</ul>';
+  } else if(q.type==='single'){
+    h += codeBlock(q.code)+'<ul class="opts">'+q.perm.map((oi,k)=>`<li><button class="choice" data-i="${oi}"><span class="tag">${LETTERS[k]}</span><span class="txt he">${q.opts[oi]}</span></button></li>`).join('')+'</ul>';
+  } else if(q.type==='multi'){
+    h += codeBlock(q.code)+'<p class="hint">סמנו את כל התשובות הנכונות, ואז לחצו "בדיקה".</p><ul class="opts three">'+q.perm.map((oi,k)=>`<li><button class="choice" aria-pressed="false" data-i="${oi}"><span class="tag">${LETTERS[k]}</span><span class="txt">${esc(q.opts[oi])}</span></button></li>`).join('')+'</ul>'+checkBar(true);
+  } else if(q.type==='input'){
+    h += codeBlock(q.code)+'<div class="inputs">'+q.fields.map((f,k)=>`<label class="inp"><span class="${f.code?'nm':''}">${f.l}</span><input data-k="${k}" type="text" inputmode="numeric" autocomplete="off" maxlength="8"></label>`).join('')+'</div>'+checkBar(true);
+  } else if(q.type==='blanks'){
+    h += codeBlock(q.code, k=>`<input class="bl" data-k="${k}" type="text" inputmode="numeric" autocomplete="off" maxlength="4" aria-label="מקום ${k+1}">`)+checkBar(true);
+  } else if(q.type==='find'){
+    h += '<div class="code pick" dir="ltr">'+q.code.map((l,i)=>`<button class="ln" data-l="${i}" aria-label="שורה ${i+1}"><span class="no">${i+1}</span><span>${hl(l)}</span></button>`).join('')+'</div>';
+  } else if(q.type==='order'){
+    h += '<p class="hint">גררו שורה למקומה, או השתמשו בחצים כדי להזיז אותה למעלה או למטה. אחר כך לחצו "בדיקה".</p><ol class="ord" id="ord">'+q.perm.map(li=>`<li draggable="true" data-l="${li}"><span class="line">${hl(q.lines[li])}</span><span class="mv"><button data-d="-1" aria-label="הזז למעלה">▲</button><button data-d="1" aria-label="הזז למטה">▼</button></span></li>`).join('')+'</ol>'+checkBar(false);
+  }
+  h += '<div id="fb"></div>';
+  $('body').innerHTML = h;
+  wire(q);
+  $('quiz').scrollIntoView({block:'start'});
+}
+
+function wireInputs(q, sel, grade){
+  const inputs=[...$('body').querySelectorAll(sel)];
+  const ready=()=>inputs.every(n=>isInt(n.value));
+  const run=()=>{
+    if(!ready()||$('check').disabled) return;
+    const marks=inputs.map(grade), ok=marks.every(Boolean);
+    inputs.forEach((n,k)=>{ n.readOnly=true; n.classList.add(marks[k]?'ok':'no'); });
+    $('check').disabled=true;
+    finish(q, ok, ok?null:(q.show?'התשובה הנכונה: '+q.show:'התשובה הנכונה: '+q.fields.map(f=>`<bdi>${f.l}</bdi> = ${f.a}`).join(' · ')));
+  };
+  inputs.forEach(n=>{
+    n.addEventListener('input',()=>{ $('check').disabled=!ready(); });
+    n.addEventListener('keydown',e=>{ if(e.key==='Enter') run(); });
+  });
+  $('check').addEventListener('click',run);
+  inputs[0].focus({preventScroll:true});
+}
+
+function wire(q){
+  const body = $('body');
+  if(q.type==='classify'){
+    body.querySelector('.cls').addEventListener('click',e=>{
+      const b=e.target.closest('.seg button'); if(!b||b.disabled) return;
+      const row=b.closest('.row'); q.pick[+row.dataset.it]=+b.dataset.c;
+      row.querySelectorAll('.seg button').forEach(x=>x.setAttribute('aria-checked', x===b));
+      $('check').disabled=q.pick.some(v=>v===null);
+    });
+    $('check').addEventListener('click',()=>{
+      const all=q.items.every((it,k)=>q.pick[k]===it.a);
+      body.querySelectorAll('.row').forEach(r=>{ const k=+r.dataset.it; r.classList.add(q.pick[k]===q.items[k].a?'ok':'no'); r.querySelectorAll('button').forEach(x=>x.disabled=true); });
+      $('check').disabled=true;
+      finish(q, all, all?null:'הסיווג הנכון: '+q.items.map(it=>`${it.t} — ${q.cats[it.a]}`).join(' · '));
+    });
+  } else if(q.type==='truefalse'){
+    body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      const pick=b.dataset.v==='true', ok=pick===q.ans;
+      body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; const v=c.dataset.v==='true'; if(v===q.ans) c.classList.add('ok'); else if(v===pick) c.classList.add('no'); });
+      finish(q, ok, ok?null:`התשובה הנכונה: ${q.ans?'נכון':'לא נכון'}`);
+    }));
+  } else if(q.type==='single'){
+    body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      const pick=+b.dataset.i, ok=pick===q.ans;
+      body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; const i=+c.dataset.i; if(i===q.ans) c.classList.add('ok'); else if(i===pick) c.classList.add('no'); else c.classList.add('dimmed'); });
+      finish(q, ok, ok?null:`התשובה הנכונה: ${q.opts[q.ans]}`);
+    }));
+  } else if(q.type==='multi'){
+    const chosen=new Set();
+    body.querySelectorAll('.choice').forEach(b=>b.addEventListener('click',()=>{
+      const i=+b.dataset.i;
+      if(chosen.has(i)) chosen.delete(i); else chosen.add(i);
+      b.setAttribute('aria-pressed', chosen.has(i));
+      $('check').disabled=!chosen.size;
+    }));
+    $('check').addEventListener('click',()=>{
+      const ok=chosen.size===q.ans.length && q.ans.every(i=>chosen.has(i));
+      body.querySelectorAll('.choice').forEach(c=>{ c.disabled=true; c.removeAttribute('aria-pressed'); const i=+c.dataset.i, right=q.ans.includes(i); if(right&&chosen.has(i)) c.classList.add('ok'); else if(chosen.has(i)) c.classList.add('no'); else if(right) c.classList.add('miss'); else c.classList.add('dimmed'); });
+      $('check').disabled=true;
+      finish(q, ok, ok?null:'הערכים הנכונים: '+q.ans.map(i=>q.opts[i]).join(', '));
+    });
+  } else if(q.type==='input'){
+    wireInputs(q,'.inp input',n=>+n.value.trim()===q.fields[+n.dataset.k].a);
+  } else if(q.type==='blanks'){
+    wireInputs(q,'.bl',n=>q.ans[+n.dataset.k].includes(+n.value.trim()));
+  } else if(q.type==='find'){
+    body.querySelectorAll('.code.pick .ln').forEach(b=>b.addEventListener('click',()=>{
+      const pick=+b.dataset.l, ok=pick===q.ans;
+      body.querySelectorAll('.code.pick .ln').forEach(c=>{ c.disabled=true; const l=+c.dataset.l; if(l===q.ans) c.classList.add('ok'); else if(l===pick) c.classList.add('no'); });
+      finish(q, ok, ok?null:`השגיאה נמצאת בשורה ${q.ans+1}.`);
+    }));
+  } else if(q.type==='order'){
+    const ol = $('ord'); let dragged=null;
+    ol.addEventListener('click',e=>{
+      const b = e.target.closest('button[data-d]'); if(!b) return;
+      const li = b.closest('li'), d=+b.dataset.d;
+      if(d<0 && li.previousElementSibling) ol.insertBefore(li, li.previousElementSibling);
+      if(d>0 && li.nextElementSibling) ol.insertBefore(li.nextElementSibling, li);
+      b.focus();
+    });
+    ol.addEventListener('dragstart',e=>{ dragged=e.target.closest('li'); if(!dragged) return; dragged.classList.add('drag'); e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',''); });
+    ol.addEventListener('dragend',()=>{ if(dragged) dragged.classList.remove('drag'); dragged=null; });
+    ol.addEventListener('dragover',e=>{
+      if(!dragged) return; e.preventDefault();
+      const over=e.target.closest('li'); if(!over||over===dragged) return;
+      const r=over.getBoundingClientRect();
+      ol.insertBefore(dragged, e.clientY < r.top+r.height/2 ? over : over.nextElementSibling);
+    });
+    ol.addEventListener('drop',e=>e.preventDefault());
+    $('check').addEventListener('click',()=>{
+      const got=[...ol.children].map(li=>q.lines[+li.dataset.l]);
+      const valid=[q.lines,...(q.alts||[])], hit=valid.find(v=>v.every((l,pos)=>l===got[pos]));
+      const refer=hit||q.lines;
+      [...ol.children].forEach((li,pos)=>{ li.classList.add(got[pos]===refer[pos]?'ok':'no'); li.draggable=false; li.querySelectorAll('button').forEach(x=>x.disabled=true); });
+      $('check').disabled=true;
+      finish(q, !!hit, hit?null:'הסדר הנכון:<pre>'+q.lines.map(esc).join('\n')+'</pre>');
+    });
+  }
+}
+
+function icon(ok){
+  return `<svg viewBox="0 0 40 40" aria-hidden="true"><rect x="2" y="2" width="36" height="36" rx="9" fill="none" stroke="${ok?'#15803D':'#BE123C'}" stroke-width="2.5"/><rect class="in" x="9" y="9" width="22" height="22" rx="6" fill="${ok?'#15803D':'#BE123C'}"/><text x="20" y="25.5" text-anchor="middle" fill="#fff" style="font:700 14px Rubik,sans-serif">${ok?'✓':'✗'}</text></svg>`;
+}
+
+function finish(q, ok, ansHtml){
+  results[Q.indexOf(q)] = ok; answered++; progress();
+  $('fb').innerHTML = `<div class="fb ${ok?'ok':'no'}">${icon(ok)}<div><h3>${ok?'נכון!':'לא נכון'}</h3><p>${q.exp}</p>${ansHtml?`<div class="ans">${ansHtml}</div>`:''}</div></div>`;
+  $('next').disabled=false; $('next').focus({preventScroll:true});
+}
+
+function showResult(){
+  $('quiz').classList.add('hidden'); $('result').classList.remove('hidden');
+  $('who').innerHTML = `<b>${esc(studentName)}</b> · מדעי המחשב`;
+  const topics = [...new Set(order.filter(qi=>results[qi]===false).map(qi=>Q[qi].topic))];
+  $('topicsH').textContent = topics.length ? 'נושאים שבהם הייתה שגיאה' : 'לא הייתה שגיאה באף נושא';
+  $('topics').innerHTML = topics.map(t=>`<li>${t}</li>`).join('');
+  const passed = results.filter(r=>r===true).length/Q.length*100 >= PASS;
+  $('result').classList.toggle('pass',passed); $('result').classList.toggle('below',!passed);
+  if(passed) confetti();
+  window.scrollTo({top:0});
+}
+
+function confetti(){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=$('confetti'), ctx=c.getContext('2d'); c.width=innerWidth; c.height=innerHeight;
+  const cols=['#FB923C','#C2410C','#FDBA74','#15803D'];
+  const ps=Array.from({length:140},()=>({x:Math.random()*c.width,y:-20-Math.random()*c.height*.5,vx:(Math.random()-.5)*3,vy:2+Math.random()*4,r:5+Math.random()*5,a:Math.random()*6,va:(Math.random()-.5)*.3,col:cols[Math.floor(Math.random()*4)]}));
+  let t=0; (function frame(){ ctx.clearRect(0,0,c.width,c.height); ps.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.a+=p.va; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle=p.col; ctx.fillRect(-p.r/2,-p.r/2,p.r,p.r*.6); ctx.restore(); }); if(++t<260) requestAnimationFrame(frame); else ctx.clearRect(0,0,c.width,c.height); })();
+}
+
+const nameEl=$('name');
+nameEl.addEventListener('input',()=>{ $('start').disabled = nameEl.value.trim().length<2; });
+nameEl.addEventListener('keydown',e=>{ if(e.key==='Enter' && !$('start').disabled){ studentName=nameEl.value.trim(); start(); } });
+$('start').addEventListener('click',()=>{ studentName = nameEl.value.trim(); start(); });
+$('next').addEventListener('click',()=>{ if(idx<Q.length-1){ idx++; render(); } else showResult(); });
+$('reset').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התשובות עד כה יימחקו.')){ nameEl.value=''; $('start').disabled=true; $('quiz').classList.add('hidden'); $('cover').classList.remove('hidden'); window.scrollTo({top:0}); } });
+$('again').addEventListener('click',()=>{ if(confirm('להתחיל מחדש? התוצאה הנוכחית תימחק.')) start(); });
+
+$('nAll').textContent = Q.length;
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){ $('lapMotion').remove(); $('runner').setAttribute('transform','translate(75 15)'); }
+</script>
+</body>
+</html>
